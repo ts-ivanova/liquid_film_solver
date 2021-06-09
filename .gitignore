@@ -127,3 +127,9 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Solver results
+RESULTS/
+
+# Solver log file
+zlogfile
