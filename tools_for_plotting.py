@@ -283,7 +283,7 @@ def filtered(h, X, Z,
         plt.plot(X1[1:-1], third_derivatives_slices_x[i],
                  c = 'deeppink',
                  label = 'filtered derivative')
-        plt.title('Comparison for the third derivative ' + labels[i])
+        # plt.title('Comparison for ' + labels[i])
         plt.xlabel('domain length x, [-]')
         plt.ylabel(labels[i])
         plt.tight_layout()
@@ -307,7 +307,7 @@ def filtered(h, X, Z,
         plt.plot(Z1[1:-1], third_derivatives_slices_z[i],
                  c = 'deeppink',
                  label = 'filtered derivative')
-        plt.title('Comparison for the third derivative ' + labels[i])
+        # plt.title('Comparison for ' + labels[i])
         plt.xlabel('domain width z, [-]')
         plt.ylabel(labels[i])
         plt.tight_layout()

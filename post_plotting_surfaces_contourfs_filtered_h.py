@@ -29,7 +29,7 @@ import tools_for_plotting as save_plots
 # PLOT CUSTOMIZATIONS:
 font = {'family' : 'DejaVu Sans',
         'weight' : 'normal',
-        'size'   : 12}
+        'size'   : 14}
 rc('font', **font)
 
 
@@ -46,7 +46,7 @@ Filtered = True    # filtered third derivatives contourplots
                    # and comparisons
 
 if Filtered:
-    LIQUIDS = ['3D_WATER_with_surface_tension_coarse_XZ2/',
+    LIQUIDS = ['3D_WATER_with_surface_tension_coarse_XZ2/'],
                '3D_WATER_with_surface_tension_whole_zdomain_coarseXZ1/']
 
 
@@ -55,7 +55,7 @@ print('Going to process ', LIQUIDS)
 for LIQUID in LIQUIDS:
     print('Case ', LIQUID)
     os.chdir(LIQUID + os.sep + 'SOLUTIONS_n')
-    FOLDERS = natsorted(glob.glob('dx0.1389'))
+    FOLDERS = natsorted(glob.glob('dx*'))
 
     for FOLDER in FOLDERS:
         # Change working directory:
@@ -150,7 +150,7 @@ for LIQUID in LIQUIDS:
                                         nx, nz,
                                         j*100,
                                         directory_plots,
-                                        filenames[j][5:-11])
+                                        filenames[j][5:-4])
 
 
             print('Completed plotting for ', subfolder[i])
