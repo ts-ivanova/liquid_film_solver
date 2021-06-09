@@ -29,26 +29,33 @@ import tools_for_plotting as save_plots
 # PLOT CUSTOMIZATIONS:
 font = {'family' : 'DejaVu Sans',
         'weight' : 'normal',
-        'size'   : 10}
+        'size'   : 12}
 rc('font', **font)
-# plt.rcParams['xtick.labelsize'] = 8
-# plt.rcParams['ytick.labelsize'] = 8
 
 
 ####################
 os.chdir('RESULTS/')
-# Gather all computed configurations:
-LIQUIDS = natsorted(glob.glob('2D*'))# + natsorted(glob.glob('3D*'))
 
-Surfaces = True
-Contourfs = False
+# Gather all computed configurations:
+LIQUIDS = natsorted(glob.glob('2D*')) + natsorted(glob.glob('3D*'))
+
+# Choose which plots to produce:
+Surfaces = False   # liquid film height surfaces h
+Contourfs = False  # contour plot of the last computed time step of h
+Filtered = True    # filtered third derivatives contourplots
+                   # and comparisons
+
+if Filtered:
+    LIQUIDS = ['3D_WATER_with_surface_tension_coarse_XZ2/',
+               '3D_WATER_with_surface_tension_whole_zdomain_coarseXZ1/']
+
 
 print('Going to process ', LIQUIDS)
 
 for LIQUID in LIQUIDS:
     print('Case ', LIQUID)
     os.chdir(LIQUID + os.sep + 'SOLUTIONS_n')
-    FOLDERS = natsorted(glob.glob('dx*'))
+    FOLDERS = natsorted(glob.glob('dx0.1389'))
 
     for FOLDER in FOLDERS:
         # Change working directory:
@@ -60,6 +67,7 @@ for LIQUID in LIQUIDS:
 
             conf_key = subfolder[i][:4]
 
+            # extract information from naming convention:
             dx = float(subfolder[i][20:26])
             nx = int(subfolder[i][29:33])
             dz = float(subfolder[i][36:40])
@@ -101,6 +109,7 @@ for LIQUID in LIQUIDS:
                                              filenames[j][5:-11],
                                              conf_key)
 
+
             if Contourfs:
                 print('Plotting contour plots from ', subfolder[i])
 
@@ -118,6 +127,30 @@ for LIQUID in LIQUIDS:
                                           len(filenames),
                                           directory_plots,
                                           filenames[-1][5:-11])
+
+
+            if Filtered:
+                print('Plotting filtered derivatives from ',
+                      subfolder[i])
+
+                # To save the plot surfaces:
+                directory = "../../../POSTPROCESSED/filtered"
+                Path(directory).mkdir(parents=True, exist_ok=True)
+
+                directory_plots  =  directory + os.sep \
+                                    + subfolder[i]
+                Path(directory_plots).mkdir(parents=True, exist_ok=True)
+
+                skipfiles = 10
+
+                for j in range(0, len(filenames), skipfiles):
+                    h = np.load(filenames[j])
+                    save_plots.filtered(h, X, Z,
+                                        dx, dz,
+                                        nx, nz,
+                                        j*100,
+                                        directory_plots,
+                                        filenames[j][5:-11])
 
 
             print('Completed plotting for ', subfolder[i])

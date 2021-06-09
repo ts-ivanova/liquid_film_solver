@@ -130,8 +130,6 @@ dmypy.json
 
 # Solver stuff
 RESULTS/
-Compress_and_produce_Gifs/animation_example_latex/
-filters_plots/
 
 # Solver log file
 zlogfile
