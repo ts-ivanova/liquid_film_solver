@@ -36,6 +36,19 @@ from sklearn.gaussian_process.kernels \
 # Show code documentation:
 # print(__doc__)
 
+
+# PLOT CUSTOMIZATIONS:
+font = {'family' : 'DejaVu Sans',
+        'weight' : 'normal',
+        'size'   : 16}
+rc('font', **font)
+
+# transparency levels
+alpha1 = 0.5
+alpha2 = 0.9
+alpha3 = 0.5
+
+
 #%%
 # Tsveti
 # Data folder from Numerical solver for liquid films
@@ -172,17 +185,6 @@ for i in range(len(option_list)):
     y_pred, y_std = gp.predict(x_, return_std = True)
 
     #%% PLOTS:
-    # PLOT CUSTOMIZATIONS:
-    font = {'family' : 'serif',
-            'weight' : 'normal',
-            'size'   : 12}
-    rc('font', **font)
-
-    # transparency levels
-    alpha1 = 0.5
-    alpha2 = 0.9
-    alpha3 = 0.5
-
     plt.close()
 
     # Create the figure
@@ -224,13 +226,13 @@ for i in range(len(option_list)):
     title1 = 'Start of prediction at cell index = {:.0f}'\
              .format(len(h))
 
-    plt.suptitle(suptitle1, fontsize=14)
+    plt.suptitle(suptitle1)
     plt.title(title1, pad = 10)
 
     plt.xlabel('cell index x')
     plt.ylabel('film height h [-]')
     plt.tight_layout()
-    plt.legend(loc = 'upper left', fontsize=10)
+    plt.legend(loc = 'upper left')
     plt.grid(linewidth = 0.8)
     # Mark with a line where the prediction starts:
     plt.axvline(x=len(h))

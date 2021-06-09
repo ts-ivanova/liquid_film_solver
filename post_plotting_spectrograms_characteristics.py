@@ -30,16 +30,6 @@ import glob
 # Import libraries for paths and saving:
 from pathlib import Path
 
-####################
-# PLOT CUSTOMIZATIONS:
-font = {'family' : 'DejaVu Sans',
-        'weight' : 'normal',
-        'size'   : 10}
-rc('font', **font)
-# plt.rcParams['xtick.labelsize'] = 8
-# plt.rcParams['ytick.labelsize'] = 8
-alpha1 = 0.7 # plots transparency
-
 
 
 ####################

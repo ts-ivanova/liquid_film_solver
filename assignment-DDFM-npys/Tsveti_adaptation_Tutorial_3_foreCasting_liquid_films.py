@@ -54,6 +54,18 @@ from sklearn.gaussian_process.kernels \
 # Show code documentation:
 # print(__doc__)
 
+
+# PLOT CUSTOMIZATIONS:
+font = {'family' : 'DejaVu Sans',
+        'weight' : 'normal',
+        'size'   : 16}
+rc('font', **font)
+
+# transparency levels
+alpha1 = 0.5
+alpha2 = 0.9
+alpha3 = 0.5
+
 # %%
 
 # Save the whole plot and/or a zoomed area:
@@ -96,7 +108,7 @@ for LIQUID in LIQUIDS:
         # Ignore first few cells to avoid issues:
         cut = int(0.92*nx)
         # Specify until when to take data into account:
-        last_cell = int(0.4*nx)
+        last_cell = int(0.3*nx)
 
         # Construct axes:
         x = -np.mgrid[last_cell:cut]*dx
@@ -177,17 +189,6 @@ for LIQUID in LIQUIDS:
 
 
         #%% PLOTS:
-        # PLOT CUSTOMIZATIONS:
-        font = {'family' : 'serif',
-                'weight' : 'normal',
-                'size'   : 12}
-        rc('font', **font)
-
-        # transparency levels
-        alpha1 = 0.5
-        alpha2 = 0.9
-        alpha3 = 0.5
-
         plt.close()
 
         # Create the figure
@@ -226,13 +227,13 @@ for LIQUID in LIQUIDS:
         title1 = 'Start of prediction at x = {:.2f}'\
                  .format(-(last_cell)*dx)
 
-        plt.suptitle(suptitle1, fontsize=14)
+        plt.suptitle(suptitle1)
         plt.title(title1, pad = 10)
 
         plt.xlabel('domain length x, [-]')
         plt.ylabel('film height h, [-]')
         plt.tight_layout()
-        plt.legend(loc = 'upper left', fontsize=10)
+        plt.legend(loc = 'upper left')
         plt.grid(linewidth = 0.8)
         # Mark with a line the cutted data in the beginning:
         plt.axvline(x=-(cut)*dx, c='grey', ls = ':')

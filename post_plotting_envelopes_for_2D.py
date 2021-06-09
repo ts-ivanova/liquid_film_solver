@@ -31,20 +31,18 @@ import imageio
 import gc
 
 
-####################
 # PLOT CUSTOMIZATIONS:
 font = {'family' : 'DejaVu Sans',
         'weight' : 'normal',
-        'size'   : 10}
+        'size'   : 14}
 rc('font', **font)
-# plt.rcParams['xtick.labelsize'] = 8
-# plt.rcParams['ytick.labelsize'] = 8
-alpha1 = 0.8 # plots transparency
 
+# transparency level
+alpha1 = 0.9
 
 ####################
 os.chdir('RESULTS/')
-# Gather all computed configurations:
+# Gather all computed 2D configurations:
 LIQUIDS = natsorted(glob.glob('2D*'))
 
 
