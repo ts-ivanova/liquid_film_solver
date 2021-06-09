@@ -1,0 +1,600 @@
+2021-06-02 11:47:29,927 INFO     
+ Liquid type: WATER
+ surface_tension: False
+ Computing configuration
+ SOLUTIONS_n/dx0.055/PX01_LxFr_CFL0.30_dx0.055_nx1405_dz0.010_nz0100_Re319_f0.05
+ PX01_LxFr_dx0.0550_T100_dt0.017
+ lambd: 20.00
+ number of points per lambd: 727
+ domain length L: 80.00
+ Execution time: 0:14:23.145421
+2021-06-02 11:48:47,923 INFO     
+ Liquid type: WATER
+ surface_tension: False
+ Computing configuration
+ SOLUTIONS_n/dx0.055/PX01_LxWe_CFL0.30_dx0.055_nx1405_dz0.010_nz0100_Re319_f0.05
+ PX01_LxWe_dx0.0550_T100_dt0.017
+ lambd: 20.00
+ number of points per lambd: 727
+ domain length L: 80.00
+ Execution time: 0:15:14.282610
+2021-06-02 11:48:51,782 INFO     
+ Liquid type: WATER
+ surface_tension: False
+ Computing configuration
+ SOLUTIONS_n/dx0.055/PX01_BLmi_CFL0.30_dx0.055_nx1405_dz0.010_nz0100_Re319_f0.05
+ PX01_BLmi_dx0.0550_T100_dt0.017
+ lambd: 20.00
+ number of points per lambd: 727
+ domain length L: 80.00
+ Execution time: 0:15:01.918323
+2021-06-02 12:12:10,298 INFO     
+ Liquid type: WATER
+ surface_tension: False
+ Computing configuration
+ SOLUTIONS_n/dx0.028/PX01_LxFr_CFL0.30_dx0.028_nx2810_dz0.010_nz0100_Re319_f0.05
+ PX01_LxFr_dx0.0275_T100_dt0.008
+ lambd: 20.00
+ number of points per lambd: 727
+ domain length L: 80.00
+ Execution time: 0:37:18.025895
+2021-06-02 13:01:24,570 INFO     
+ Liquid type: WATER
+ surface_tension: False
+ Computing configuration
+ SOLUTIONS_n/dx0.014/PX01_LxFr_CFL0.30_dx0.014_nx5620_dz0.010_nz0100_Re319_f0.05
+ PX01_LxFr_dx0.0138_T100_dt0.004
+ lambd: 20.00
+ number of points per lambd: 727
+ domain length L: 80.00
+ Execution time: 1:26:05.993305
+2021-06-02 13:08:18,122 INFO     
+ Liquid type: WATER
+ surface_tension: False
+ Computing configuration
+ SOLUTIONS_n/dx0.055/PX01_LxFr_CFL0.30_dx0.055_nx1452_dz0.010_nz0100_Re319_f0.10
+ PX01_LxFr_dx0.0551_T090_dt0.017
+ lambd: 10.00
+ number of points per lambd: 363
+ domain length L: 80.00
+ Execution time: 0:04:51.252384
+2021-06-02 13:12:52,516 INFO     
+ Liquid type: WATER
+ surface_tension: False
+ Computing configuration
+ SOLUTIONS_n/dx0.028/PX01_LxFr_CFL0.30_dx0.028_nx1452_dz0.010_nz0100_Re319_f0.20
+ PX01_LxFr_dx0.0275_T045_dt0.008
+ lambd: 5.00
+ number of points per lambd: 363
+ domain length L: 40.00
+ Execution time: 0:09:25.646285
+2021-06-02 13:30:04,289 INFO     
+ Liquid type: WATER
+ surface_tension: False
+ Computing configuration
+ SOLUTIONS_n/dx0.055/PX01_LxFr_CFL0.30_dx0.055_nx1452_dz0.010_nz0100_Re638_f0.10
+ PX01_LxFr_dx0.0551_T090_dt0.017
+ lambd: 10.00
+ number of points per lambd: 363
+ domain length L: 80.00
+ Execution time: 0:04:42.477205
+2021-06-02 13:34:49,761 INFO     
+ Liquid type: WATER
+ surface_tension: False
+ Computing configuration
+ SOLUTIONS_n/dx0.028/PX01_LxFr_CFL0.30_dx0.028_nx1452_dz0.010_nz0100_Re638_f0.20
+ PX01_LxFr_dx0.0275_T045_dt0.008
+ lambd: 5.00
+ number of points per lambd: 363
+ domain length L: 40.00
+ Execution time: 0:09:27.949224
+2021-06-02 13:40:09,257 INFO     
+ Liquid type: WATER
+ surface_tension: False
+ Computing configuration
+ SOLUTIONS_n/dx0.055/PX01_LxFr_CFL0.30_dx0.055_nx1452_dz0.010_nz0100_Re160_f0.10
+ PX01_LxFr_dx0.0551_T090_dt0.017
+ lambd: 10.00
+ number of points per lambd: 363
+ domain length L: 80.00
+ Execution time: 0:04:30.025745
+2021-06-02 13:44:44,137 INFO     
+ Liquid type: WATER
+ surface_tension: False
+ Computing configuration
+ SOLUTIONS_n/dx0.028/PX01_LxFr_CFL0.30_dx0.028_nx1452_dz0.010_nz0100_Re160_f0.20
+ PX01_LxFr_dx0.0275_T045_dt0.008
+ lambd: 5.00
+ number of points per lambd: 363
+ domain length L: 40.00
+ Execution time: 0:09:04.906164
+2021-06-02 13:52:40,941 INFO     
+ Liquid type: ZINC
+ surface_tension: False
+ Computing configuration
+ SOLUTIONS_n/dx0.055/PX01_LxFr_CFL0.30_dx0.055_nx1452_dz0.010_nz0100_Re239_f0.10
+ PX01_LxFr_dx0.0551_T090_dt0.017
+ lambd: 10.00
+ number of points per lambd: 363
+ domain length L: 80.00
+ Execution time: 0:04:48.900511
+2021-06-02 13:57:03,895 INFO     
+ Liquid type: ZINC
+ surface_tension: False
+ Computing configuration
+ SOLUTIONS_n/dx0.028/PX01_LxFr_CFL0.30_dx0.028_nx1452_dz0.010_nz0100_Re239_f0.20
+ PX01_LxFr_dx0.0275_T045_dt0.008
+ lambd: 5.00
+ number of points per lambd: 363
+ domain length L: 40.00
+ Execution time: 0:09:11.854631
+2021-06-02 14:01:16,786 INFO     
+ Liquid type: ZINC
+ surface_tension: False
+ Computing configuration
+ SOLUTIONS_n/dx0.055/PX01_LxFr_CFL0.30_dx0.055_nx1452_dz0.010_nz0100_Re478_f0.10
+ PX01_LxFr_dx0.0551_T090_dt0.017
+ lambd: 10.00
+ number of points per lambd: 363
+ domain length L: 80.00
+ Execution time: 0:13:24.745775
+2021-06-02 14:05:33,984 INFO     
+ Liquid type: ZINC
+ surface_tension: False
+ Computing configuration
+ SOLUTIONS_n/dx0.028/PX01_LxFr_CFL0.30_dx0.028_nx1452_dz0.010_nz0100_Re478_f0.20
+ PX01_LxFr_dx0.0275_T045_dt0.008
+ lambd: 5.00
+ number of points per lambd: 363
+ domain length L: 40.00
+ Execution time: 0:17:41.943603
+2021-06-02 14:09:53,002 INFO     
+ Liquid type: ZINC
+ surface_tension: False
+ Computing configuration
+ SOLUTIONS_n/dx0.055/PX01_LxFr_CFL0.30_dx0.055_nx1452_dz0.010_nz0100_Re956_f0.10
+ PX01_LxFr_dx0.0551_T090_dt0.017
+ lambd: 10.00
+ number of points per lambd: 363
+ domain length L: 80.00
+ Execution time: 0:22:00.962184
+2021-06-02 14:14:19,866 INFO     
+ Liquid type: ZINC
+ surface_tension: False
+ Computing configuration
+ SOLUTIONS_n/dx0.028/PX01_LxFr_CFL0.30_dx0.028_nx1452_dz0.010_nz0100_Re956_f0.20
+ PX01_LxFr_dx0.0275_T045_dt0.008
+ lambd: 5.00
+ number of points per lambd: 363
+ domain length L: 40.00
+ Execution time: 0:26:27.825942
+2021-06-02 16:01:53,903 INFO     
+ Liquid type: WATER
+ surface_tension: False
+ Computing configuration
+ SOLUTIONS_n/dx0.055/PXZ2_LxFr_CFL0.30_dx0.055_nx1452_dz0.010_nz0300_Re160_f0.10
+ PXZ2_LxFr_dx0.0551_T090_dt0.017
+ lambd: 10.00
+ number of points per lambd: 363
+ domain length L: 80.00
+ Execution time: 0:15:49.248288
+2021-06-02 19:30:11,687 INFO     
+ Liquid type: WATER
+ surface_tension: False
+ Computing configuration
+ SOLUTIONS_n/dx0.055/PXZ2_LxFr_CFL0.30_dx0.055_nx2904_dz0.010_nz0300_Re160_f0.05
+ PXZ2_LxFr_dx0.0551_T180_dt0.017
+ lambd: 20.00
+ number of points per lambd: 363
+ domain length L: 160.00
+ Execution time: 0:54:37.948602
+2021-06-03 08:53:39,345 INFO     
+ Liquid type: WATER
+ surface_tension: False
+ Computing configuration
+ SOLUTIONS_n/dx0.556/PXZ2_LxFr_CFL0.30_dx0.556_nx0288_dz0.010_nz0300_Re160_f0.05
+ PXZ2_LxFr_dx0.5556_T180_dt0.167
+ lambd: 20.00
+ number of points per lambd: 36
+ domain length L: 160.00
+ Execution time: 0:00:09.801671
+2021-06-03 09:54:32,245 INFO     
+ Liquid type: WATER
+ surface_tension: False
+ Computing configuration
+ SOLUTIONS_n/dx0.055/PXZ2_LxFr_CFL0.30_dx0.055_nx2904_dz0.010_nz0300_Re319_f0.05
+ PXZ2_LxFr_dx0.0551_T180_dt0.017
+ lambd: 20.00
+ number of points per lambd: 363
+ domain length L: 160.00
+ Execution time: 0:24:08.095372
+2021-06-03 10:18:22,668 INFO     
+ Liquid type: WATER
+ surface_tension: False
+ Computing configuration
+ SOLUTIONS_n/dx0.028/PXZ2_LxFr_CFL0.30_dx0.028_nx2904_dz0.010_nz0300_Re319_f0.10
+ PXZ2_LxFr_dx0.0275_T090_dt0.008
+ lambd: 10.00
+ number of points per lambd: 363
+ domain length L: 80.00
+ Execution time: 0:47:58.519375
+2021-06-03 10:47:19,193 INFO     
+ Liquid type: WATER
+ surface_tension: False
+ Computing configuration
+ SOLUTIONS_n/dx0.014/PXZ2_LxFr_CFL0.30_dx0.014_nx2904_dz0.010_nz0300_Re319_f0.20
+ PXZ2_LxFr_dx0.0138_T045_dt0.004
+ lambd: 5.00
+ number of points per lambd: 363
+ domain length L: 40.00
+ Execution time: 1:16:55.044454
+2021-06-03 11:18:48,607 INFO     
+ Liquid type: WATER
+ surface_tension: False
+ Computing configuration
+ SOLUTIONS_n/dx0.055/PXZ2_LxFr_CFL0.30_dx0.055_nx2904_dz0.010_nz0300_Re638_f0.05
+ PXZ2_LxFr_dx0.0551_T180_dt0.017
+ lambd: 20.00
+ number of points per lambd: 363
+ domain length L: 160.00
+ Execution time: 1:48:24.458193
+2021-06-03 11:48:18,164 INFO     
+ Liquid type: WATER
+ surface_tension: False
+ Computing configuration
+ SOLUTIONS_n/dx0.028/PXZ2_LxFr_CFL0.30_dx0.028_nx2904_dz0.010_nz0300_Re638_f0.10
+ PXZ2_LxFr_dx0.0275_T090_dt0.008
+ lambd: 10.00
+ number of points per lambd: 363
+ domain length L: 80.00
+ Execution time: 2:17:54.015259
+2021-06-03 12:20:13,503 INFO     
+ Liquid type: WATER
+ surface_tension: False
+ Computing configuration
+ SOLUTIONS_n/dx0.014/PXZ2_LxFr_CFL0.30_dx0.014_nx2904_dz0.010_nz0300_Re638_f0.20
+ PXZ2_LxFr_dx0.0138_T045_dt0.004
+ lambd: 5.00
+ number of points per lambd: 363
+ domain length L: 40.00
+ Execution time: 2:49:49.354895
+2021-06-03 12:51:03,180 INFO     
+ Liquid type: ZINC
+ surface_tension: False
+ Computing configuration
+ SOLUTIONS_n/dx0.055/PXZ2_LxFr_CFL0.30_dx0.055_nx2904_dz0.010_nz0300_Re478_f0.05
+ PXZ2_LxFr_dx0.0551_T180_dt0.017
+ lambd: 20.00
+ number of points per lambd: 363
+ domain length L: 160.00
+ Execution time: 3:20:39.031464
+2021-06-03 14:02:37,515 INFO     
+ Liquid type: WATER
+ surface_tension: False
+ Computing configuration
+ SOLUTIONS_n/dx0.055/PXZ2_BLmi_CFL0.30_dx0.055_nx2904_dz0.010_nz0300_Re319_f0.05
+ PXZ2_BLmi_dx0.0551_T180_dt0.017
+ lambd: 20.00
+ number of points per lambd: 363
+ domain length L: 160.00
+ Execution time: 0:24:45.394602
+2021-06-03 14:26:38,523 INFO     
+ Liquid type: WATER
+ surface_tension: False
+ Computing configuration
+ SOLUTIONS_n/dx0.028/PXZ2_BLmi_CFL0.30_dx0.028_nx2904_dz0.010_nz0300_Re319_f0.10
+ PXZ2_BLmi_dx0.0275_T090_dt0.008
+ lambd: 10.00
+ number of points per lambd: 363
+ domain length L: 80.00
+ Execution time: 0:48:46.403888
+2021-06-03 14:50:05,567 INFO     
+ Liquid type: WATER
+ surface_tension: False
+ Computing configuration
+ SOLUTIONS_n/dx0.014/PXZ2_BLmi_CFL0.30_dx0.014_nx2904_dz0.010_nz0300_Re319_f0.20
+ PXZ2_BLmi_dx0.0138_T045_dt0.004
+ lambd: 5.00
+ number of points per lambd: 363
+ domain length L: 40.00
+ Execution time: 1:12:13.447251
+2021-06-03 15:15:46,464 INFO     
+ Liquid type: WATER
+ surface_tension: False
+ Computing configuration
+ SOLUTIONS_n/dx0.055/PXZ2_BLmi_CFL0.30_dx0.055_nx2904_dz0.010_nz0300_Re638_f0.05
+ PXZ2_BLmi_dx0.0551_T180_dt0.017
+ lambd: 20.00
+ number of points per lambd: 363
+ domain length L: 160.00
+ Execution time: 0:25:40.828644
+2021-06-03 15:39:15,589 INFO     
+ Liquid type: WATER
+ surface_tension: False
+ Computing configuration
+ SOLUTIONS_n/dx0.028/PXZ2_BLmi_CFL0.30_dx0.028_nx2904_dz0.010_nz0300_Re638_f0.10
+ PXZ2_BLmi_dx0.0275_T090_dt0.008
+ lambd: 10.00
+ number of points per lambd: 363
+ domain length L: 80.00
+ Execution time: 0:49:09.952886
+2021-06-03 16:04:56,620 INFO     
+ Liquid type: WATER
+ surface_tension: False
+ Computing configuration
+ SOLUTIONS_n/dx0.014/PXZ2_BLmi_CFL0.30_dx0.014_nx2904_dz0.010_nz0300_Re638_f0.20
+ PXZ2_BLmi_dx0.0138_T045_dt0.004
+ lambd: 5.00
+ number of points per lambd: 363
+ domain length L: 40.00
+ Execution time: 1:14:50.984587
+2021-06-03 16:28:22,074 INFO     
+ Liquid type: ZINC
+ surface_tension: False
+ Computing configuration
+ SOLUTIONS_n/dx0.055/PXZ2_BLmi_CFL0.30_dx0.055_nx2904_dz0.010_nz0300_Re478_f0.05
+ PXZ2_BLmi_dx0.0551_T180_dt0.017
+ lambd: 20.00
+ number of points per lambd: 363
+ domain length L: 160.00
+ Execution time: 0:23:25.382022
+2021-06-03 16:54:13,383 INFO     
+ Liquid type: ZINC
+ surface_tension: False
+ Computing configuration
+ SOLUTIONS_n/dx0.028/PXZ2_BLmi_CFL0.30_dx0.028_nx2904_dz0.010_nz0300_Re478_f0.10
+ PXZ2_BLmi_dx0.0275_T090_dt0.008
+ lambd: 10.00
+ number of points per lambd: 363
+ domain length L: 80.00
+ Execution time: 0:49:16.691257
+2021-06-03 17:18:13,632 INFO     
+ Liquid type: ZINC
+ surface_tension: False
+ Computing configuration
+ SOLUTIONS_n/dx0.014/PXZ2_BLmi_CFL0.30_dx0.014_nx2904_dz0.010_nz0300_Re478_f0.20
+ PXZ2_BLmi_dx0.0138_T045_dt0.004
+ lambd: 5.00
+ number of points per lambd: 363
+ domain length L: 40.00
+ Execution time: 1:13:16.939751
+2021-06-03 17:43:07,856 INFO     
+ Liquid type: ZINC
+ surface_tension: False
+ Computing configuration
+ SOLUTIONS_n/dx0.055/PXZ2_BLmi_CFL0.30_dx0.055_nx2904_dz0.010_nz0300_Re956_f0.05
+ PXZ2_BLmi_dx0.0551_T180_dt0.017
+ lambd: 20.00
+ number of points per lambd: 363
+ domain length L: 160.00
+ Execution time: 0:24:54.156346
+2021-06-03 18:07:53,351 INFO     
+ Liquid type: ZINC
+ surface_tension: False
+ Computing configuration
+ SOLUTIONS_n/dx0.028/PXZ2_BLmi_CFL0.30_dx0.028_nx2904_dz0.010_nz0300_Re956_f0.10
+ PXZ2_BLmi_dx0.0275_T090_dt0.008
+ lambd: 10.00
+ number of points per lambd: 363
+ domain length L: 80.00
+ Execution time: 0:49:39.650620
+2021-06-03 18:31:45,963 INFO     
+ Liquid type: ZINC
+ surface_tension: False
+ Computing configuration
+ SOLUTIONS_n/dx0.014/PXZ2_BLmi_CFL0.30_dx0.014_nx2904_dz0.010_nz0300_Re956_f0.20
+ PXZ2_BLmi_dx0.0138_T045_dt0.004
+ lambd: 5.00
+ number of points per lambd: 363
+ domain length L: 40.00
+ Execution time: 1:13:32.262941
+2021-06-03 23:17:59,237 INFO     
+ Liquid type: WATER
+ surface_tension: True
+ Computing configuration
+ SOLUTIONS_n/dx0.278/PXZ2_BLmi_CFL0.10_dx0.2778_nx0288_dz0.010_nz0300_Re319_f0.10
+ PXZ2_BLmi_dx0.2778_T090_dt0.028
+ lambd: 10.00
+ number of points per lambd: 36
+ domain length L: 80.00
+ Execution time: 1:01:26.500783
+2021-06-04 00:18:48,223 INFO     
+ Liquid type: WATER
+ surface_tension: True
+ Computing configuration
+ SOLUTIONS_n/dx0.139/PXZ2_BLmi_CFL0.10_dx0.1389_nx0288_dz0.010_nz0300_Re319_f0.20
+ PXZ2_BLmi_dx0.1389_T045_dt0.014
+ lambd: 5.00
+ number of points per lambd: 36
+ domain length L: 40.00
+ Execution time: 2:02:15.487478
+2021-06-04 01:19:33,280 INFO     
+ Liquid type: WATER
+ surface_tension: True
+ Computing configuration
+ SOLUTIONS_n/dx0.278/PXZ2_BLmi_CFL0.10_dx0.2778_nx0288_dz0.010_nz0300_Re638_f0.10
+ PXZ2_BLmi_dx0.2778_T090_dt0.028
+ lambd: 10.00
+ number of points per lambd: 36
+ domain length L: 80.00
+ Execution time: 1:00:45.000789
+2021-06-04 02:20:15,885 INFO     
+ Liquid type: WATER
+ surface_tension: True
+ Computing configuration
+ SOLUTIONS_n/dx0.139/PXZ2_BLmi_CFL0.10_dx0.1389_nx0288_dz0.010_nz0300_Re638_f0.20
+ PXZ2_BLmi_dx0.1389_T045_dt0.014
+ lambd: 5.00
+ number of points per lambd: 36
+ domain length L: 40.00
+ Execution time: 2:01:27.605445
+2021-06-04 05:00:16,452 INFO     
+ Liquid type: WATER
+ surface_tension: True
+ Computing configuration
+ SOLUTIONS_n/dx0.083/PXZ2_BLmi_CFL0.10_dx0.0826_nx0968_dz0.010_nz0300_Re319_f0.10
+ PXZ2_BLmi_dx0.0826_T090_dt0.008
+ lambd: 10.00
+ number of points per lambd: 121
+ domain length L: 80.00
+ Execution time: 6:47:35.828218
+2021-06-04 15:51:34,710 INFO     
+ Liquid type: WATER
+ surface_tension: True
+ Computing configuration
+ SOLUTIONS_n/dx0.278/PXZ1_BLmi_CFL0.10_dx0.2778_nx0288_dz0.033_nz0090_Re319_f0.10
+ PXZ1_BLmi_dx0.2778_T090_dt0.028
+ lambd: 10.00
+ number of points per lambd: 36
+ domain length L: 80.00
+ Execution time: 0:24:00.408670
+2021-06-04 16:22:28,443 INFO     
+ Liquid type: WATER
+ surface_tension: True
+ Computing configuration
+ SOLUTIONS_n/dx0.139/PXZ1_BLmi_CFL0.10_dx0.1389_nx0288_dz0.033_nz0090_Re319_f0.20
+ PXZ1_BLmi_dx0.1389_T045_dt0.014
+ lambd: 5.00
+ number of points per lambd: 36
+ domain length L: 40.00
+ Execution time: 0:30:53.666324
+2021-06-04 19:19:49,160 INFO     
+ Liquid type: WATER
+ surface_tension: True
+ Computing configuration
+ SOLUTIONS_n/dx0.278/PXZ1_BLmi_CFL0.10_dx0.2778_nx0288_dz0.033_nz0090_Re319_f0.10
+ PXZ1_BLmi_dx0.2778_T090_dt0.028
+ lambd: 10.00
+ number of points per lambd: 36
+ domain length L: 80.00
+ Execution time: 0:21:42.246430
+2021-06-04 19:39:05,706 INFO     
+ Liquid type: WATER
+ surface_tension: True
+ Computing configuration
+ SOLUTIONS_n/dx0.139/PXZ1_BLmi_CFL0.10_dx0.1389_nx0288_dz0.033_nz0090_Re319_f0.20
+ PXZ1_BLmi_dx0.1389_T045_dt0.014
+ lambd: 5.00
+ number of points per lambd: 36
+ domain length L: 40.00
+ Execution time: 0:19:16.502720
+2021-06-04 19:59:32,321 INFO     
+ Liquid type: WATER
+ surface_tension: True
+ Computing configuration
+ SOLUTIONS_n/dx0.278/PXZ1_BLmi_CFL0.10_dx0.2778_nx0288_dz0.033_nz0090_Re638_f0.10
+ PXZ1_BLmi_dx0.2778_T090_dt0.028
+ lambd: 10.00
+ number of points per lambd: 36
+ domain length L: 80.00
+ Execution time: 0:20:26.571185
+2021-06-04 20:19:09,409 INFO     
+ Liquid type: WATER
+ surface_tension: True
+ Computing configuration
+ SOLUTIONS_n/dx0.139/PXZ1_BLmi_CFL0.10_dx0.1389_nx0288_dz0.033_nz0090_Re638_f0.20
+ PXZ1_BLmi_dx0.1389_T045_dt0.014
+ lambd: 5.00
+ number of points per lambd: 36
+ domain length L: 40.00
+ Execution time: 0:19:37.039971
+2021-06-05 18:21:37,479 INFO     
+ Liquid type: WATER
+ surface_tension: False
+ Computing configuration
+ SOLUTIONS_n/dx0.028/PXZ1_BLmi_CFL0.30_dx0.0275_nx2904_dz0.010_nz0300_Re319_f0.10
+ PXZ1_BLmi_dx0.0275_T090_dt0.008
+ lambd: 10.00
+ number of points per lambd: 363
+ domain length L: 80.00
+ Execution time: 1:00:04.799470
+2021-06-05 19:25:43,143 INFO     
+ Liquid type: WATER
+ surface_tension: False
+ Computing configuration
+ SOLUTIONS_n/dx0.014/PXZ1_BLmi_CFL0.30_dx0.0138_nx2904_dz0.010_nz0300_Re319_f0.20
+ PXZ1_BLmi_dx0.0138_T045_dt0.004
+ lambd: 5.00
+ number of points per lambd: 363
+ domain length L: 40.00
+ Execution time: 1:04:05.599163
+2021-06-05 23:50:59,834 INFO     
+ Liquid type: WATER
+ surface_tension: False
+ Computing configuration
+ SOLUTIONS_n/dx0.055/PXZ1_LxWe_CFL0.30_dx0.0551_nx2904_dz0.010_nz0300_Re319_f0.05
+ PXZ1_LxWe_dx0.0551_T180_dt0.017
+ lambd: 20.00
+ number of points per lambd: 363
+ domain length L: 160.00
+ Execution time: 0:57:29.644930
+2021-06-06 09:08:31,997 INFO     
+ Liquid type: WATER
+ surface_tension: False
+ Computing configuration
+ SOLUTIONS_n/dx0.556/PXZ1_LxWe_CFL0.30_dx0.5556_nx0288_dz0.033_nz0090_Re319_f0.05
+ PXZ1_LxWe_dx0.5556_T180_dt0.167
+ lambd: 20.00
+ number of points per lambd: 36
+ domain length L: 160.00
+ Execution time: 0:00:15.829058
+2021-06-06 09:26:19,328 INFO     
+ Liquid type: WATER
+ surface_tension: False
+ Computing configuration
+ SOLUTIONS_n/dx0.556/PXZ1_LWen_CFL0.30_dx0.5556_nx0288_dz0.033_nz0090_Re319_f0.05
+ PXZ1_LWen_dx0.5556_T180_dt0.167
+ lambd: 20.00
+ number of points per lambd: 36
+ domain length L: 160.00
+ Execution time: 0:00:23.913941
+ h.max() = 0.2513
+ h.min() = 0.1394
+2021-06-06 09:27:44,772 INFO     
+ Liquid type: WATER
+ surface_tension: False
+ Computing configuration
+ SOLUTIONS_n/dx0.556/PXZ1_LWen_CFL0.30_dx0.5556_nx0288_dz0.033_nz0090_Re319_f0.05
+ PXZ1_LWen_dx0.5556_T180_dt0.167
+ lambd: 20.00
+ number of points per lambd: 36
+ domain length L: 160.00
+ Execution time: 0:00:20.774433
+ h.max() = 0.2513
+ h.min() = 0.1394
+2021-06-06 15:50:34,775 INFO     
+ Liquid type: WATER
+ surface_tension: False
+ Computing configuration
+ SOLUTIONS_n/dx0.278/PX01_BLmi_CFL0.30_dx0.2778_nx0288_dz0.010_nz0100_Re319_f0.10
+ PX01_BLmi_dx0.2778_T090_dt0.083
+ lambd: 10.00
+ number of points per lambd: 36
+ domain length L: 80.00
+ Execution time: 0:00:18.507757
+ h.max() = 0.2457
+ h.min() = 0.1625
+2021-06-06 15:50:56,357 INFO     
+ Liquid type: WATER
+ surface_tension: False
+ Computing configuration
+ SOLUTIONS_n/dx0.139/PX01_BLmi_CFL0.30_dx0.1389_nx0288_dz0.010_nz0100_Re319_f0.20
+ PX01_BLmi_dx0.1389_T045_dt0.042
+ lambd: 5.00
+ number of points per lambd: 36
+ domain length L: 40.00
+ Execution time: 0:00:21.548101
+ h.max() = 0.2692
+ h.min() = 0.1590
+2021-06-06 16:14:48,698 INFO     
+ Liquid type: WATER
+ surface_tension: True
+ Computing configuration
+ SOLUTIONS_n/dx0.278/PX01_BLmi_CFL0.10_dx0.2778_nx0288_dz0.010_nz0100_Re319_f0.10
+ PX01_BLmi_dx0.2778_T090_dt0.028
+ lambd: 10.00
+ number of points per lambd: 36
+ domain length L: 80.00
+ Execution time: 0:23:48.974188
+ h.max() = 0.2449
+ h.min() = 0.1620
