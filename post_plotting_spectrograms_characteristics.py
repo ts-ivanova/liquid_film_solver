@@ -31,6 +31,12 @@ import glob
 from pathlib import Path
 
 
+# PLOT CUSTOMIZATIONS:
+font = {'family' : 'DejaVu Sans',
+        'weight' : 'normal',
+        'size'   : 16}
+rc('font', **font)
+
 
 ####################
 os.chdir('RESULTS/')

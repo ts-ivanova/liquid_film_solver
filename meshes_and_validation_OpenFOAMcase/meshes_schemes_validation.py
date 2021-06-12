@@ -30,7 +30,7 @@ plt.close()
 font = {'family'    : 'DejaVu Sans', #'monospace'
         # 'monospace' : 'Droid Sans Mono',
         'weight'    : 'normal',
-        'size'      : 10}
+        'size'      : 14}
 matplotlib.rc('font', **font)
 
 # DATA FOLDERS:
@@ -51,7 +51,7 @@ types  = ['-.','--',':','']
 
 for j in range(len(titles)):
     # plots properties
-    plt.figure()
+    plt.figure(figsize=(12,4))
     plt.suptitle(titles[j])
     plt.xlabel(xlabel1)
     plt.ylabel(ylabel1)
@@ -99,15 +99,16 @@ for j in range(len(titles)):
                  linewidth = 2.2,
                  color = colors[i],
                  label = names[i][7:11] \
-                 + ' dx = {:.3f}'.format(dx),
+                 + ' dx = {:.4f}'.format(dx),
                  alpha = alpha1)
 
     plt.grid()
-    plt.legend(loc='lower right',
-               fontsize=8,
+    plt.legend(loc='upper left',
+               fontsize=12,
                numpoints=4,
                handlelength=4,
                markerscale=0.6)
+    plt.tight_layout()
     plt.savefig('PLOTS' + os.sep + FOLDERS[j] + '.png',
                 format='png', dpi=400)
 
@@ -129,8 +130,8 @@ for j in range(len(titles)):
              label = 'OpenFOAM case',
              alpha = alpha1)
 
-    plt.legend(loc='lower right',
-               fontsize=8,
+    plt.legend(loc='upper left',
+               fontsize=12,
                numpoints=4,
                handlelength=4,
                markerscale=0.6)

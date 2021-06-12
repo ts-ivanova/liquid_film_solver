@@ -35,7 +35,7 @@ from Functions_Miguel import filt_X
 # PLOT CUSTOMIZATIONS:
 font = {'family' : 'DejaVu Sans',
         'weight' : 'normal',
-        'size'   : 14}
+        'size'   : 16}
 rc('font', **font)
 
 

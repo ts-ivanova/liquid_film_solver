@@ -40,7 +40,7 @@ from sklearn.gaussian_process.kernels \
 # PLOT CUSTOMIZATIONS:
 font = {'family' : 'DejaVu Sans',
         'weight' : 'normal',
-        'size'   : 16}
+        'size'   : 18}
 rc('font', **font)
 
 # transparency levels
@@ -251,7 +251,7 @@ for i in range(len(option_list)):
     for j in range(len(zoom_list)):
         zoom = zoom_list[j]
         if zoom == True:
-            plt.xlim(900, 1500)
+            plt.xlim(950, 1450)
             plt.savefig('TS_plots_dats/predict-' \
                         + str(int(predict_cells)) \
                         + '-cells-' + name[0] \
@@ -260,4 +260,4 @@ for i in range(len(option_list)):
                         , format = 'png'
                         , dpi = 400
                         , bbox_inches = 'tight')
-    plt.show()
+    # plt.show()

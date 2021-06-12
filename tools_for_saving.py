@@ -25,6 +25,7 @@ import gc
 def create_directories(surface_tension,
                        liquids_key, conf_key,
                        scheme_choice,
+                       h0,
                        dx, nx, dz, nz,
                        CFL, dt, final_time,
                        Re, freq):
@@ -33,12 +34,12 @@ def create_directories(surface_tension,
     # directories exists. If not, create them.
 
     if surface_tension:
-        all_st = "_with_surface_tension"
+        all_st = "_with_surface_tension_" + str(h0)
         Path(liquids_key + all_st)\
             .mkdir(parents=True, exist_ok=True)
         os.chdir(liquids_key + all_st)
     else:
-        no_st = "_without_surface_tension"
+        no_st = "_without_surface_tension_" + str(h0)
         Path(liquids_key + no_st)\
             .mkdir(parents=True, exist_ok=True)
         os.chdir(liquids_key + no_st)

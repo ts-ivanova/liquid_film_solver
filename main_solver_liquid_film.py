@@ -82,8 +82,8 @@ liquid_list = [
 
 # Selection of the configuration:
 configurations = [
-                  conf['PX01']#, # OpenFOAM JFM case
-                  # conf['PXZ1']#,
+                  # conf['PX01']#, # OpenFOAM JFM case
+                  conf['PXZ1']#,
                   # conf['PXZ2']
                   ]
 
@@ -94,7 +94,7 @@ scheme = schemes['LWFble']
 
 # Specify whether to include surface tension
 # terms in the sources (the third derivatives):
-surface_tension = True
+surface_tension = False
 
 
 # dimensionless substrate velocity:
@@ -106,6 +106,7 @@ output_interval = 1.0
 
 # initial height:
 h0 = 0.2 # [-]
+# h0 = 0.1 # [-]
 
 # Run for all liquid types:
 for liquid in liquid_list:
@@ -115,6 +116,7 @@ for liquid in liquid_list:
         Epsilon = 0.23918 # Long-wave parameter, [-]
         Re_list = [319] # Re number in OpenFOAM JFM
         # Re_list = [319, 2*319]
+        # Re_list = [319*6] # to emphasize nonlinearities
     elif liquid == liquids['ZINC']:
         # Set liquid ZINC parameters from JFM:
         Epsilon = 0.15460 # Long-wave parameter, [-]
@@ -154,9 +156,9 @@ for liquid in liquid_list:
                 frequencies = [0.05] # [-] as in 2D JFM
 
             if scheme == schemes['LWFble']:
-                scheme_choice = 'LxFr'
+                # scheme_choice = 'LxFr'
                 # scheme_choice = 'LxWe'
-                # scheme_choice = 'BLmi'
+                scheme_choice = 'BLmi'
             else:
                 scheme_choice = \
                 list(schemes.keys())[scheme][:4]
@@ -180,7 +182,7 @@ for liquid in liquid_list:
                 freq_JFM = 0.05
                 # Minimum npoin is around 363 for which
                 # the numerical dissipation is negligible:
-                npoin = int((U_substr/freq_JFM)/(0.0275*2*10))
+                npoin = int((U_substr/freq_JFM)/(0.0275*2))
                 dx    = (lambd/(npoin))*factor
                 L     = 8*lambd
                 nx    = int(L/dx)
@@ -248,6 +250,7 @@ for liquid in liquid_list:
                                             liquids_key,
                                             conf_key,
                                             scheme_choice,
+                                            h0,
                                             dx, nx, dz, nz,
                                             CFL, dt, final_time,
                                             Re, freq)
@@ -397,7 +400,7 @@ for liquid in liquid_list:
                                       *np.sin((2*np.pi\
                                                    /lambd_z)\
                                                   *z)\
-                                      *np.ones((nz,)))
+                                      *np.ones((nz,)))\
                                       # *np.exp(-(z-1.5)**2\
                                       #         /(2*(0.4)**2))\
                                       # /(0.4*np.sqrt(2*math.pi)))

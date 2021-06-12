@@ -29,13 +29,14 @@ import tools_for_plotting as save_plots
 os.chdir('RESULTS/')
 
 # Gather all computed configurations:
-LIQUIDS = natsorted(glob.glob('2D*')) + natsorted(glob.glob('3D*'))
+# LIQUIDS = natsorted(glob.glob('2D*')) + natsorted(glob.glob('3D*'))
+LIQUIDS = natsorted(glob.glob('*'))
 
 # Choose which plots to produce:
-Surfaces = False   # liquid film height surfaces h
-Contourfs = True  # contour plot of the last computed time step of h
-Filtered = False    # filtered third derivatives contourplots
-                   # and comparisons
+Surfaces  = False     # liquid film height surfaces h
+Contourfs = True    # contour plot of the last computed time step of h
+Filtered  = False    # filtered third derivatives contourplots
+                     # and comparisons
 
 if Filtered:
     LIQUIDS = ['3D_WATER_with_surface_tension_coarse_XZ2/',
