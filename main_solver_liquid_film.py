@@ -69,7 +69,7 @@ limiters = [
             'BLhc',  # HCUS
             'BLhq',  # HQUICK
             'BLko',  # Koren
-            'BLvl',  # van Leer
+            'BLvl'  # van Leer
             ]
 
 ##############################
@@ -107,7 +107,7 @@ output_interval = 1.0
 
 # initial height:
 h0 = 0.2 # [-]
-# h0 = 0.1 # [-] for higher Re numbers
+# h0 = 0.1 # [-] can be used for higher Re numbers
 
 # Run for all liquid types:
 for liquid in liquid_list:
@@ -117,7 +117,6 @@ for liquid in liquid_list:
         Epsilon = 0.23918 # Long-wave parameter, [-]
         Re_list = [319] # Re number in OpenFOAM JFM
         # Re_list = [319, 2*319]
-        # Re_list = [319*6] # to emphasize nonlinearities
     elif liquid == liquids['ZINC']:
         # Set liquid ZINC parameters from JFM:
         Epsilon = 0.15460 # Long-wave parameter, [-]
@@ -159,8 +158,8 @@ for liquid in liquid_list:
                 else:
                     CFL = 0.3
                 # frequencies = [0.05, 0.1, 0.2]
-                frequencies = [0.1]#, 0.2]
-                # frequencies = [0.05] # [-] as in 2D JFM
+                # frequencies = [0.1]
+                frequencies = [0.05] # [-] as in 2D JFM
                 if configuration == conf['PXZ1']:
                     A = 0.2 # amplitude for the flow rate perturbations
                 elif configuration == conf['PXZ2']:
@@ -173,7 +172,7 @@ for liquid in liquid_list:
                 scheme_choice = 'BLmi'
             else:
                 scheme_choice = \
-                list(schemes.keys())[scheme][:4]
+                    list(schemes.keys())[scheme][:4]
 
             # run for all frequencies:
             for freq in frequencies:
@@ -199,7 +198,7 @@ for liquid in liquid_list:
                 # therefore for now a working option is of the order of
                 # 30-40 points per wavelength:
                 if surface_tension:
-                    npoin = int((U_substr/freq_JFM)/(0.0275*20))
+                    npoin = int((U_substr/freq_JFM)/(0.0275*2*10))
 
                 # Otherwise without surface tension,
                 # the minimum npoin is around 363 for which
@@ -233,8 +232,7 @@ for liquid in liquid_list:
                 else: # Perturbations along x and along z.
                     # wavelength lambd_z [-] along z
                     lambd_z = 1
-                    # dz      = lambd_z/100
-                    dz      = lambd_z/30
+                    dz      = lambd_z/100
                     nz      = int(lambd_z/dz)*3
 
                 ##############################
@@ -252,8 +250,6 @@ for liquid in liquid_list:
 
                 # Initialize h, qx, qz:
                 h = h0*np.ones((nx,nz), dtype='float32')
-                # h = \
-                # np.load('BLminmo_h_dx0.200_dt0.020_n02900.npy')
                 # Initial values for the flow rates
                 # Quasi-steady state:
                 qx = (1/3)*h**3-h
@@ -428,9 +424,10 @@ for liquid in liquid_list:
                                                    /lambd_z)\
                                                   *z)\
                                       *np.ones((nz,))\
-                                      *np.exp(-(z-z.mean())**2\
-                                              /(2*(0.4)**2))\
-                                      /(0.4*np.sqrt(2*math.pi)))
+                                      # *np.exp(-(z-z.mean())**2\
+                                      #         /(2*(0.4)**2))\
+                                      # /(0.4*np.sqrt(2*math.pi))
+                                      )
 
                         # Set qz to zeros at the inlet:
                         qz[-1,:] = np.zeros(nz)
@@ -470,19 +467,23 @@ for liquid in liquid_list:
                         # Save to .dat files a slice
                         # of the wave along x:
                         save_data.save_to_dat(h, qx, qz,
-                                         nx, nz,
-                                         directory_n,
-                                         filename,
-                                         n)
+                                              nx, nz,
+                                              directory_n,
+                                              filename,
+                                              n)
                         # Save the whole height
                         # as a matrix:
                         save_data.save_matrix(h, directory_n,
-                                         filename,
-                                         n)
+                                              filename,
+                                              n)
                         # Save the np solutions:
                         save_data.save_np(h, directory_n,
-                                     filename,
-                                     n)
+                                          filename,
+                                          n)
+
+                        gc.collect()
+
+                    if n%1000 < 0.0001:
                         # Save .png's:
                         save_plots.plot_surfaces(h, X, Z, n,
                                                  h0,
@@ -490,10 +491,7 @@ for liquid in liquid_list:
                                                  filename,
                                                  conf_key)
 
-                        gc.collect()
-
-                    if n%1000 < 0.0001:
-                        # remind me what I've been doing
+                        # Remind me what I've been doing
                         # in the terminal:
                         print("\n Reminder:" + "\n" + info)
                         # Monitor the behaviour of the limiters
@@ -511,7 +509,7 @@ for liquid in liquid_list:
                             print('hzzz', hzzz)
                             print('hxzz', hxzz)
                             print('hzxx', hzxx)
-
+                        gc.collect()
 
                 #%%
                 ##############################
