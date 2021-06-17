@@ -41,6 +41,7 @@ rc('font', **font)
 
 #################################################
 def plot_surfaces(h, X, Z, n,
+                  h0,
                   directory,
                   filename,
                   conf_key):
@@ -49,12 +50,20 @@ def plot_surfaces(h, X, Z, n,
     as a surface in (x,z)
     '''
     plt.close()
+    font = {'family' : 'DejaVu Sans',
+            'weight' : 'normal',
+            'size'   : 12}
+    rc('font', **font)
 
     plt.rcParams['xtick.labelsize'] = 8
     plt.rcParams['ytick.labelsize'] = 8
 
-    h_max = 0.3
-    h_min = 0.1
+    if h0 == 0.1:
+        h_max = 0.2
+        h_min = 0.0
+    else:
+        h_max = 0.3
+        h_min = 0.1
 
     fig = plt.figure()
     ax = fig.add_subplot(111, projection= '3d')
@@ -108,8 +117,14 @@ def plot_contourfs(h, X, Z,
                    n,
                    directory,
                    filename):
+    # if h0 = 0.2:
     h_min = 0.17
     h_max = 0.23
+
+    # if h0 = 0.1:
+    # h_min = 0.07
+    # h_max = 0.13
+    
     fig = plt.figure(figsize = (12,4))
     plt.plot()
     contourplot = plt.contourf(-X, Z, h,

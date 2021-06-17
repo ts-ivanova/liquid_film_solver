@@ -83,8 +83,8 @@ liquid_list = [
 # Selection of the configuration:
 configurations = [
                   # conf['PX01']#, # OpenFOAM JFM case
-                  conf['PXZ1']#,
-                  # conf['PXZ2']
+                  # conf['PXZ1']#,
+                  conf['PXZ2']
                   ]
 
 # Choice of scheme:
@@ -106,7 +106,7 @@ output_interval = 1.0
 
 # initial height:
 h0 = 0.2 # [-]
-# h0 = 0.1 # [-]
+# h0 = 0.1 # [-] for higher Re numbers
 
 # Run for all liquid types:
 for liquid in liquid_list:
@@ -136,10 +136,8 @@ for liquid in liquid_list:
             if configuration == conf['PX01']:
                 # CFL number is defined as u*dt/dx
                 # from which dt is evaluated below.
-
-                CFL = 0.1
-                # surface_tension = False
-
+                surface_tension = False
+                CFL = 0.3
                 # OpenFOAM case in JFM
                 frequencies = [0.05] # [-] as in 2D JFM
                 # frequencies = [0.1, 0.2]
@@ -152,8 +150,8 @@ for liquid in liquid_list:
                 else:
                     CFL = 0.3
                 # frequencies = [0.05, 0.1, 0.2]
-                # frequencies = [0.1, 0.2]
-                frequencies = [0.05] # [-] as in 2D JFM
+                frequencies = [0.1]#, 0.2]
+                # frequencies = [0.05] # [-] as in 2D JFM
 
             if scheme == schemes['LWFble']:
                 # scheme_choice = 'LxFr'
@@ -180,9 +178,21 @@ for liquid in liquid_list:
                 lambd    = U_substr/freq
                 factor   = 1
                 freq_JFM = 0.05
-                # Minimum npoin is around 363 for which
-                # the numerical dissipation is negligible:
-                npoin = int((U_substr/freq_JFM)/(0.0275*2))
+
+                # Currently the presence of surface tension terms
+                # causes issues when the cell size is too small,
+                # therefore for now a working option is of the order of
+                # 30-40 points per wavelength:
+                if surface_tension:
+                    npoin = int((U_substr/freq_JFM)/(0.0275*20))
+
+                # Otherwise without surface tension,
+                # the minimum npoin is around 363 for which
+                # the numerical dissipation is negligible,
+                # as confirmed with the validation test case:
+                else:
+                    npoin = int((U_substr/freq_JFM)/(0.0275*2))
+
                 dx    = (lambd/(npoin))*factor
                 L     = 8*lambd
                 nx    = int(L/dx)
@@ -201,6 +211,7 @@ for liquid in liquid_list:
                     nx = int(2810/factor)
                     final_time = int((L+lambd)/U_substr)
 
+                    # z-dimension:
                     dz = 1e-2
                     nz = 100
 
@@ -364,7 +375,7 @@ for liquid in liquid_list:
 
                     # Perturbation along x of qx:
                     if configuration == conf['PX01']:
-                        # as in 2D JFM
+                        # as in 2D JFM:
                         qA = 0.2 # [-], amplitude
                         # BOTTOM BOUNDARY (INLET):
                         # BCs at inlet: Dirichlet conditions
@@ -400,10 +411,10 @@ for liquid in liquid_list:
                                       *np.sin((2*np.pi\
                                                    /lambd_z)\
                                                   *z)\
-                                      *np.ones((nz,)))\
-                                      # *np.exp(-(z-1.5)**2\
-                                      #         /(2*(0.4)**2))\
-                                      # /(0.4*np.sqrt(2*math.pi)))
+                                      *np.ones((nz,))\
+                                      *np.exp(-(z-z.mean())**2\
+                                              /(2*(0.4)**2))\
+                                      /(0.4*np.sqrt(2*math.pi)))
 
                         # Set qz to zeros at the inlet:
                         qz[-1,:] = np.zeros(nz)
@@ -417,7 +428,7 @@ for liquid in liquid_list:
                                 hA*np.sin(2*np.pi*freq\
                                             *time_steps[n])\
                                 *np.sin((2*np.pi/lambd_z)*z)\
-                                *np.exp(-(z-1.5)**2\
+                                *np.exp(-(z-z.mean())**2\
                                         /(2*(0.4)**2))\
                                 /(0.4*np.sqrt(2*math.pi))
                         # From quasi-steady formula,
@@ -439,43 +450,38 @@ for liquid in liquid_list:
 
 
                     ##############################
-                    # SAVE .dat FILES and PLOTS:
-                    if n%10 < 0.0001:
-                        # Save to .dat files a slice
-                        # of the wave along x:
+                    # SAVE .dat FILES and PLOTS every 100 steps:
+                    if n%100 < 0.0001:
+                        # # Save to .dat files a slice
+                        # # of the wave along x:
                         # save_data.save_to_dat(h, qx, qz,
                         #                  nx, nz,
                         #                  directory_n,
                         #                  filename,
                         #                  n)
-                        # Save the whole height
-                        # as a matrix:
+                        # # Save the whole height
+                        # # as a matrix:
                         # save_data.save_matrix(h, directory_n,
                         #                  filename,
                         #                  n)
-                        # Save the np solutions:
-                        save_data.save_np(h, directory_n,
-                                     filename,
-                                     n)
-                        # # Save .png's:
-                        # save_plots.plot_surfaces(h, X, Z, n,
-                        #                    directory_plots,
-                        #                    filename,
-                        #                    conf_key)
+                        # # Save the np solutions:
+                        # save_data.save_np(h, directory_n,
+                        #              filename,
+                        #              n)
+                        # Save .png's:
+                        save_plots.plot_surfaces(h, X, Z, n,
+                                                 h0,
+                                                 directory_plots,
+                                                 filename,
+                                                 conf_key)
 
                         gc.collect()
 
-                    if n%100 < 0.0001:
-                        # Save .png's:
-                        save_plots.plot_surfaces(h, X, Z, n,
-                                           directory_plots,
-                                           filename,
-                                           conf_key)
-
-                        # remind me what I've been doing:
+                    if n%1000 < 0.0001:
+                        # remind me what I've been doing
+                        # in the terminal:
                         print("\n Reminder:" + "\n" + info)
-                        # Monitor the behaviour
-                        # of the limiters
+                        # Monitor the behaviour of the limiters
                         # for the blended scheme:
                         if scheme == schemes['LWFble'] \
                         and configuration != conf['PX01']:

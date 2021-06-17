@@ -16,6 +16,30 @@ def liquid_film_sources(surface_tension,
                         Epsilon, Re):
     '''
     Compute the sources for the 3D liquid film integral model.
+
+    Currently solving simplified equations:
+     - neglected pressure gradient as it affects
+    a narrow region of the domain;
+     - neglected interface shear stress;
+     - problems with the third derivatives.
+
+    If the variable surface_tension is set to True in the main loop
+    script, then the terms in S2 are taken into account.
+    If it is set to False, the simplified sources are evaluated.
+
+    Important:
+    The filtering of the third derivatives performs well
+    (checked with the postprocessing scripts for plotting).
+    Therefore the problems with the third derivatives are possibly
+    related to the the blended scheme which has to be checked
+    as there are issues with the sources in S3 (the solution explodes).
+    Suggestion for future work is the performance of stability analysis
+    of the schemes.
+    Most of the implemented types of limiters have been tested.
+    Nevertheless, when running with included sources in S2,
+    the solver performs well with about 30-40 points per wavelength
+    which yields ~10 times larger cell sizes
+    than the ones without surface tension.
     '''
     # when surface_tension = True, compute the source terms
     # including the third derivatives:
@@ -112,6 +136,7 @@ def liquid_film_sources(surface_tension,
         S3 = -6*qz[1:-1,1:-1]/ \
                 (2*Epsilon*Re*h[1:-1,1:-1]**2)
 
+        # set the third derivatives to zero as they have to be returned
         hzzz = 0
         hxxx = 0
         hzxx = 0

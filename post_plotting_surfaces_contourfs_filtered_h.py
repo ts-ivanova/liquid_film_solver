@@ -34,12 +34,13 @@ LIQUIDS = natsorted(glob.glob('*'))
 
 # Choose which plots to produce:
 Surfaces  = False     # liquid film height surfaces h
-Contourfs = True    # contour plot of the last computed time step of h
-Filtered  = False    # filtered third derivatives contourplots
-                     # and comparisons
+Contourfs = True      # contour plot of the last computed time step of h
+Filtered  = False     # filtered third derivatives contourplots
+                      # and comparisons
 
 if Filtered:
-    LIQUIDS = ['3D_WATER_with_surface_tension_coarse_XZ2/',
+    LIQUIDS = ['3D_WATER_with_surface_tension_coarse_XZ1/',
+               '3D_WATER_with_surface_tension_coarse_XZ2/',
                '3D_WATER_with_surface_tension_whole_zdomain_coarseXZ1/']
 
 
@@ -98,6 +99,7 @@ for LIQUID in LIQUIDS:
                     h = np.load(filenames[j])
                     save_plots.plot_surfaces(h, X, Z,
                                              j*100,
+                                             h0,
                                              directory_plots,
                                              filenames[j][5:-11],
                                              conf_key)

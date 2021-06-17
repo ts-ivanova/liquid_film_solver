@@ -35,14 +35,16 @@ def create_directories(surface_tension,
 
     if surface_tension:
         all_st = "_with_surface_tension_" + str(h0)
-        Path(liquids_key + all_st)\
+        dir = "RESULTS" + os.sep + liquids_key + all_st
+        Path(dir)\
             .mkdir(parents=True, exist_ok=True)
-        os.chdir(liquids_key + all_st)
+        os.chdir(dir)
     else:
         no_st = "_without_surface_tension_" + str(h0)
-        Path(liquids_key + no_st)\
+        dir = "RESULTS" + os.sep + liquids_key + no_st
+        Path(dir)\
             .mkdir(parents=True, exist_ok=True)
-        os.chdir(liquids_key + no_st)
+        os.chdir(dir)
 
     Path("PLOTS").mkdir(parents=True, exist_ok=True)
     Path("PLOTS/FRAMES").mkdir(parents=True, exist_ok=True)

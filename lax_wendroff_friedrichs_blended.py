@@ -3,8 +3,10 @@
 """
 @author: tsveti
 
-Lax-Wendroff & Lax-Friedrichs blended scheme
+Blended Lax-Wendroff & Lax-Friedrichs scheme
 for solving the integral model for liquid films.
+
+RM2021
 """
 
 import liquid_film_fluxes as fluxes
@@ -62,6 +64,7 @@ def blended_lw_lf(surface_tension,
     qz_mid_zt = 0.5*(qz[:,1:] + qz[:,:-1]) \
                 - (0.5*dt/dz)*(F23[:,1:] - F23[:,:-1])
 
+
     # Compute mid-point fluxes along x and along z:
 
     # (Lax-Wendroff high half-steps along x)
@@ -76,24 +79,26 @@ def blended_lw_lf(surface_tension,
 
     # (Lax-Friedrichs low half-steps along x)
     F11_low_mid_xt = F11[1:,:] + (dt/dx)*(h_mid_xt - h[1:,:])
-#    F21_low_mid_xt = F21[1:,:] + (dt/dx)*(h_mid_xt - h[1:,:])
+    # F21_low_mid_xt = F21[1:,:] + (dt/dx)*(h_mid_xt - h[1:,:])
 
     F12_low_mid_xt = F12[1:,:] + (dt/dx)*(qx_mid_xt - qx[1:,:])
-#    F22_low_mid_xt = F22[1:,:] + (dt/dx)*(qx_mid_xt - qx[1:,:])
+    # F22_low_mid_xt = F22[1:,:] + (dt/dx)*(qx_mid_xt - qx[1:,:])
 
     F13_low_mid_xt = F13[1:,:] + (dt/dx)*(qz_mid_xt - qz[1:,:])
-#    F23_low_mid_xt = F23[1:,:] + (dt/dx)*(qz_mid_xt - qz[1:,:])
+    # F23_low_mid_xt = F23[1:,:] + (dt/dx)*(qz_mid_xt - qz[1:,:])
 
     # (Lax-Friedrichs low half-steps along z)
-#    F11_low_mid_zt = F11[:,1:] + (dt/dx)*(h_mid_zt - h[:,1:])
+    # F11_low_mid_zt = F11[:,1:] + (dt/dx)*(h_mid_zt - h[:,1:])
     F21_low_mid_zt = F21[:,1:] + (dt/dx)*(h_mid_zt - h[:,1:])
 
-#    F12_low_mid_zt = F12[:,1:] + (dt/dx)*(qx_mid_zt - qx[:,1:])
+    # F12_low_mid_zt = F12[:,1:] + (dt/dx)*(qx_mid_zt - qx[:,1:])
     F22_low_mid_zt = F22[:,1:] + (dt/dx)*(qx_mid_zt - qx[:,1:])
 
-#    F13_low_mid_zt = F13[:,1:] + (dt/dx)*(qx_mid_zt - qx[:,1:])
+    # F13_low_mid_zt = F13[:,1:] + (dt/dx)*(qx_mid_zt - qx[:,1:])
     F23_low_mid_zt = F23[:,1:] + (dt/dx)*(qz_mid_zt - qz[:,1:])
 
+
+    # Flux limiter functions:
     Phi_x, Phi_z = limiters.flux_limiters(scheme_choice,
                                           h, qx, qz)
 
@@ -164,7 +169,7 @@ def blended_lw_lf(surface_tension,
             + dt*S3
 
     # return the computed quantities
-    # as well as the limiters to monitor their behaviour
+    # as well as the limiters to monitor/plot their behaviour
     return h_new, qx_new, qz_new, \
            Phi_x, Phi_z, \
            hzzz, hxxx, hzxx, hxzz

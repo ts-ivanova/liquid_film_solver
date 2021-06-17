@@ -14,8 +14,6 @@ of an integral boundary layer model for h, qx, qz
 and it is obtained from the 3D liquid film solver
 developed during RM2021.
 """
-# DDFM Presentation - summary of plots/results:
-# https://docs.google.com/presentation/d/1L9bnHTUEu-xQSsqkkaYrFBy6hXDOunrPctgPYXL5P48/edit?usp=sharing
 
 
 # Tutorial slightly adapted from
@@ -32,6 +30,7 @@ from sklearn.gaussian_process \
 from sklearn.gaussian_process.kernels \
     import RBF, WhiteKernel, \
         RationalQuadratic, ExpSineSquared
+
 
 # Show code documentation:
 # print(__doc__)
@@ -60,15 +59,14 @@ Opt1 = 0 # the 2D OpenFOAM validation test case
 Opt2 = 1 # a generated 3D wave
 Opt3 = 2 # another generated 3D wave
 
-# MAKE YOUR CHOICE
-# (list of options):
+# The list of options to predict for:
 option_list = [Opt1, Opt2, Opt3]
 
 # Save the whole plot and/or a zoomed area:
 zoom_list = [False, True]
 
 
-# Generate all plots with one single run:
+# Generate all plots with a single run:
 for i in range(len(option_list)):
     option = option_list[i]
     print('Now running option ', option)

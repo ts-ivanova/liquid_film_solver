@@ -43,8 +43,8 @@ alpha1 = 0.9
 ####################
 os.chdir('RESULTS/')
 # Gather all computed 2D configurations:
-LIQUIDS = natsorted(glob.glob('2D*'))
-
+# LIQUIDS = natsorted(glob.glob('2D*'))
+LIQUIDS = natsorted(glob.glob('*'))
 
 print('Going to process ', LIQUIDS)
 

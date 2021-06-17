@@ -16,8 +16,6 @@ of an integral boundary layer model for h, qx, qz
 and it is obtained from the 3D liquid film solver
 developed during RM2021.
 """
-# DDFM Presentation - summary of plots/results:
-# https://docs.google.com/presentation/d/1L9bnHTUEu-xQSsqkkaYrFBy6hXDOunrPctgPYXL5P48/edit?usp=sharing
 
 # Tutorial slightly adapted from
 # https://scikit-learn.org/stable/auto_examples/gaussian_process/plot_gpr_co2.html#sphx-glr-auto-examples-gaussian-process-plot-gpr-co2-py
@@ -42,6 +40,7 @@ import glob
 # Import libraries for paths and saving:
 from pathlib import Path
 
+# garbage collector
 import gc
 
 # For the predictions model:

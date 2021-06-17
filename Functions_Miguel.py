@@ -28,7 +28,7 @@ def Bound_EXT(S,Ex,boundaries):
         ‘wrap’ (a b c d | a b c d | a b c d)
         The input is extended by wrapping around to
         the opposite edge.
-        ‘extrap’ Extrapolation (not yet available)
+        ‘extrap’ Extrapolation
         The input is extended via linear extrapolation.
     """
     # We first perform a zero padding
@@ -44,7 +44,7 @@ def Bound_EXT(S,Ex,boundaries):
     if boundaries == "reflect":
         # Prepare the reflection on the left:
         LEFT = np.flip(S[0:Ex])
-        # Prepare the reflectino on the right:
+        # Prepare the reflection on the right:
         RIGHT = np.flip(S[len(S)-Ex:len(S)])
         S_extend[0:Ex] = LEFT;
         S_extend[len(S_extend)-Ex:len(S_extend)] = RIGHT

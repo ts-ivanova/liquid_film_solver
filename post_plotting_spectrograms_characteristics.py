@@ -41,7 +41,8 @@ rc('font', **font)
 ####################
 os.chdir('RESULTS/')
 # Gather all computed configurations:
-LIQUIDS = natsorted(glob.glob('2D*')) + natsorted(glob.glob('3D*'))
+# LIQUIDS = natsorted(glob.glob('2D*')) + natsorted(glob.glob('3D*'))
+LIQUIDS = natsorted(glob.glob('*'))
 
 print('Going to process ', LIQUIDS)
 

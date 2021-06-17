@@ -4,11 +4,13 @@
 Created on Sun Mar 14 12:56:58 2021
 
 @author: tsveti
+
 """
 
 def liquid_film_fluxes(h, qx, qz):
     '''
     Compute the fluxes for the 3D liquid film integral model.
+    Simplified version: interface shear stress is neglected.
     '''
     # Fluxes in the equation for h:
     F11 = qx

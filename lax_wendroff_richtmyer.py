@@ -3,6 +3,7 @@
 """
 @author: tsveti
 
+Two-step two dimensional Richtmyer-Lax-Wendroff scheme.
 """
 
 import liquid_film_fluxes as fluxes

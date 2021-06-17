@@ -4,6 +4,9 @@
 Created on Sun Mar 14 12:56:58 2021
 
 @author: tsveti
+
+A script that provides different limiter types for
+the blended scheme.
 """
 
 import numpy as np

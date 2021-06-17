@@ -27,8 +27,7 @@ Path("PLOTS").mkdir(parents=True, exist_ok=True)
 
 # PLOT CUSTOMIZATIONS:
 plt.close()
-font = {'family'    : 'DejaVu Sans', #'monospace'
-        # 'monospace' : 'Droid Sans Mono',
+font = {'family'    : 'DejaVu Sans',
         'weight'    : 'normal',
         'size'      : 14}
 matplotlib.rc('font', **font)

@@ -130,6 +130,8 @@ dmypy.json
 
 # Solver stuff
 RESULTS/
+RESULTS-processed/
+RESULTS*
 
 # Solver log file
 zlogfile

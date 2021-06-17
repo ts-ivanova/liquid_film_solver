@@ -7,6 +7,9 @@ Created on Thu May  9 15:16:30 2021
 
 Post-processing the liquid film waves:
 Time series forecasting
+
+This script takes the solutions at each time step
+and predicts the evolution in time.
 """
 
 # https://scikit-learn.org/stable/modules/gaussian_process.html
