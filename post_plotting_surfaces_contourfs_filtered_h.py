@@ -5,7 +5,9 @@ Created on Wed Jun 02 18:00:03 2021
 
 @author: tsveti
 
-Plot the height surfaces from the liquid film solver.
+Option to plot the height surfaces from the liquid film solver,
+the countourplots of the last saved step,
+and the filtered derivatives of the height.
 """
 
 import numpy as np
@@ -32,12 +34,15 @@ os.chdir('RESULTS/')
 # LIQUIDS = natsorted(glob.glob('2D*')) + natsorted(glob.glob('3D*'))
 LIQUIDS = natsorted(glob.glob('*'))
 
+
 # Choose which plots to produce:
 Surfaces  = False     # liquid film height surfaces h
 Contourfs = True      # contour plot of the last computed time step of h
 Filtered  = False     # filtered third derivatives contourplots
                       # and comparisons
 
+
+# plotting the filtered derivatives only for a few cases:
 if Filtered:
     LIQUIDS = ['3D_WATER_with_surface_tension_coarse_XZ1/',
                '3D_WATER_with_surface_tension_coarse_XZ2/',
@@ -56,12 +61,14 @@ for LIQUID in LIQUIDS:
         os.chdir(FOLDER)
         subfolder = natsorted(glob.glob("P*"))
 
+        # loop over all saved configurations
         for i in range(len(subfolder)):
             print('Processing ', subfolder[i])
 
+            # exctract the name of the configuration:
             conf_key = subfolder[i][:4]
 
-            # extract information from naming convention:
+            # extract other information from the naming convention:
             dx = float(subfolder[i][20:26])
             nx = int(subfolder[i][29:33])
             dz = float(subfolder[i][36:40])
@@ -77,7 +84,7 @@ for LIQUID in LIQUIDS:
             filenames = natsorted(glob.glob('h_np' + os.sep \
                                            + '*.npy'))
 
-
+            # if it is selected to plot the surfaces:
             if Surfaces:
                 print('Plotting height surfaces from ', subfolder[i])
 
@@ -104,7 +111,7 @@ for LIQUID in LIQUIDS:
                                              filenames[j][5:-11],
                                              conf_key)
 
-
+            # if it is selected to plot the contour plot of the height:
             if Contourfs:
                 print('Plotting contour plots from ', subfolder[i])
 
@@ -123,7 +130,7 @@ for LIQUID in LIQUIDS:
                                           directory_plots,
                                           filenames[-1][5:-11])
 
-
+            # if it is selected to plot the filtered derivatives:
             if Filtered:
                 print('Plotting filtered derivatives from ',
                       subfolder[i])
@@ -136,6 +143,7 @@ for LIQUID in LIQUIDS:
                                     + subfolder[i]
                 Path(directory_plots).mkdir(parents=True, exist_ok=True)
 
+                # plot at a certain filestep:
                 skipfiles = 10
 
                 for j in range(0, len(filenames), skipfiles):

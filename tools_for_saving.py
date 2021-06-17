@@ -25,7 +25,8 @@ import gc
 def create_directories(surface_tension,
                        liquids_key, conf_key,
                        scheme_choice,
-                       h0,
+                       dim,
+                       h0, A,
                        dx, nx, dz, nz,
                        CFL, dt, final_time,
                        Re, freq):
@@ -33,18 +34,22 @@ def create_directories(surface_tension,
     # To store the numerical data, check if the
     # directories exists. If not, create them.
 
+    # A string containing the initial film height value
+    # and the perturbation amplitude:
+    h0_and_amplitude = "i{:.1f}".format(h0) + "_A{:.2f}".format(A)
+
     if surface_tension:
-        all_st = "_with_surface_tension_" + str(h0)
-        dir = "RESULTS" + os.sep + liquids_key + all_st
-        Path(dir)\
+        all_st = "_with_surface_tension_" + h0_and_amplitude
+        results_dir = "RESULTS" + os.sep + dim + liquids_key + all_st
+        Path(results_dir)\
             .mkdir(parents=True, exist_ok=True)
-        os.chdir(dir)
+        os.chdir(results_dir)
     else:
-        no_st = "_without_surface_tension_" + str(h0)
-        dir = "RESULTS" + os.sep + liquids_key + no_st
-        Path(dir)\
+        no_st = "_without_surface_tension_" + h0_and_amplitude
+        results_dir = "RESULTS" + os.sep + dim + liquids_key + no_st
+        Path(results_dir)\
             .mkdir(parents=True, exist_ok=True)
-        os.chdir(dir)
+        os.chdir(results_dir)
 
     Path("PLOTS").mkdir(parents=True, exist_ok=True)
     Path("PLOTS/FRAMES").mkdir(parents=True, exist_ok=True)
@@ -80,7 +85,7 @@ def create_directories(surface_tension,
     directory_lim = "PLOTS/Limites"
     Path(directory_lim).mkdir(parents=True, exist_ok=True)
 
-    return  directory_n, directory_plots, \
+    return  results_dir, directory_n, directory_plots, \
             filename, directory_lim
 
 
@@ -95,13 +100,18 @@ def save_to_dat(h, qx, qz,
     (choose an index that is not proportional
     to the wavelength)
     '''
+    # To store the height profile along x:
+    directory_n_xslice = directory_n \
+                        + os.sep + 'h_xslice'
+    Path(directory_n_xslice).mkdir(parents=True, exist_ok=True)
+
     h_val  = [float(i) for i in h[:,int(1.2*nz/2)]]
     qx_val = [float(i) for i in qx[:,int(1.2*nz/2)]]
     qz_val = [float(i) for i in qz[:,int(1.2*nz/2)]]
     data   = np.array([h_val, qx_val, qz_val])
     data   = data.T
 
-    with open(directory_n + os.sep \
+    with open(directory_n_xslice + os.sep \
                + "h_" + filename \
                + "_nz_" + str(int(1.2*nz/2)) \
                + "_n{0:05d}.dat".format(n),

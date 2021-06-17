@@ -8,6 +8,7 @@ Created on Thu May 12 15:48:30 2021
 Post-processing the liquid film waves:
 Plotting the maximum values of each position over time
 in order to see if the perturbations decrease or increase.
+(Stability analysis)
 """
 
 import numpy as np
@@ -43,8 +44,8 @@ alpha1 = 0.9
 ####################
 os.chdir('RESULTS/')
 # Gather all computed 2D configurations:
-# LIQUIDS = natsorted(glob.glob('2D*'))
-LIQUIDS = natsorted(glob.glob('*'))
+LIQUIDS = natsorted(glob.glob('2D*'))
+# LIQUIDS = natsorted(glob.glob('*'))
 
 print('Going to process ', LIQUIDS)
 
@@ -57,7 +58,6 @@ for LIQUID in LIQUIDS:
         # Change working directory:
         os.chdir(FOLDER)
         subfolder = natsorted(glob.glob("P*"))
-
 
 
         for i in range(len(subfolder)):

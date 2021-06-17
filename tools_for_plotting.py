@@ -3,12 +3,12 @@
 """
 Created on Tue May 18 15:55:10 2021
 
-Definition of functions used for saving
-of plots, .dat files, .npy solutions
-creating paths etc.
-for the purposes of the Liquid film solver
-
 @author: tsveti
+
+Definition of functions used for saving
+of plots for the purposes of the Liquid film solver.
+
+RM2021
 """
 
 import numpy as np
@@ -58,6 +58,8 @@ def plot_surfaces(h, X, Z, n,
     plt.rcParams['xtick.labelsize'] = 8
     plt.rcParams['ytick.labelsize'] = 8
 
+    # set plot limits based on the initial height value
+    # h0 from the main script:
     if h0 == 0.1:
         h_max = 0.2
         h_min = 0.0
@@ -117,6 +119,8 @@ def plot_contourfs(h, X, Z,
                    n,
                    directory,
                    filename):
+
+    # adjust manually:
     # if h0 = 0.2:
     h_min = 0.17
     h_max = 0.23
@@ -124,7 +128,7 @@ def plot_contourfs(h, X, Z,
     # if h0 = 0.1:
     # h_min = 0.07
     # h_max = 0.13
-    
+
     fig = plt.figure(figsize = (12,4))
     plt.plot()
     contourplot = plt.contourf(-X, Z, h,
@@ -336,7 +340,6 @@ def filtered(h, X, Z,
                     bbox_inches = 'tight')
         # plt.show()
         plt.close()
-
         fig.clear()
         plt.clf()
         gc.collect()

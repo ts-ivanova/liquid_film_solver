@@ -42,14 +42,15 @@ liquids = {
 conf = {
         # Entirely flat:
         # 'FLAT'  : 0,
-        # Perturbations only on x of qx (OpenFOAM case):
+        # Perturbations only on x (PX) of qx (OpenFOAM case):
         'PX01' : 0,
-        # Perturbations on x and on z:
+        # Perturbations on x and on z (PXZ):
         # - of the flow rate qx
         'PXZ1' : 1,
         # - of the height h
         'PXZ2' : 2
         }
+
 
 # Possible schemes:
 schemes  = {
@@ -83,8 +84,8 @@ liquid_list = [
 # Selection of the configuration:
 configurations = [
                   # conf['PX01']#, # OpenFOAM JFM case
-                  # conf['PXZ1']#,
-                  conf['PXZ2']
+                  conf['PXZ1']#,
+                  # conf['PXZ2']
                   ]
 
 # Choice of scheme:
@@ -132,8 +133,10 @@ for liquid in liquid_list:
             # Liquid type:
             liquids_key = list(liquids.keys())[liquid]
 
-            # Perturbation frequencies:
+
             if configuration == conf['PX01']:
+                dim = '2D_' # to use for namings in tools_for_saving
+
                 # CFL number is defined as u*dt/dx
                 # from which dt is evaluated below.
                 surface_tension = False
@@ -142,7 +145,13 @@ for liquid in liquid_list:
                 frequencies = [0.05] # [-] as in 2D JFM
                 # frequencies = [0.1, 0.2]
                 # [-] low, medium and high freqs
-            else:
+                # Set amplitude for the flow rate perturbations
+                # as in 2D JFM:
+                A = 0.2 # [-]
+
+            else: # parameters for the 3D waves:
+                dim = '3D_' # to use for namings in tools_for_saving
+
                 # CFL number is defined as u*dt/dx
                 # from which dt is evaluated below.
                 if surface_tension:
@@ -152,7 +161,12 @@ for liquid in liquid_list:
                 # frequencies = [0.05, 0.1, 0.2]
                 frequencies = [0.1]#, 0.2]
                 # frequencies = [0.05] # [-] as in 2D JFM
+                if configuration == conf['PXZ1']:
+                    A = 0.2 # amplitude for the flow rate perturbations
+                elif configuration == conf['PXZ2']:
+                    A = 0.07 # amplitude for height perturbations
 
+            # Specify a scheme:
             if scheme == schemes['LWFble']:
                 # scheme_choice = 'LxFr'
                 # scheme_choice = 'LxWe'
@@ -161,9 +175,10 @@ for liquid in liquid_list:
                 scheme_choice = \
                 list(schemes.keys())[scheme][:4]
 
+            # run for all frequencies:
             for freq in frequencies:
 
-                # mark the beginning of the computations
+                # mark the beginning of the computations:
                 startTime = datetime.now()
 
                 # SPACE INFORMATION
@@ -253,18 +268,20 @@ for liquid in liquid_list:
 
                 ##############################
                 # Create directories for storing data:
+                results_dir, \
                 directory_n, \
                 directory_plots, \
                 filename, \
                 directory_lim = \
                     save_data.create_directories(surface_tension,
-                                            liquids_key,
-                                            conf_key,
-                                            scheme_choice,
-                                            h0,
-                                            dx, nx, dz, nz,
-                                            CFL, dt, final_time,
-                                            Re, freq)
+                                                 liquids_key,
+                                                 conf_key,
+                                                 scheme_choice,
+                                                 dim,
+                                                 h0, A,
+                                                 dx, nx, dz, nz,
+                                                 CFL, dt, final_time,
+                                                 Re, freq)
 
                 #%%
                 ##############################
@@ -282,11 +299,13 @@ for liquid in liquid_list:
                 i_save = 0
 
                 ##############################
-                info =  '\n Liquid type: ' \
+                info =  '\n Results directory: ' \
+                        + results_dir \
+                        + '\n Liquid type: ' \
                         + liquids_key \
                         + '\n surface_tension: ' \
                         + str(surface_tension) \
-                        + '\n Computing configuration' \
+                        + '\n Computing configuration: ' \
                         + '\n ' + directory_n \
                         + '\n ' + filename \
                         + '\n lambd: {:.2f}'.format(lambd) \
@@ -375,8 +394,6 @@ for liquid in liquid_list:
 
                     # Perturbation along x of qx:
                     if configuration == conf['PX01']:
-                        # as in 2D JFM:
-                        qA = 0.2 # [-], amplitude
                         # BOTTOM BOUNDARY (INLET):
                         # BCs at inlet: Dirichlet conditions
                         h[-1,:] = h0*np.ones(nz)
@@ -386,7 +403,7 @@ for liquid in liquid_list:
                         qx[-1,:] = (1/3*h[-1,:]**3 \
                                     - h[-1,:])\
                                     *(1 + \
-                                      qA*np.sin(2*np.pi\
+                                      A*np.sin(2*np.pi\
                                                 *freq\
                                                 *time_steps[n])\
                                       *np.ones((nz,)))
@@ -395,7 +412,6 @@ for liquid in liquid_list:
 
                     # Perturbations of qx along x and z:
                     elif configuration == conf['PXZ1']:
-                        qA = 0.2 # amplitude
                         # BOTTOM BOUNDARY (INLET):
                         # BCs at inlet: Dirichlet conditions
                         h[-1,:] = h0*np.ones(nz)
@@ -405,7 +421,7 @@ for liquid in liquid_list:
                         qx[-1,:] = (1/3*h[-1,:]**3 \
                                     - h[-1,:])\
                                     *(1 + \
-                                      qA*np.sin(2*np.pi\
+                                      A*np.sin(2*np.pi\
                                                 *freq\
                                                 *time_steps[n])\
                                       *np.sin((2*np.pi\
@@ -423,9 +439,8 @@ for liquid in liquid_list:
                     elif configuration == conf['PXZ2']:
                         # BCs at inlet: Dirichlet conditions
                         # BOTTOM BOUNDARY (INLET):
-                        hA = 0.07 # amplitude
                         h[-1,:] = h0*np.ones(nz) + \
-                                hA*np.sin(2*np.pi*freq\
+                                A*np.sin(2*np.pi*freq\
                                             *time_steps[n])\
                                 *np.sin((2*np.pi/lambd_z)*z)\
                                 *np.exp(-(z-z.mean())**2\
@@ -452,22 +467,22 @@ for liquid in liquid_list:
                     ##############################
                     # SAVE .dat FILES and PLOTS every 100 steps:
                     if n%100 < 0.0001:
-                        # # Save to .dat files a slice
-                        # # of the wave along x:
-                        # save_data.save_to_dat(h, qx, qz,
-                        #                  nx, nz,
-                        #                  directory_n,
-                        #                  filename,
-                        #                  n)
-                        # # Save the whole height
-                        # # as a matrix:
-                        # save_data.save_matrix(h, directory_n,
-                        #                  filename,
-                        #                  n)
-                        # # Save the np solutions:
-                        # save_data.save_np(h, directory_n,
-                        #              filename,
-                        #              n)
+                        # Save to .dat files a slice
+                        # of the wave along x:
+                        save_data.save_to_dat(h, qx, qz,
+                                         nx, nz,
+                                         directory_n,
+                                         filename,
+                                         n)
+                        # Save the whole height
+                        # as a matrix:
+                        save_data.save_matrix(h, directory_n,
+                                         filename,
+                                         n)
+                        # Save the np solutions:
+                        save_data.save_np(h, directory_n,
+                                     filename,
+                                     n)
                         # Save .png's:
                         save_plots.plot_surfaces(h, X, Z, n,
                                                  h0,
@@ -485,11 +500,11 @@ for liquid in liquid_list:
                         # for the blended scheme:
                         if scheme == schemes['LWFble'] \
                         and configuration != conf['PX01']:
-                            # save_plots.plot_limiters(nx, dx, nz, dz,
-                            #                    Phi_x, Phi_z,
-                            #                    directory_lim,
-                            #                    scheme_choice,
-                            #                    n)
+                            save_plots.plot_limiters(nx, dx, nz, dz,
+                                               Phi_x, Phi_z,
+                                               directory_lim,
+                                               scheme_choice,
+                                               n)
                             print('Phi_x' , Phi_x)
                             print('Phi_z' , Phi_z)
                             print('hxxx', hxxx)
@@ -501,7 +516,7 @@ for liquid in liquid_list:
                 #%%
                 ##############################
                 # Go back to solver directory:
-                os.chdir('../')
+                os.chdir('../../')
 
                 # summary of simulation
                 summary = info \

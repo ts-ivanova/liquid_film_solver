@@ -6,7 +6,8 @@ Created on Thu May  6 16:50:30 2021
 @author: tsveti
 
 Post-processing the liquid film waves:
-Plotting the spectrograms of a few positions in space.
+Plotting the spectrograms in space,
+as well as characteristics.
 """
 
 import numpy as np
@@ -108,6 +109,8 @@ for LIQUID in LIQUIDS:
             # t-axis:
             n_files_in_time = len(filelist)
             t_axis = 100*dt*np.linspace(0, len(filelist), len(filelist))
+            # ^ multiplication by 100 because the saved solutions 
+            # are every 100 steps.
 
             H_XF = np.zeros(H_XT.shape)
 
