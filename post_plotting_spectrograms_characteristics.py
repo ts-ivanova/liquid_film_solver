@@ -16,6 +16,7 @@ import numpy as np
 import matplotlib
 from matplotlib import pyplot as plt
 from matplotlib import rc
+from matplotlib.ticker import FormatStrFormatter
 
 # spectrogram
 from scipy.signal import spectrogram
@@ -40,7 +41,7 @@ rc('font', **font)
 
 
 ####################
-os.chdir('RESULTS/')
+os.chdir('RESULTS-processed/')
 # Gather all computed configurations:
 # LIQUIDS = natsorted(glob.glob('2D*')) + natsorted(glob.glob('3D*'))
 LIQUIDS = natsorted(glob.glob('*'))
@@ -109,7 +110,7 @@ for LIQUID in LIQUIDS:
             # t-axis:
             n_files_in_time = len(filelist)
             t_axis = 100*dt*np.linspace(0, len(filelist), len(filelist))
-            # ^ multiplication by 100 because the saved solutions 
+            # ^ multiplication by 100 because the saved solutions
             # are every 100 steps.
 
             H_XF = np.zeros(H_XT.shape)
@@ -124,9 +125,16 @@ for LIQUID in LIQUIDS:
                                                        - Prof_time.mean())))
                 H_XF[:,j] = Prof_Freq
             plt.close()
-            plt.contourf(Freqs, x_axis, H_XF.T,
-                         cmap = 'PuBu')
+            fig, ax = plt.subplots()
+            contourplot_sp = plt.contourf(Freqs/100,
+                                          x_axis,#-x_axis.min(),
+                                          H_XF.T,
+                                          cmap = 'PuBu')
+            # plt.colorbar(contourplot_sp,
+            #              format = '%.2f',
+            #              anchor = (0.5, 0.5))
             # print('H_XF.T', H_XF.T)
+            ax.xaxis.set_major_formatter(FormatStrFormatter('%.2f'))
             plt.xlabel('frequency, [-]')
             plt.ylabel('length x, [-]')
             plt.xlim(0,)
@@ -140,10 +148,15 @@ for LIQUID in LIQUIDS:
                         bbox_inches = 'tight')
             print('Plotting characteristics ... ')
             plt.close()
-            plt.contourf(x_axis, t_axis, H_XT,
-                         cmap = 'PuBu')
-            plt.xlabel('length x, [-]')
-            plt.ylabel('time, [-]')
+            contourplot_ch = plt.contourf(t_axis,
+                                          x_axis,#-x_axis.min(),
+                                          H_XT.T,
+                                          cmap = 'PuBu')
+            plt.colorbar(contourplot_ch,
+                         format = '%.2f',
+                         anchor = (0.5, 0.5))
+            plt.xlabel('time, [-]')
+            plt.ylabel('length x, [-]')
             plt.title('Characteristics')
             # plt.title(subfolder[i])
             plt.savefig(directory + os.sep \

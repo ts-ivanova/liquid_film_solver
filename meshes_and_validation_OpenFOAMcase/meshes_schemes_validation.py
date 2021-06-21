@@ -45,10 +45,22 @@ titles = ['Different schemes',
 xlabel1 = 'domain length x [-]'#, left:inlet, right:outlet'
 ylabel1 = 'film thickness h [-]'
 
-colors = ['#9e2ec9','#574d57','#2878b5']
+colors = ['magenta','seagreen','black']
 types  = ['-.','--',':','']
 
 for j in range(len(titles)):
+
+    # read OF data
+    DATFILE = 'Validation_data_2D_OF_JFM' \
+                + os.sep + 'validation_JFM_OF'+'.dat'
+    VALIDATA = np.genfromtxt(DATFILE, delimiter=',', skip_header=1)
+
+    h_OF  = VALIDATA[:,0].reshape(-1,1)
+    x_OF  = VALIDATA[:,1].reshape(-1,1)
+
+    x_OF = x_OF.reshape(-1,1)
+    ##############
+
     # plots properties
     plt.figure(figsize=(12,4))
     plt.suptitle(titles[j])
@@ -91,6 +103,17 @@ for j in range(len(titles)):
         h_holder['h'+str(i)] = \
             data_holder['DATA_h'+str(i)][:,0]
 
+
+
+        # from sklearn.metrics import mean_squared_error
+        #
+        # from math import sqrt
+        # rms = sqrt(mean_squared_error(h_OF, h_holder['h'+str(i)]))
+        # print(rms)
+
+
+
+
         plt.plot(x_axis,
                  h_holder['h'+str(i)]
                  .reshape(-1,1),
@@ -102,8 +125,8 @@ for j in range(len(titles)):
                  alpha = alpha1)
 
     plt.grid()
-    plt.legend(loc='upper left',
-               fontsize=12,
+    plt.legend(loc='lower right',
+               fontsize=10,
                numpoints=4,
                handlelength=4,
                markerscale=0.6)
@@ -112,14 +135,7 @@ for j in range(len(titles)):
                 format='png', dpi=400)
 
 
-    DATFILE = 'Validation_data_2D_OF_JFM' \
-                + os.sep + 'validation_JFM_OF'+'.dat'
-    VALIDATA = np.genfromtxt(DATFILE, delimiter=',', skip_header=1)
-
-    h_OF  = VALIDATA[:,0].reshape(-1,1)
-    x_OF  = VALIDATA[:,1].reshape(-1,1)
-
-    x_OF = x_OF.reshape(-1,1)
+    # Plot also OF solution:
     # Domain length 77.28 = nx*dx = 1680*0.046 from JFM paper
     plt.plot(x_OF - 77.28,
              h_OF,
@@ -129,8 +145,8 @@ for j in range(len(titles)):
              label = 'OpenFOAM case',
              alpha = alpha1)
 
-    plt.legend(loc='upper left',
-               fontsize=12,
+    plt.legend(loc='lower right',
+               fontsize=10,
                numpoints=4,
                handlelength=4,
                markerscale=0.6)

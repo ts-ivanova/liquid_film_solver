@@ -227,8 +227,8 @@ for i in range(len(option_list)):
     plt.suptitle(suptitle1)
     plt.title(title1, pad = 10)
 
-    plt.xlabel('cell index x')
-    plt.ylabel('film height h [-]')
+    plt.xlabel('cell index')
+    plt.ylabel('film thickness [-]')
     plt.tight_layout()
     plt.legend(loc = 'upper left')
     plt.grid(linewidth = 0.8)
