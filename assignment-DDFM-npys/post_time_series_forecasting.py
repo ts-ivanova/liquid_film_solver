@@ -14,7 +14,7 @@ and predicts the evolution in time.
 
 # https://scikit-learn.org/stable/modules/gaussian_process.html
 
-# Tutorial slightly adapted from
+# Tutorial adapted from
 # https://scikit-learn.org/stable/auto_examples/gaussian_process/plot_gpr_co2.html#sphx-glr-auto-examples-gaussian-process-plot-gpr-co2-py
 
 import numpy as np

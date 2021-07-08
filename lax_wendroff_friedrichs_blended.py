@@ -21,7 +21,7 @@ def blended_lw_lf(surface_tension,
                   nx, nz):
     '''
     This function performs the blended
-    Lax-Wendroff + Lax-Friedrichs scheme
+    Lax-Wendroff (high-order) + Lax-Friedrichs (low-order) scheme
     on a dimensionless integral model
     for a liquid film.
     Unknown quantities: height: h,
@@ -67,17 +67,17 @@ def blended_lw_lf(surface_tension,
 
     # Compute mid-point fluxes along x and along z:
 
-    # (Lax-Wendroff high half-steps along x)
+    # (Lax-Wendroff high-order scheme, half-steps along x)
     F11_high_mid_xt, F21_high_mid_xt, F12_high_mid_xt, \
     F22_high_mid_xt, F13_high_mid_xt, F23_high_mid_xt = \
     fluxes.liquid_film_fluxes(h_mid_xt, qx_mid_xt, qz_mid_xt)
 
-    # (Lax-Wendroff high half-steps along z)
+    # (Lax-Wendroff high-order scheme, half-steps along z)
     F11_high_mid_zt, F21_high_mid_zt, F12_high_mid_zt, \
     F22_high_mid_zt, F13_high_mid_zt, F23_high_mid_zt = \
     fluxes.liquid_film_fluxes(h_mid_zt, qx_mid_zt, qz_mid_zt)
 
-    # (Lax-Friedrichs low half-steps along x)
+    # (Lax-Friedrichs low-order scheme, half-steps along x)
     F11_low_mid_xt = F11[1:,:] + (dt/dx)*(h_mid_xt - h[1:,:])
     # F21_low_mid_xt = F21[1:,:] + (dt/dx)*(h_mid_xt - h[1:,:])
 
@@ -87,7 +87,7 @@ def blended_lw_lf(surface_tension,
     F13_low_mid_xt = F13[1:,:] + (dt/dx)*(qz_mid_xt - qz[1:,:])
     # F23_low_mid_xt = F23[1:,:] + (dt/dx)*(qz_mid_xt - qz[1:,:])
 
-    # (Lax-Friedrichs low half-steps along z)
+    # (Lax-Friedrichs low-order scheme, half-steps along z)
     # F11_low_mid_zt = F11[:,1:] + (dt/dx)*(h_mid_zt - h[:,1:])
     F21_low_mid_zt = F21[:,1:] + (dt/dx)*(h_mid_zt - h[:,1:])
 

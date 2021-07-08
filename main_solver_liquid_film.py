@@ -6,6 +6,26 @@ Created on Tue Mar  9 16:27:43 2021
 Liquid Film Solver
 
 @author: tsveti
+
+This script solves a simplified version of the 3D integral model
+for a liquid film on a moving substrate.
+The unknowns of this integral model are
+the liquid film height h,
+the flow rate along the streamwise direction qx,
+and the flow rate along the spanwise direction qz
+(check RM2021 report).
+
+The derived 3D integral model is dimensionless.
+
+    \partial_t h  + \partial_x F11 + \partial_z F21 = S1
+    \partial_t qx + \partial_x F12 + \partial_z F22 = S2
+    \partial_t qz + \partial_x F13 + \partial_z F23 = S3
+
+What is currently not completely implemented
+in this version of the solver are 
+pressure gradients, interface shear stresses, and
+the most challenging - surface tension terms
+(the third derivatives of the height h).
 """
 
 # Import libraries:
@@ -13,12 +33,12 @@ import numpy as np
 import math
 import sys
 
-# Import discretization scheme procedures:
+# Import numerical scheme procedures:
 import lax_wendroff_richtmyer as lw
 import lax_friedrichs as lf
 import lax_wendroff_friedrichs_blended as bl
 
-# for the execution time
+# to monitor the execution time:
 import os
 import logging
 from datetime import datetime
@@ -69,11 +89,11 @@ limiters = [
             'BLhc',  # HCUS
             'BLhq',  # HQUICK
             'BLko',  # Koren
-            'BLvl'  # van Leer
+            'BLvl'   # van Leer
             ]
 
 ##############################
-# MAKE THE CHOICES HERE:
+# MAKE THE CHOICES HERE (by un-commenting lines etc.):
 
 # Selection of the fluid:
 liquid_list = [
@@ -96,20 +116,23 @@ scheme = schemes['LWFble']
 # Specify whether to include surface tension
 # terms in the sources (the third derivatives):
 surface_tension = False
+# At the end of RM2021, only two out of four third derivatives
+# have been included
+# and the solver performs well only on coarses meshes.
 
 
-# dimensionless substrate velocity:
+# Dimensionless substrate velocity:
 U_substr = 1
-# wave travel speed for CFL:
+# Wave travel speed for CFL:
 u = 2*U_substr
 # Time between outputs:
 output_interval = 1.0
 
-# initial height:
+# Initial height:
 h0 = 0.2 # [-]
-# h0 = 0.1 # [-] can be used for higher Re numbers
+# h0 = 0.1 # [-] can be suitable for higher Re numbers
 
-# Run for all liquid types:
+# Run the script for all liquid types:
 for liquid in liquid_list:
     # Liquid parameters:
     if liquid == liquids['WATER']:
@@ -123,6 +146,7 @@ for liquid in liquid_list:
         # Re = 478 # Reynolds number
         Re_list = [478, 2*478]
 
+    # run for all Reynolds number values in Re_list:
     for Re in Re_list:
         # Run for all specified configurations
         # in the list:
@@ -134,7 +158,7 @@ for liquid in liquid_list:
 
 
             if configuration == conf['PX01']:
-                dim = '2D_' # to use for namings in tools_for_saving
+                dim = '2D_' # to use for namings in tools_for_saving.py
 
                 # CFL number is defined as u*dt/dx
                 # from which dt is evaluated below.
@@ -149,7 +173,7 @@ for liquid in liquid_list:
                 A = 0.2 # [-]
 
             else: # parameters for the 3D waves:
-                dim = '3D_' # to use for namings in tools_for_saving
+                dim = '3D_' # to use for namings in tools_for_saving.py
 
                 # CFL number is defined as u*dt/dx
                 # from which dt is evaluated below.
@@ -165,12 +189,13 @@ for liquid in liquid_list:
                 elif configuration == conf['PXZ2']:
                     A = 0.07 # amplitude for height perturbations
 
-            # Specify a scheme:
+            # Specify a scheme (by un-commenting a line):
             if scheme == schemes['LWFble']:
                 # scheme_choice = 'LxFr'
                 # scheme_choice = 'LxWe'
                 scheme_choice = 'BLmi'
             else:
+                # extract the string for the naming conventions:
                 scheme_choice = \
                     list(schemes.keys())[scheme][:4]
 
@@ -193,7 +218,8 @@ for liquid in liquid_list:
                 factor   = 1
                 freq_JFM = 0.05
 
-                # Currently the presence of surface tension terms
+                # Currently (end of RM2021),
+                # the presence of surface tension terms
                 # causes issues when the cell size is too small,
                 # therefore for now a working option is of the order of
                 # 30-40 points per wavelength:
@@ -371,7 +397,7 @@ for liquid in liquid_list:
                     # if configuration == conf['FLAT']:
                     #     # This flat configuration means
                     #     # that no perturbations
-                    #     # are introdued.
+                    #     # are introdued (nothing happens).
                     #     # BOTTOM BOUNDARY (INLET):
                     #     # linear extrapolations along x:
                     #     h[-1,:]  = 2*h[-2,:] - h[-3,:]
@@ -411,9 +437,8 @@ for liquid in liquid_list:
                         # BOTTOM BOUNDARY (INLET):
                         # BCs at inlet: Dirichlet conditions
                         h[-1,:] = h0*np.ones(nz)
-                        # From quasi-steady formula,
-                        # compute qx
-                        # with introduced perturbations:
+                        # From the quasi-steady formula,
+                        # compute qx with introduced perturbations:
                         qx[-1,:] = (1/3*h[-1,:]**3 \
                                     - h[-1,:])\
                                     *(1 + \
@@ -443,7 +468,7 @@ for liquid in liquid_list:
                                 *np.exp(-(z-z.mean())**2\
                                         /(2*(0.4)**2))\
                                 /(0.4*np.sqrt(2*math.pi))
-                        # From quasi-steady formula,
+                        # From the quasi-steady formula,
                         # compute qx:
                         qx[-1,:] = 1/3*h[-1,:]**3 - h[-1,:]
                         # Set qz to zeros at the inlet:
@@ -480,7 +505,7 @@ for liquid in liquid_list:
                         save_data.save_np(h, directory_n,
                                           filename,
                                           n)
-
+                        # pick up trash:
                         gc.collect()
 
                     if n%1000 < 0.0001:
@@ -516,7 +541,7 @@ for liquid in liquid_list:
                 # Go back to solver directory:
                 os.chdir('../../')
 
-                # summary of simulation
+                # summary of the simulation
                 summary = info \
                         + '\n Execution time: ' \
                         + str(datetime.now()-startTime) \

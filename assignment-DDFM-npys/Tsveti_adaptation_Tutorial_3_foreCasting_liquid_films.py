@@ -17,7 +17,7 @@ and it is obtained from the 3D liquid film solver
 developed during RM2021.
 """
 
-# Tutorial slightly adapted from
+# Tutorial adapted from
 # https://scikit-learn.org/stable/auto_examples/gaussian_process/plot_gpr_co2.html#sphx-glr-auto-examples-gaussian-process-plot-gpr-co2-py
 
 # "The tutorial from the above link

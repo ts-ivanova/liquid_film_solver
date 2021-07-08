@@ -5,7 +5,8 @@ Created on Wed Jun 02 18:00:03 2021
 
 @author: tsveti
 
-Option to plot the height surfaces from the liquid film solver,
+Possible options are to plot the height surfaces
+from the liquid film solver,
 the countourplots of the last saved step,
 and the filtered derivatives of the height.
 """
@@ -15,8 +16,7 @@ import matplotlib.pyplot as plt
 from matplotlib import rc
 # file processing:
 import os
-from natsort import natsorted
-# (to use proper sorting)
+from natsort import natsorted # (to use proper sorting)
 import glob
 # Import libraries for paths and saving:
 from pathlib import Path
@@ -35,7 +35,7 @@ os.chdir('RESULTS/')
 LIQUIDS = natsorted(glob.glob('*'))
 
 
-# Choose which plots to produce:
+# Choose which plots to produce by setting True or False:
 Surfaces  = False     # liquid film height surfaces h
 Contourfs = True      # contour plot of the last computed time step of h
 Filtered  = False     # filtered third derivatives contourplots
@@ -68,7 +68,7 @@ for LIQUID in LIQUIDS:
             # exctract the name of the configuration:
             conf_key = subfolder[i][:4]
 
-            # extract other information from the naming convention:
+            # extract useful information from the naming convention:
             dx = float(subfolder[i][20:26])
             nx = int(subfolder[i][29:33])
             dz = float(subfolder[i][36:40])
@@ -84,7 +84,7 @@ for LIQUID in LIQUIDS:
             filenames = natsorted(glob.glob('h_np' + os.sep \
                                            + '*.npy'))
 
-            # if it is selected to plot the surfaces:
+            # if it has been selected to plot the surfaces, then:
             if Surfaces:
                 print('Plotting height surfaces from ', subfolder[i])
 

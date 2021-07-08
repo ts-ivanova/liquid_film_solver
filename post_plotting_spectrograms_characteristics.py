@@ -8,6 +8,11 @@ Created on Thu May  6 16:50:30 2021
 Post-processing the liquid film waves:
 Plotting the spectrograms in space,
 as well as characteristics.
+
+The spectrograms give information on whether
+the wave evolves towards other frequencies.
+The characteristic lines indicate whether
+the nonlinear effects are weak or not.
 """
 
 import numpy as np
@@ -61,6 +66,7 @@ for LIQUID in LIQUIDS:
         for i in range(len(subfolder)):
             print('Processing ', subfolder[i])
 
+            # Extract information from the naming conventions:
             conf_key = subfolder[i][:4]
 
             dx = float(subfolder[i][20:26])
@@ -88,10 +94,11 @@ for LIQUID in LIQUIDS:
             for ii in range(len(filelist)):
                 h_np = np.load(filelist[ii])
                 h = h_np[:,int(1.2*nz/2)]
+                # 1.2*nz/2 - an arbitrary chosen slice of the domain
+
                 # store in matrix the height along x for each time
                 H_XT_list.append([])
                 H_XT_list[ii].append(h)
-                # nt.append(int(filelist[ii][-9:-4]))
 
             print('Computing spectrograms ... ')
 
@@ -107,15 +114,17 @@ for LIQUID in LIQUIDS:
             # Construct space and time axes:
             # x-axis:
             x_axis = -x
+            # (flip because the inlet is at the last index -1.)
+
             # t-axis:
             n_files_in_time = len(filelist)
             t_axis = 100*dt*np.linspace(0, len(filelist), len(filelist))
             # ^ multiplication by 100 because the saved solutions
-            # are every 100 steps.
+            # are chosen to be every 100 steps (can be modified).
 
             H_XF = np.zeros(H_XT.shape)
 
-            # This is np tool for freq axis:
+            # This is the numpy tool for freq axis:
             Freqs = fftshift(np.fft.fftfreq(len(filelist)))*1/dt
 
             for j in range(1,nx):

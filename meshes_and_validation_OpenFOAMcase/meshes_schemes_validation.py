@@ -104,16 +104,6 @@ for j in range(len(titles)):
             data_holder['DATA_h'+str(i)][:,0]
 
 
-
-        # from sklearn.metrics import mean_squared_error
-        #
-        # from math import sqrt
-        # rms = sqrt(mean_squared_error(h_OF, h_holder['h'+str(i)]))
-        # print(rms)
-
-
-
-
         plt.plot(x_axis,
                  h_holder['h'+str(i)]
                  .reshape(-1,1),

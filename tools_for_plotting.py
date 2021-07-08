@@ -199,8 +199,6 @@ def filtered(h, X, Z,
     hxxx = filt_X(hxxx0,31,boundaries="extrap",s=0.2)
 
     # d3_dz3 h:
-    # hzzz = d_dz(hzz)
-    #new attemp:
     hz = d_dz(H_Zf)
     hz_Zf = filt_X(hz.T,31,boundaries="extrap",s=0.2)
     hzz = d_dz(hz_Zf.T)
@@ -213,7 +211,7 @@ def filtered(h, X, Z,
     hxzz = filt_X(hxzz0,31,boundaries="extrap",s=0.2)
 
     # d3_dzdx2 h:
-    # (some computations repeaded as for d3_dx3)
+    # (some computations repeated as for d3_dx3)
     hxx_Zf = filt_X(hxx.T,31,boundaries="extrap",s=0.2)
     hzxx0 = d_dz(hxx_Zf.T)
     hzxx = filt_X(hzxx0,31,boundaries="extrap",s=0.2)

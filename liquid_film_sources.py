@@ -18,10 +18,10 @@ def liquid_film_sources(surface_tension,
     Compute the sources for the 3D liquid film integral model.
 
     Currently solving simplified equations:
-     - neglected pressure gradient as it affects
+     - neglected pressure gradient because it affects
     a narrow region of the domain;
      - neglected interface shear stress;
-     - problems with the third derivatives.
+     - problems with implementing the third derivatives.
 
     If the variable surface_tension is set to True in the main loop
     script, then the terms in S2 are taken into account.
@@ -40,21 +40,11 @@ def liquid_film_sources(surface_tension,
     the solver performs well with about 30-40 points per wavelength
     which yields ~10 times larger cell sizes
     than the ones without surface tension.
+    This results in significant numerical dissipation.
     '''
     # when surface_tension = True, compute the source terms
     # including the third derivatives:
     if surface_tension:
-        # # Mask to avoid having third derivatives on boundaries:
-        # M = np.ones(h.shape)
-        # M = np.ones((nx,nz), dtype = 'float32')
-        # x = dx*np.linspace(0,nx-1,nx)
-        # M[-1,:] = np.zeros((1,nz))
-        # M[int((1-0.2)*nx):,:] = np.zeros((int(0.2*nx),nz))
-        # M[int((1-0.3)*nx):int((1-0.2)*nx),:] = \
-        #     0.5*np.ones((int(0.1*nx),nz))
-        # M[:,0] = np.zeros((nx,))
-        # M[:,-1] = np.zeros((nx,))
-        # # (matrix M of 0 and 1s)
 
         # First derivatives operators:
         d_dx = FinDiff((0, dx, 1))
@@ -109,14 +99,14 @@ def liquid_film_sources(surface_tension,
                 (2*Epsilon*Re*h[1:-1,1:-1]**2) \
                 + (h[1:-1,1:-1]/(Epsilon*Re)) \
                 *(hxzz \
-                  - hxxx) # *M[1:-1,1:-1]
+                  - hxxx)
 
         # sources S3 for the qz-eqn:
         S3 = -6*qz[1:-1,1:-1]/ \
                 (2*Epsilon*Re*h[1:-1,1:-1]**2) \
                 # + (h[1:-1,1:-1]/(Epsilon*Re)) \
                 # *(hzzz \
-                #   - hzxx) # *M[1:-1,1:-1]
+                #   - hzxx)
 
         hzzz = 0
         hzxx = 0

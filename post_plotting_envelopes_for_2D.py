@@ -214,9 +214,6 @@ for LIQUID in LIQUIDS:
             gc.collect()
             os.chdir('../../../SOLUTIONS_n/' + FOLDER)
 
-    #     os.chdir('../')
-    # # return to directory to loop configurations
-    # os.chdir('../')
         print('Completed all from ', FOLDER)
         os.chdir('../')
     print('Completed all for Case ', LIQUID)
