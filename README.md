@@ -37,7 +37,7 @@ costs of the liquid film simulations.
 
 
 This system accounts for all physical forces and the equations are:
-![](images_eqns/system.png)
+<img src="images_eqns/system.png" width="100" height="100">
 
 Flux matrix:
 
