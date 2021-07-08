@@ -36,16 +36,16 @@ because it reduces significantly the computational
 costs of the liquid film simulations.
 
 
-The equations are:
-```math
-    \partial_t h  + \partial_x F_{11} + \partial_z F_{21} = S_1
+This system accounts for all physical forces and the equations are:
+!(images_eqns/system.png)
 
-    \partial_t q_x + \partial_x F_{12} + \partial_z F_{22} = S_2
+Flux matrix:
 
-    \partial_t q_z + \partial_x F_{13} + \partial_z F_{23} = S_3
-```
 
-The flux terms and source terms account for all physical forces.
+Sources:
+
+
+
 
 
 What is currently not completely implemented
