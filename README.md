@@ -38,15 +38,19 @@ costs of the liquid film simulations.
 
 This system accounts for all physical forces and the equations are:
 
-<img src="images_eqns/system.png" width="800">
+<img src="images_eqns/system.png" width="600">
 
-Flux matrix:
+Flux matrix elements:
 
+<img src="images_eqns/fluxes.png" width="600">
 
-Sources:
+To discretise this system, the 2D formulation of the finite volume method is applied:
 
+<img src="images_eqns/fv.png" width="200">
 
+The numerical fluxes are approximated by a blended scheme:
 
+<img src="images_eqns/flux_approx_bl.png" width="300">
 
 
 What is currently not completely implemented
@@ -55,3 +59,7 @@ pressure gradients (as they affect a narrow region of the domain),
 interface shear stresses,
 and the most challenging - surface tension terms
 (the third derivatives of the height h).
+
+This is the working simplified version of the 3D model that the solver currently can investigate:
+
+<img src="images_eqns/implemented.png" width="600">
