@@ -37,13 +37,13 @@ costs of the liquid film simulations.
 
 
 The equations are:
+```math
+    \partial_t h  + \partial_x F_{11} + \partial_z F_{21} = S_1
 
-    \partial_t h  + \partial_x F11 + \partial_z F21 = S1
+    \partial_t q_x + \partial_x F_{12} + \partial_z F_{22} = S_2
 
-    \partial_t qx + \partial_x F12 + \partial_z F22 = S2
-
-    \partial_t qz + \partial_x F13 + \partial_z F23 = S3
-
+    \partial_t q_z + \partial_x F_{13} + \partial_z F_{23} = S_3
+```
 
 The flux terms and source terms account for all physical forces.
 
