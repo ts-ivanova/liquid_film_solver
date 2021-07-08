@@ -10,6 +10,8 @@ the flow rate along the streamwise direction qx,
 and the flow rate along the spanwise direction qz
 (check RM2021 report).
 
+The main_solver_liquid_film.py script computes the solution of this integral model. The numerical schemes, fluxes and sources computations are all separated in different scripts for easier navigation. Tools for saving and post-processing are also developed during this project.
+
 
 The 3D integral model is dimensionless.
 It is derived during RM2021 using a common approach
@@ -46,11 +48,11 @@ Flux matrix elements:
 
 To discretise this system, the 2D formulation of the finite volume method is applied:
 
-<img src="images_eqns/fv.png" width="400">
+<img src="images_eqns/fv.png" width="500">
 
-The numerical fluxes are approximated by a blended scheme:
+The numerical fluxes are approximated by a blended scheme between high order and low order schemes:
 
-<img src="images_eqns/flux_approx_bl.png" width="400">
+<img src="images_eqns/flux_approx_bl.png" width="500">
 
 
 What is currently not completely implemented
