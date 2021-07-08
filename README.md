@@ -46,11 +46,11 @@ Flux matrix elements:
 
 To discretise this system, the 2D formulation of the finite volume method is applied:
 
-<img src="images_eqns/fv.png" width="200">
+<img src="images_eqns/fv.png" width="400">
 
 The numerical fluxes are approximated by a blended scheme:
 
-<img src="images_eqns/flux_approx_bl.png" width="300">
+<img src="images_eqns/flux_approx_bl.png" width="400">
 
 
 What is currently not completely implemented
