@@ -40,19 +40,19 @@ costs of the liquid film simulations.
 
 This system accounts for all physical forces and the equations are:
 
-<img src="images_eqns/system.png" width="600">
+<img src="images_for_readme/system.png" width="600">
 
 Flux matrix elements:
 
-<img src="images_eqns/fluxes.png" width="600">
+<img src="images_for_readme/fluxes.png" width="600">
 
 To discretise this system, the 2D formulation of the finite volume method is applied:
 
-<img src="images_eqns/fv.png" width="500">
+<img src="images_for_readme/fv.png" width="500">
 
 The numerical fluxes are approximated by a blended scheme between high order and low order schemes:
 
-<img src="images_eqns/flux_approx_bl.png" width="500">
+<img src="images_for_readme/flux_approx_bl.png" width="500">
 
 
 What is currently not completely implemented
@@ -64,4 +64,4 @@ and the most challenging - surface tension terms
 
 This is the working simplified version of the 3D model that the solver currently can investigate:
 
-<img src="images_eqns/implemented.png" width="600">
+<img src="images_for_readme/implemented.png" width="600">
