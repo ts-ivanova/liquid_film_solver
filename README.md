@@ -1,6 +1,7 @@
 # liquid_film_solver
 A solver for an integral boundary layer model for liquid films on moving substrates.
 
+
 This project solves a simplified version of the 3D integral model
 for a liquid film on a moving substrate.
 The unknowns of this integral model are
@@ -8,6 +9,7 @@ the liquid film height h,
 the flow rate along the streamwise direction qx,
 and the flow rate along the spanwise direction qz
 (check RM2021 report).
+
 
 The 3D integral model is dimensionless.
 It is derived during RM2021 using a common approach
@@ -33,12 +35,18 @@ This is an important advantage
 because it reduces significantly the computational
 costs of the liquid film simulations.
 
+
 The equations are:
+
     \partial_t h  + \partial_x F11 + \partial_z F21 = S1
+
     \partial_t qx + \partial_x F12 + \partial_z F22 = S2
+
     \partial_t qz + \partial_x F13 + \partial_z F23 = S3
 
+
 The flux terms and source terms account for all physical forces.
+
 
 What is currently not completely implemented
 in this version of the solver are
