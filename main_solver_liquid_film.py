@@ -22,7 +22,7 @@ The derived 3D integral model is dimensionless.
     \partial_t qz + \partial_x F13 + \partial_z F23 = S3
 
 What is currently not completely implemented
-in this version of the solver are 
+in this version of the solver are
 pressure gradients, interface shear stresses, and
 the most challenging - surface tension terms
 (the third derivatives of the height h).
@@ -60,8 +60,6 @@ liquids = {
 
 # Possible configurations:
 conf = {
-        # Entirely flat:
-        # 'FLAT'  : 0,
         # Perturbations only on x (PX) of qx (OpenFOAM case):
         'PX01' : 0,
         # Perturbations on x and on z (PXZ):
@@ -103,9 +101,9 @@ liquid_list = [
 
 # Selection of the configuration:
 configurations = [
-                  # conf['PX01']#, # OpenFOAM JFM case
-                  conf['PXZ1']#,
-                  # conf['PXZ2']
+                  # conf['PX01']#, # 2D cases + OpenFOAM JFM case
+                  # conf['PXZ1']#,
+                  conf['PXZ2']
                   ]
 
 # Choice of scheme:
@@ -166,7 +164,7 @@ for liquid in liquid_list:
                 CFL = 0.3
                 # OpenFOAM case in JFM
                 frequencies = [0.05] # [-] as in 2D JFM
-                # frequencies = [0.1, 0.2]
+                # frequencies = [0.05, 0.10, 0.15, 0.20, 0.25, 0.30]
                 # [-] low, medium and high freqs
                 # Set amplitude for the flow rate perturbations
                 # as in 2D JFM:
@@ -217,6 +215,10 @@ for liquid in liquid_list:
                 lambd    = U_substr/freq
                 factor   = 1
                 freq_JFM = 0.05
+
+                # Depending on whether the surface tension is
+                # taken into account or not, the number of points
+                # per wavelength are specified below:
 
                 # Currently (end of RM2021),
                 # the presence of surface tension terms
@@ -458,21 +460,50 @@ for liquid in liquid_list:
                         qz[-1,:] = np.zeros(nz)
 
                     # Perturbations of h along x and z:
+                    # elif configuration == conf['PXZ2']:
+                    #     # BCs at inlet: Dirichlet conditions
+                    #     # BOTTOM BOUNDARY (INLET):
+                    #     h[-1,:] = h0*np.ones(nz) + \
+                    #             A*np.sin(2*np.pi*freq\
+                    #                         *time_steps[n])\
+                    #             *np.sin((2*np.pi/lambd_z)*z)\
+                    #             # *np.exp(-(z-z.mean())**2\
+                    #             #         /(2*(0.4)**2))\
+                    #             # /(0.4*np.sqrt(2*math.pi))
+                    #     # From the quasi-steady formula,
+                    #     # compute qx:
+                    #     qx[-1,:] = 1/3*h[-1,:]**3 - h[-1,:]
+                    #     # Set qz to zeros at the inlet:
+                    #     qz[-1,:] = np.zeros(nz)
+
                     elif configuration == conf['PXZ2']:
                         # BCs at inlet: Dirichlet conditions
                         # BOTTOM BOUNDARY (INLET):
                         h[-1,:] = h0*np.ones(nz) + \
                                 A*np.sin(2*np.pi*freq\
                                             *time_steps[n])\
-                                *np.sin((2*np.pi/lambd_z)*z)\
-                                *np.exp(-(z-z.mean())**2\
-                                        /(2*(0.4)**2))\
-                                /(0.4*np.sqrt(2*math.pi))
+                                # *np.sin((2*np.pi/lambd_z)*z)\
+                                # *np.exp(-(z-z.mean())**2\
+                                #         /(2*(0.4)**2))\
+                                # /(0.4*np.sqrt(2*math.pi))
                         # From the quasi-steady formula,
                         # compute qx:
                         qx[-1,:] = 1/3*h[-1,:]**3 - h[-1,:]
+                        # qx[0,:] = (1/3*h0**3 - h0)
                         # Set qz to zeros at the inlet:
                         qz[-1,:] = np.zeros(nz)
+
+					# elif configuration == conf['PXZ2']:
+                    #     # BCs at inlet: Dirichlet conditions
+                    #     # BOTTOM BOUNDARY (INLET):
+                    #     h[0,:] = h0*np.ones(nz)*\
+                    #
+                    #     # From the quasi-steady formula,
+                    #     # compute qx:
+                    #     qx[0,:] = (1/3*h**3 - h)
+                    #     # Set qz to zeros at the inlet:
+                    #     qz[0,:] = np.zeros(nz)
+
 
                     else:
                         print('Unknown configuration %f'

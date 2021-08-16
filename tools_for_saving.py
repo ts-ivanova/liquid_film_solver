@@ -36,7 +36,7 @@ def create_directories(surface_tension,
 
     # A string containing the initial film height value
     # and the perturbation amplitude:
-    h0_and_amplitude = "i{:.1f}".format(h0) + "_A{:.2f}".format(A)
+    h0_and_amplitude = "h{:.1f}".format(h0) + "_A{:.2f}".format(A)
 
     if surface_tension:
         all_st = "_with_surface_tension_" + h0_and_amplitude

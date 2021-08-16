@@ -29,6 +29,9 @@ import pandas as pd
 import datetime
 from scipy.fft import fftshift
 
+# for the envelopes:
+from scipy.signal import find_peaks
+
 # file processing:
 import os
 from natsort import natsorted
@@ -44,12 +47,14 @@ font = {'family' : 'DejaVu Sans',
         'size'   : 16}
 rc('font', **font)
 
+# transparency level
+alpha1 = 0.9
 
 ####################
 os.chdir('RESULTS-processed/')
 # Gather all computed configurations:
 # LIQUIDS = natsorted(glob.glob('2D*')) + natsorted(glob.glob('3D*'))
-LIQUIDS = natsorted(glob.glob('*'))
+LIQUIDS = natsorted(glob.glob('2D*'))
 
 print('Going to process ', LIQUIDS)
 
@@ -85,16 +90,20 @@ for LIQUID in LIQUIDS:
                                            + '*.npy'))
 
             # To save the contourf's:
-            directory = "../../../POSTPROCESSED/spectrogr_charact"
+            directory = "../../../POSTPROCESSED/spectrogr_charact_env"
             Path(directory).mkdir(parents=True, exist_ok=True)
 
+            # initialize the height along x in time list:
             H_XT_list = []
+
+            # an arbitrary chosen slice of the domain:
+            slice = int(0.8*nz/2)
+
             # Loop over all data files to extract the height
             # and attach them to the dictionary:
             for ii in range(len(filelist)):
                 h_np = np.load(filelist[ii])
-                h = h_np[:,int(1.2*nz/2)]
-                # 1.2*nz/2 - an arbitrary chosen slice of the domain
+                h = h_np[:,slice]
 
                 # store in matrix the height along x for each time
                 H_XT_list.append([])
@@ -106,7 +115,6 @@ for LIQUID in LIQUIDS:
             dt = float(filelist[-1][-16:-11])
             # final_time:
             T  = int(filelist[-1][-22:-19])
-
 
             H_XT = np.asarray(H_XT_list).reshape(len(filelist), nx)
             print('H_XT.shape = ', H_XT.shape)
@@ -124,16 +132,25 @@ for LIQUID in LIQUIDS:
 
             H_XF = np.zeros(H_XT.shape)
 
+            H_XT_max = np.zeros(H_XT.shape)
+            H_XT_min = np.zeros(H_XT.shape)
+
             # This is the numpy tool for freq axis:
             Freqs = fftshift(np.fft.fftfreq(len(filelist)))*1/dt
 
             for j in range(1,nx):
-                # Profile at location j
+                # Profile at location j in time:
                 Prof_time = H_XT[:,j]
                 Prof_Freq = np.abs(fftshift(np.fft.fft(Prof_time
                                                        - Prof_time.mean())))
                 H_XF[:,j] = Prof_Freq
+
+                # Evaluate maximum and minimum heights in time along x:
+                H_XT_max[:,j] = np.amax(Prof_time)
+                H_XT_min[:,j] = np.amin(Prof_time)
+
             plt.close()
+
             fig, ax = plt.subplots()
             contourplot_sp = plt.contourf(Freqs/100,
                                           x_axis,#-x_axis.min(),
@@ -155,6 +172,8 @@ for LIQUID in LIQUIDS:
                         format      = 'png',
                         dpi         = 200,
                         bbox_inches = 'tight')
+
+
             print('Plotting characteristics ... ')
             plt.close()
             contourplot_ch = plt.contourf(t_axis,
@@ -174,6 +193,60 @@ for LIQUID in LIQUIDS:
                         format      = 'png',
                         dpi         = 200,
                         bbox_inches = 'tight')
+
+
+
+            # For the 2D cases:
+            print('Plotting envelopes ... ')
+            plt.close()
+            plt.figure(figsize = (12,4))
+
+            plt.plot(x_axis,
+                     H_XT.T[:,-1],
+                     linestyle = 'solid',
+                     color = '#574d57',
+                     linewidth = 2,
+                     alpha = alpha1,
+                     label = 'height')
+
+            # identify for which indices there are peaks
+            # of the wave maxima:
+            peaks_max, _ = find_peaks(H_XT_max[slice,:])
+
+            plt.plot(-dx*peaks_max,
+                     H_XT_max[slice,:][peaks_max],
+                     linestyle = 'dashed',
+                     color = '#9e2ec9',
+                     linewidth = 2,
+                     alpha = alpha1,
+                     label = 'max')
+
+            # identify for which indices there are peaks
+            # of the wave minima:
+            peaks_min, _ = find_peaks(H_XT_min[slice,:])
+
+            plt.plot(-dx*peaks_min,
+                     H_XT_min[slice,:][peaks_min],
+                     linestyle = 'dashdot',
+                     color = '#2878b5',
+                     linewidth = 2,
+                     alpha = alpha1,
+                     label = 'min')
+
+            plt.xlabel('length x, [-]')
+            plt.ylabel('film thickness h, [-]')
+            plt.title('Envelopes in time for each position x')
+            plt.legend(loc = 'upper right')
+            plt.ylim(0.1, 0.4)
+            plt.grid()
+            # plt.title(subfolder[i])
+            plt.savefig(directory + os.sep \
+                        + 'env_' + subfolder[i] \
+                        + '.png',
+                        format      = 'png',
+                        dpi         = 200,
+                        bbox_inches = 'tight')
+
 
             os.chdir('../')
 

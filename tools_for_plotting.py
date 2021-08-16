@@ -63,6 +63,9 @@ def plot_surfaces(h, X, Z, n,
     if h0 == 0.1:
         h_max = 0.2
         h_min = 0.0
+    elif h0 > 1:
+        h_max = 1.3
+        h_min = 1.1
     else:
         h_max = 0.3
         h_min = 0.1
