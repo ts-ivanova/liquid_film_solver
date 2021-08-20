@@ -13,7 +13,7 @@ The unknowns of this integral model are
 the liquid film height h,
 the flow rate along the streamwise direction qx,
 and the flow rate along the spanwise direction qz
-(check RM2021 report).
+(RM2021 report).
 
 The derived 3D integral model is dimensionless.
 
@@ -101,9 +101,9 @@ liquid_list = [
 
 # Selection of the configuration:
 configurations = [
-                  # conf['PX01']#, # 2D cases + OpenFOAM JFM case
-                  # conf['PXZ1']#,
-                  conf['PXZ2']
+                  conf['PX01']#, # 2D cases + OpenFOAM JFM case
+                  # conf['PXZ1']
+                  # conf['PXZ2']
                   ]
 
 # Choice of scheme:
@@ -114,10 +114,6 @@ scheme = schemes['LWFble']
 # Specify whether to include surface tension
 # terms in the sources (the third derivatives):
 surface_tension = False
-# At the end of RM2021, only two out of four third derivatives
-# have been included
-# and the solver performs well only on coarses meshes.
-
 
 # Dimensionless substrate velocity:
 U_substr = 1
@@ -136,8 +132,8 @@ for liquid in liquid_list:
     if liquid == liquids['WATER']:
         # Set WATER parameters from JFM:
         Epsilon = 0.23918 # Long-wave parameter, [-]
-        Re_list = [319] # Re number in OpenFOAM JFM
-        # Re_list = [319, 2*319]
+        # Re_list = [319] # Re number in OpenFOAM JFM
+        Re_list = [319, 2*319]
     elif liquid == liquids['ZINC']:
         # Set liquid ZINC parameters from JFM:
         Epsilon = 0.15460 # Long-wave parameter, [-]
@@ -164,7 +160,12 @@ for liquid in liquid_list:
                 CFL = 0.3
                 # OpenFOAM case in JFM
                 frequencies = [0.05] # [-] as in 2D JFM
-                # frequencies = [0.05, 0.10, 0.15, 0.20, 0.25, 0.30]
+
+                # freq_list = list(np.arange(0.005, 0.205, 0.015))
+                # frequencies = [round(elem, 3) for elem in freq_list]
+
+                # frequencies = [0.005]#, 0.02, 0.035, 0.05]
+
                 # [-] low, medium and high freqs
                 # Set amplitude for the flow rate perturbations
                 # as in 2D JFM:
@@ -179,13 +180,13 @@ for liquid in liquid_list:
                     CFL = 0.1
                 else:
                     CFL = 0.3
-                # frequencies = [0.05, 0.1, 0.2]
-                # frequencies = [0.1]
-                frequencies = [0.05] # [-] as in 2D JFM
+                # frequencies = [0.05] # [-] as in 2D JFM
+                freq_list = list(np.arange(0.005, 0.205, 0.015))
+                frequencies = [round(elem, 3) for elem in freq_list]
                 if configuration == conf['PXZ1']:
                     A = 0.2 # amplitude for the flow rate perturbations
                 elif configuration == conf['PXZ2']:
-                    A = 0.07 # amplitude for height perturbations
+                    A = 0.07 # amplitude for the height perturbations
 
             # Specify a scheme (by un-commenting a line):
             if scheme == schemes['LWFble']:
@@ -240,28 +241,26 @@ for liquid in liquid_list:
                 nx    = int(L/dx)
                 final_time = int((L+lambd)/U_substr)
 
-                if configuration == conf['PX01']:
-                    # nx = 2810 is extracted from JFM data
-                    # by using Lx = nx*dx, where Lx = 77.28
-                    # and dx = 0.0275 from the JFM paper.
+                ##############################
+                # # For the OpenFOAM case in JFM:
+                # # (for the validation)
+                # if configuration == conf['PX01']:
+                #     # nx = 2810 is extracted from JFM data
+                #     # by using Lx = nx*dx, where Lx = 77.28
+                #     # and dx = 0.0275 from the JFM paper.
+                #     npoin = int(lambd/0.0275) # is approx. 727
+                #     dx = (lambd/(npoin))*factor
+                #     L  = 4*lambd
+                #     nx = int(2810/factor)
+                #     # z-dimension:
+                #     dz = 1e-2/10
+                #     nz = 100
+                ##############################
 
-                    # For the OpenFOAM case in JFM:
-                    # (for the validation)
-                    npoin = int(lambd/0.0275) # is approx. 727
-                    dx = (lambd/(npoin))*factor
-                    L  = 4*lambd
-                    nx = int(2810/factor)
-                    final_time = int((L+lambd)/U_substr)
-
-                    # z-dimension:
-                    dz = 1e-2
-                    nz = 100
-
-                else: # Perturbations along x and along z.
-                    # wavelength lambd_z [-] along z
-                    lambd_z = 1
-                    dz      = lambd_z/100
-                    nz      = int(lambd_z/dz)*3
+                # wavelength lambd_z [-] along z
+                lambd_z = 1
+                dz      = lambd_z/100
+                nz      = int(lambd_z/dz)*3
 
                 ##############################
                 # TIME INFORMATION
@@ -396,23 +395,6 @@ for liquid in liquid_list:
                     # Left:           [:,0]
                     # Right:          [:,-1]
 
-                    # if configuration == conf['FLAT']:
-                    #     # This flat configuration means
-                    #     # that no perturbations
-                    #     # are introdued (nothing happens).
-                    #     # BOTTOM BOUNDARY (INLET):
-                    #     # linear extrapolations along x:
-                    #     h[-1,:]  = 2*h[-2,:] - h[-3,:]
-                    #     qx[-1,:] = 2*qx[-2,:] - qx[-3,:]
-                    #     qz[-1,:] = 2*qz[-2,:] - qz[-3,:]
-                    #
-                    #     # Linear extrapolation along z-azis
-                    #     # (LEFT and RIGHT BOUNDARIES)
-                    #     # and along the
-                    #     # TOP BOUNDARY (OUTLET):
-                    #     comp.linear_extrap_lrt(h, qx, qz)
-
-
                     # INTRODUCING PERTURBATIONS
                     # AT THE INLET [-1,:]
 
@@ -460,49 +442,21 @@ for liquid in liquid_list:
                         qz[-1,:] = np.zeros(nz)
 
                     # Perturbations of h along x and z:
-                    # elif configuration == conf['PXZ2']:
-                    #     # BCs at inlet: Dirichlet conditions
-                    #     # BOTTOM BOUNDARY (INLET):
-                    #     h[-1,:] = h0*np.ones(nz) + \
-                    #             A*np.sin(2*np.pi*freq\
-                    #                         *time_steps[n])\
-                    #             *np.sin((2*np.pi/lambd_z)*z)\
-                    #             # *np.exp(-(z-z.mean())**2\
-                    #             #         /(2*(0.4)**2))\
-                    #             # /(0.4*np.sqrt(2*math.pi))
-                    #     # From the quasi-steady formula,
-                    #     # compute qx:
-                    #     qx[-1,:] = 1/3*h[-1,:]**3 - h[-1,:]
-                    #     # Set qz to zeros at the inlet:
-                    #     qz[-1,:] = np.zeros(nz)
-
                     elif configuration == conf['PXZ2']:
                         # BCs at inlet: Dirichlet conditions
                         # BOTTOM BOUNDARY (INLET):
                         h[-1,:] = h0*np.ones(nz) + \
                                 A*np.sin(2*np.pi*freq\
                                             *time_steps[n])\
-                                # *np.sin((2*np.pi/lambd_z)*z)\
+                                *np.sin((2*np.pi/lambd_z)*z)\
                                 # *np.exp(-(z-z.mean())**2\
                                 #         /(2*(0.4)**2))\
                                 # /(0.4*np.sqrt(2*math.pi))
                         # From the quasi-steady formula,
                         # compute qx:
                         qx[-1,:] = 1/3*h[-1,:]**3 - h[-1,:]
-                        # qx[0,:] = (1/3*h0**3 - h0)
                         # Set qz to zeros at the inlet:
                         qz[-1,:] = np.zeros(nz)
-
-					# elif configuration == conf['PXZ2']:
-                    #     # BCs at inlet: Dirichlet conditions
-                    #     # BOTTOM BOUNDARY (INLET):
-                    #     h[0,:] = h0*np.ones(nz)*\
-                    #
-                    #     # From the quasi-steady formula,
-                    #     # compute qx:
-                    #     qx[0,:] = (1/3*h**3 - h)
-                    #     # Set qz to zeros at the inlet:
-                    #     qz[0,:] = np.zeros(nz)
 
 
                     else:
@@ -520,26 +474,28 @@ for liquid in liquid_list:
                     ##############################
                     # SAVE .dat FILES and PLOTS every 100 steps:
                     if n%100 < 0.0001:
-                        # Save to .dat files a slice
-                        # of the wave along x:
-                        save_data.save_to_dat(h, qx, qz,
-                                              nx, nz,
-                                              directory_n,
-                                              filename,
-                                              n)
-                        # Save the whole height
-                        # as a matrix:
-                        save_data.save_matrix(h, directory_n,
-                                              filename,
-                                              n)
+                        # # Save to .dat files a slice
+                        # # of the wave along x:
+                        # save_data.save_to_dat(h, qx, qz,
+                        #                       nx, nz,
+                        #                       directory_n,
+                        #                       filename,
+                        #                       n)
+                        # # Save the whole height
+                        # # as a matrix:
+                        # save_data.save_matrix(h, directory_n,
+                        #                       filename,
+                        #                       n)
+
                         # Save the np solutions:
                         save_data.save_np(h, directory_n,
                                           filename,
                                           n)
+
                         # pick up trash:
                         gc.collect()
 
-                    if n%1000 < 0.0001:
+                    if n%2000 < 0.0001:
                         # Save .png's:
                         save_plots.plot_surfaces(h, X, Z, n,
                                                  h0,
@@ -550,21 +506,22 @@ for liquid in liquid_list:
                         # Remind me what I've been doing
                         # in the terminal:
                         print("\n Reminder:" + "\n" + info)
+
                         # Monitor the behaviour of the limiters
                         # for the blended scheme:
                         if scheme == schemes['LWFble'] \
                         and configuration != conf['PX01']:
-                            save_plots.plot_limiters(nx, dx, nz, dz,
-                                               Phi_x, Phi_z,
-                                               directory_lim,
-                                               scheme_choice,
-                                               n)
+                            # save_plots.plot_limiters(nx, dx, nz, dz,
+                            #                    Phi_x, Phi_z,
+                            #                    directory_lim,
+                            #                    scheme_choice,
+                            #                    n)
                             print('Phi_x' , Phi_x)
                             print('Phi_z' , Phi_z)
-                            print('hxxx', hxxx)
-                            print('hzzz', hzzz)
-                            print('hxzz', hxzz)
-                            print('hzxx', hzxx)
+                            # print('hxxx', hxxx)
+                            # print('hzzz', hzzz)
+                            # print('hxzz', hxzz)
+                            # print('hzxx', hzxx)
                         gc.collect()
 
                 #%%

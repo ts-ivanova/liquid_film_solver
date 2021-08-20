@@ -39,13 +39,13 @@ def create_directories(surface_tension,
     h0_and_amplitude = "h{:.1f}".format(h0) + "_A{:.2f}".format(A)
 
     if surface_tension:
-        all_st = "_with_surface_tension_" + h0_and_amplitude
+        all_st = "_with_surf_ten_" + h0_and_amplitude
         results_dir = "RESULTS" + os.sep + dim + liquids_key + all_st
         Path(results_dir)\
             .mkdir(parents=True, exist_ok=True)
         os.chdir(results_dir)
     else:
-        no_st = "_without_surface_tension_" + h0_and_amplitude
+        no_st = "_without_surf_ten_" + h0_and_amplitude
         results_dir = "RESULTS" + os.sep + dim + liquids_key + no_st
         Path(results_dir)\
             .mkdir(parents=True, exist_ok=True)
@@ -62,7 +62,7 @@ def create_directories(surface_tension,
              + '_dz{:.3f}'.format(dz) \
              + '_nz{0:04d}'.format(nz) \
              + '_Re{:.0f}'.format(Re) \
-             + '_f{:.2f}'.format(freq)
+             + '_f{:.3f}'.format(freq)
 
     filename = conf_key \
              + '_' + scheme_choice \

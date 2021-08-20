@@ -65,3 +65,7 @@ and the most challenging - surface tension terms
 This is the working simplified version of the 3D model that the solver currently can investigate:
 
 <img src="images_for_readme/implemented.png" width="600">
+
+Without surface tension, pressure gradient and interface shear stress, the system reads:
+
+<img src="images_for_readme/solved_system_simplified.png" width="600">

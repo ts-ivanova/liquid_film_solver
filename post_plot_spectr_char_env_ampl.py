@@ -40,6 +40,11 @@ import glob
 # Import libraries for paths and saving:
 from pathlib import Path
 
+# for the exponential fit:
+from scipy.optimize import curve_fit
+def func(x, a, b, c):
+    return a * np.exp(-b * x) + c
+
 
 # PLOT CUSTOMIZATIONS:
 font = {'family' : 'DejaVu Sans',
@@ -90,14 +95,15 @@ for LIQUID in LIQUIDS:
                                            + '*.npy'))
 
             # To save the contourf's:
-            directory = "../../../POSTPROCESSED/spectrogr_charact_env"
+            directory = "../../../POSTPROCESSED/" \
+                        + "spectrogr_charact_env_ampl"
             Path(directory).mkdir(parents=True, exist_ok=True)
 
             # initialize the height along x in time list:
             H_XT_list = []
 
             # an arbitrary chosen slice of the domain:
-            slice = int(0.8*nz/2)
+            slice = int(0.5*nz/2)
 
             # Loop over all data files to extract the height
             # and attach them to the dictionary:
@@ -196,7 +202,7 @@ for LIQUID in LIQUIDS:
 
 
 
-            # For the 2D cases:
+
             print('Plotting envelopes ... ')
             plt.close()
             plt.figure(figsize = (12,4))
@@ -242,6 +248,38 @@ for LIQUID in LIQUIDS:
             # plt.title(subfolder[i])
             plt.savefig(directory + os.sep \
                         + 'env_' + subfolder[i] \
+                        + '.png',
+                        format      = 'png',
+                        dpi         = 200,
+                        bbox_inches = 'tight')
+
+
+
+            print('Plotting exp fit to amplitudes ... ')
+            plt.close()
+            plt.figure(figsize = (12,4))
+
+            H_XT_ampl = H_XT_max[slice,:] - H_XT_min[slice,:]
+            peaks_ampl, _ = find_peaks(H_XT_ampl, distance = 10)
+
+            plt.scatter(-dx*peaks_ampl,
+                     H_XT_ampl[peaks_ampl],
+                     alpha = alpha1,
+                     label = 'ampl')
+
+            # yn = func(-dx*peaks_ampl[:-6], 0.002, 0.05, 0.05)
+            # plt.plot(-dx*peaks_ampl[:-6], yn)
+            #
+            # popt, pcov = curve_fit(func, -dx*peaks_ampl[:-6], yn)
+
+            plt.xlabel('length x, [-]')
+            plt.ylabel('amplitude, [-]')
+            # plt.title('Envelopes in time for each position x')
+            plt.legend(loc = 'upper right')
+            plt.grid()
+            # plt.title(subfolder[i])
+            plt.savefig(directory + os.sep \
+                        + 'ampl_' + subfolder[i] \
                         + '.png',
                         format      = 'png',
                         dpi         = 200,

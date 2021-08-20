@@ -60,15 +60,12 @@ def plot_surfaces(h, X, Z, n,
 
     # set plot limits based on the initial height value
     # h0 from the main script:
-    if h0 == 0.1:
-        h_max = 0.2
-        h_min = 0.0
-    elif h0 > 1:
-        h_max = 1.3
-        h_min = 1.1
+    if h0 <= 0.2:
+        h_max = h0 + 0.2
+        h_min = h0 - 0.2
     else:
-        h_max = 0.3
-        h_min = 0.1
+        h_max = h0 + 0.3
+        h_min = h0 - 0.3
 
     fig = plt.figure()
     ax = fig.add_subplot(111, projection= '3d')
@@ -118,19 +115,19 @@ def plot_surfaces(h, X, Z, n,
 
 
 #################################################
-def plot_contourfs(h, X, Z,
+def plot_contourfs(h, X, Z, h0,
                    n,
                    directory,
                    filename):
 
-    # adjust manually:
-    # if h0 = 0.2:
-    h_min = 0.17
-    h_max = 0.23
-
-    # if h0 = 0.1:
-    # h_min = 0.07
-    # h_max = 0.13
+    # set plot limits based on the initial height value
+    # h0 from the main script:
+    if h0 <= 0.2:
+        h_max = h0 + 0.2
+        h_min = h0 - 0.2
+    else:
+        h_max = h0 + 0.3
+        h_min = h0 - 0.3
 
     fig = plt.figure(figsize = (12,4))
     plt.plot()

@@ -125,7 +125,7 @@ for LIQUID in LIQUIDS:
 
                 # Plot contourf's:
                 h = np.load(filenames[-1])
-                save_plots.plot_contourfs(h, X, Z,
+                save_plots.plot_contourfs(h, X, Z, h0,
                                           len(filenames),
                                           directory_plots,
                                           filenames[-1][5:-11])
