@@ -159,7 +159,7 @@ for liquid in liquid_list:
                 surface_tension = False
                 CFL = 0.3
                 # OpenFOAM case in JFM
-                frequencies = [0.05] # [-] as in 2D JFM
+                frequencies = [0.155] # [-] as in 2D JFM
 
                 # freq_list = list(np.arange(0.005, 0.205, 0.015))
                 # frequencies = [round(elem, 3) for elem in freq_list]
