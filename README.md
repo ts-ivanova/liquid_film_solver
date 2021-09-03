@@ -57,7 +57,7 @@ The numerical fluxes are approximated by a blended scheme between high order and
 
 What is currently not completely implemented
 in this version of the solver are
-pressure gradients (as they affect a narrow region of the domain),
+pressure gradients (because they affect a narrow region of the domain),
 interface shear stresses,
 and the most challenging - surface tension terms
 (the third derivatives of the height h).

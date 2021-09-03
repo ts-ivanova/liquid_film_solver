@@ -5,7 +5,7 @@ Created on Tue Mar  9 16:27:43 2021
 
 Liquid Film Solver
 
-@author: tsveti
+@author: ivanova
 
 This script solves a simplified version of the 3D integral model
 for a liquid film on a moving substrate.
