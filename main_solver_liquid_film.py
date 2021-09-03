@@ -101,8 +101,8 @@ liquid_list = [
 
 # Selection of the configuration:
 configurations = [
-                  conf['PX01']#, # 2D cases + OpenFOAM JFM case
-                  # conf['PXZ1']
+                  # conf['PX01']#, # 2D cases + OpenFOAM JFM case
+                  conf['PXZ1']
                   # conf['PXZ2']
                   ]
 
@@ -123,7 +123,7 @@ u = 2*U_substr
 output_interval = 1.0
 
 # Initial height:
-h0 = 0.2 # [-]
+h0 = 0.3 # [-]
 # h0 = 0.1 # [-] can be suitable for higher Re numbers
 
 # Run the script for all liquid types:
@@ -159,12 +159,10 @@ for liquid in liquid_list:
                 surface_tension = False
                 CFL = 0.3
                 # OpenFOAM case in JFM
-                frequencies = [0.155] # [-] as in 2D JFM
+                # frequencies = [0.05] # [-] as in 2D JFM
 
-                # freq_list = list(np.arange(0.005, 0.205, 0.015))
-                # frequencies = [round(elem, 3) for elem in freq_list]
-
-                # frequencies = [0.005]#, 0.02, 0.035, 0.05]
+                freq_list = list(np.arange(0.005, 0.205, 0.015))
+                frequencies = [round(elem, 3) for elem in freq_list]
 
                 # [-] low, medium and high freqs
                 # Set amplitude for the flow rate perturbations
@@ -433,9 +431,9 @@ for liquid in liquid_list:
                                                    /lambd_z)\
                                                   *z)\
                                       *np.ones((nz,))\
-                                      # *np.exp(-(z-z.mean())**2\
-                                      #         /(2*(0.4)**2))\
-                                      # /(0.4*np.sqrt(2*math.pi))
+                                      *np.exp(-(z-z.mean())**2\
+                                              /(2*(0.4)**2))\
+                                      /(0.4*np.sqrt(2*math.pi))
                                       )
 
                         # Set qz to zeros at the inlet:
@@ -497,11 +495,11 @@ for liquid in liquid_list:
 
                     if n%2000 < 0.0001:
                         # Save .png's:
-                        save_plots.plot_surfaces(h, X, Z, n,
-                                                 h0,
-                                                 directory_plots,
-                                                 filename,
-                                                 conf_key)
+#                        save_plots.plot_surfaces(h, X, Z, n,
+#                                                 h0,
+#                                                 directory_plots,
+#                                                 filename,
+#                                                 conf_key)
 
                         # Remind me what I've been doing
                         # in the terminal:

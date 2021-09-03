@@ -3,11 +3,11 @@
 """
 Created on Sun Mar 14 12:56:58 2021
 
-@author: tsveti
+@author: ivanova
 """
 
 import numpy as np
-from findiff import FinDiff
+#from findiff import FinDiff
 from Functions_Miguel import filt_X
 
 def liquid_film_sources(surface_tension,

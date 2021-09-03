@@ -8,7 +8,7 @@ of plots, .dat files, .npy solutions
 creating paths etc.
 for the purposes of the Liquid film solver
 
-@author: tsveti
+@author: ivanova
 """
 
 import numpy as np
@@ -36,16 +36,16 @@ def create_directories(surface_tension,
 
     # A string containing the initial film height value
     # and the perturbation amplitude:
-    h0_and_amplitude = "h{:.1f}".format(h0) + "_A{:.2f}".format(A)
+    h0_and_amplitude = "h{:.2f}".format(h0) + "_A{:.2f}".format(A)
 
     if surface_tension:
-        all_st = "_with_surf_ten_" + h0_and_amplitude
+        all_st = "_with_surf_ten_" + 'Re{:.0f}'.format(Re)
         results_dir = "RESULTS" + os.sep + dim + liquids_key + all_st
         Path(results_dir)\
             .mkdir(parents=True, exist_ok=True)
         os.chdir(results_dir)
     else:
-        no_st = "_without_surf_ten_" + h0_and_amplitude
+        no_st = "_without_surf_ten_" + 'Re{:.0f}'.format(Re)
         results_dir = "RESULTS" + os.sep + dim + liquids_key + no_st
         Path(results_dir)\
             .mkdir(parents=True, exist_ok=True)
@@ -71,8 +71,14 @@ def create_directories(surface_tension,
              + '_dt{:.3f}'.format(dt)
 
     # The directory in which the solutions are saved:
+    # -> separated by folders dx
+    # directory_n = "SOLUTIONS_n" \
+    #                 + os.sep + 'dx{:.4f}'.format(dx) \
+    #                 + os.sep + saving
+    # -> separated by folders Re
     directory_n = "SOLUTIONS_n" \
-                    + os.sep + 'dx{:.4f}'.format(dx) \
+                    + os.sep + 'Re{:.0f}'.format(Re) \
+                    + '_' + h0_and_amplitude \
                     + os.sep + saving
     Path(directory_n).mkdir(parents=True, exist_ok=True)
 
@@ -104,16 +110,19 @@ def save_to_dat(h, qx, qz,
     directory_n_xslice = directory_n \
                         + os.sep + 'h_xslice'
     Path(directory_n_xslice).mkdir(parents=True, exist_ok=True)
+    
+    # choose a slice location
+    xslice = int(1.2*nz/2)
 
-    h_val  = [float(i) for i in h[:,int(1.2*nz/2)]]
-    qx_val = [float(i) for i in qx[:,int(1.2*nz/2)]]
-    qz_val = [float(i) for i in qz[:,int(1.2*nz/2)]]
+    h_val  = [float(i) for i in h[:,xslice]]
+    qx_val = [float(i) for i in qx[:,xslice]]
+    qz_val = [float(i) for i in qz[:,xslice]]
     data   = np.array([h_val, qx_val, qz_val])
     data   = data.T
 
     with open(directory_n_xslice + os.sep \
                + "h_" + filename \
-               + "_nz_" + str(int(1.2*nz/2)) \
+               + "_nz_" + str(xslice) \
                + "_n{0:05d}.dat".format(n),
               'wb') \
     as f:

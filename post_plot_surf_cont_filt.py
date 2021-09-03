@@ -3,7 +3,7 @@
 """
 Created on Wed Jun 02 18:00:03 2021
 
-@author: tsveti
+@author: ivanova
 
 Possible options are to plot the height surfaces
 from the liquid film solver,
@@ -32,33 +32,39 @@ os.chdir('RESULTS/')
 
 # Gather all computed configurations:
 # LIQUIDS = natsorted(glob.glob('2D*')) + natsorted(glob.glob('3D*'))
-LIQUIDS = natsorted(glob.glob('*'))
+LIQUIDS = natsorted(glob.glob('3*'))
 
 
 # Choose which plots to produce by setting True or False:
-Surfaces  = False     # liquid film height surfaces h
-Contourfs = True      # contour plot of the last computed time step of h
+Surfaces  = True      # liquid film height surfaces h
+Contourfs = True     # contour plot of the last 
+                      # computed time step of h
 Filtered  = False     # filtered third derivatives contourplots
                       # and comparisons
 
 
-# plotting the filtered derivatives only for a few cases:
-if Filtered:
-    LIQUIDS = ['3D_WATER_with_surface_tension_coarse_XZ1/',
-               '3D_WATER_with_surface_tension_coarse_XZ2/',
-               '3D_WATER_with_surface_tension_whole_zdomain_coarseXZ1/']
+# plotting the filtered derivatives only for a few cases 
+# which involve surface tension:
+# if Filtered:
+#     LIQUIDS = ['3D_WATER_with_surface_tension_coarse_XZ1/',
+#                '3D_WATER_with_surface_tension_coarse_XZ2/]
 
 
 print('Going to process ', LIQUIDS)
 
 for LIQUID in LIQUIDS:
+    
     print('Case ', LIQUID)
     os.chdir(LIQUID + os.sep + 'SOLUTIONS_n')
-    FOLDERS = natsorted(glob.glob('dx*'))
+    FOLDERS = natsorted(glob.glob('R*'))
 
     for FOLDER in FOLDERS:
         # Change working directory:
         os.chdir(FOLDER)
+        
+        h0 = float(FOLDER[7:11])
+        print('h0 = ', h0)
+        
         subfolder = natsorted(glob.glob("P*"))
 
         # loop over all saved configurations
@@ -68,7 +74,8 @@ for LIQUID in LIQUIDS:
             # exctract the name of the configuration:
             conf_key = subfolder[i][:4]
 
-            # extract useful information from the naming convention:
+            # extract useful information 
+            # from the naming convention:
             dx = float(subfolder[i][20:26])
             nx = int(subfolder[i][29:33])
             dz = float(subfolder[i][36:40])
@@ -89,12 +96,13 @@ for LIQUID in LIQUIDS:
                 print('Plotting height surfaces from ', subfolder[i])
 
                 # To save the plot surfaces:
-                directory = "../../../POSTPROCESSED/height_surfaces"
+                directory = "../../../POSTPROCESSED/height_surfaces_h" + str(h0)
                 Path(directory).mkdir(parents=True, exist_ok=True)
 
                 directory_plots  =  directory + os.sep \
                                     + subfolder[i]
-                Path(directory_plots).mkdir(parents=True, exist_ok=True)
+                Path(directory_plots).mkdir(parents=True, 
+                                            exist_ok=True)
 
                 # if the files are too many, plot once every 5 files:
                 if len(filenames) > 50:
@@ -111,17 +119,19 @@ for LIQUID in LIQUIDS:
                                              filenames[j][5:-11],
                                              conf_key)
 
-            # if it is selected to plot the contour plot of the height:
+            # if it is selected to plot the contour plot 
+            # of the height:
             if Contourfs:
                 print('Plotting contour plots from ', subfolder[i])
 
                 # To save the contourf's:
-                directory = "../../../POSTPROCESSED/contourfs"
+                directory = "../../../POSTPROCESSED/contourfs_h" + str(h0)
                 Path(directory).mkdir(parents=True, exist_ok=True)
 
                 directory_plots  =  directory + os.sep \
                                     + subfolder[i]
-                Path(directory_plots).mkdir(parents=True, exist_ok=True)
+                Path(directory_plots).mkdir(parents=True, 
+                                            exist_ok=True)
 
                 # Plot contourf's:
                 h = np.load(filenames[-1])
@@ -141,7 +151,8 @@ for LIQUID in LIQUIDS:
 
                 directory_plots  =  directory + os.sep \
                                     + subfolder[i]
-                Path(directory_plots).mkdir(parents=True, exist_ok=True)
+                Path(directory_plots).mkdir(parents=True, 
+                                            exist_ok=True)
 
                 # plot at a certain filestep:
                 skipfiles = 10

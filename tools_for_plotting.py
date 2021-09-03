@@ -3,7 +3,7 @@
 """
 Created on Tue May 18 15:55:10 2021
 
-@author: tsveti
+@author: ivanova
 
 Definition of functions used for saving
 of plots for the purposes of the Liquid film solver.
@@ -25,11 +25,11 @@ import gc
 from scipy.signal import spectrogram
 import pandas as pd
 import datetime
-from scipy.fft import fftshift
+#from scipy.fft import fftshift
 
 # filtered plots
-from findiff import FinDiff, coefficients, Coefficient
-from Functions_Miguel import filt_X
+#from findiff import FinDiff, coefficients, Coefficient
+#from Functions_Miguel import filt_X
 
 
 # PLOT CUSTOMIZATIONS:
@@ -61,11 +61,11 @@ def plot_surfaces(h, X, Z, n,
     # set plot limits based on the initial height value
     # h0 from the main script:
     if h0 <= 0.2:
+        h_max = h0 + 0.05
+        h_min = h0 - 0.05
+    else:
         h_max = h0 + 0.2
         h_min = h0 - 0.2
-    else:
-        h_max = h0 + 0.3
-        h_min = h0 - 0.3
 
     fig = plt.figure()
     ax = fig.add_subplot(111, projection= '3d')
@@ -123,11 +123,11 @@ def plot_contourfs(h, X, Z, h0,
     # set plot limits based on the initial height value
     # h0 from the main script:
     if h0 <= 0.2:
+        h_max = h0 + 0.05
+        h_min = h0 - 0.05
+    else:
         h_max = h0 + 0.2
         h_min = h0 - 0.2
-    else:
-        h_max = h0 + 0.3
-        h_min = h0 - 0.3
 
     fig = plt.figure(figsize = (12,4))
     plt.plot()
@@ -307,7 +307,8 @@ def filtered(h, X, Z,
         plt.legend(loc='lower right')
         plt.savefig(directory \
                     + os.sep \
-                    + labels[i] + '_xcomparison_' + filename + '.png',
+                    + labels[i] + '_xcomparison_' \
+                    + filename + '.png',
                     format      = 'png',
                     dpi         = 300,
                     pad_inches  = 0.1,
@@ -331,7 +332,8 @@ def filtered(h, X, Z,
         plt.legend(loc='lower right')
         plt.savefig(directory \
                     + os.sep \
-                    + labels[i] + '_zcomparison_' + filename + '.png',
+                    + labels[i] + '_zcomparison_' \
+                    + filename + '.png',
                     format      = 'png',
                     dpi         = 300,
                     pad_inches  = 0.1,
