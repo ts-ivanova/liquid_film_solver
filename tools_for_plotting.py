@@ -123,8 +123,8 @@ def plot_contourfs(h, X, Z, h0,
     # set plot limits based on the initial height value
     # h0 from the main script:
     if h0 <= 0.2:
-        h_max = h0 + 0.05
-        h_min = h0 - 0.05
+        h_max = h0 + 0.02
+        h_min = h0 - 0.02
     else:
         h_max = h0 + 0.2
         h_min = h0 - 0.2

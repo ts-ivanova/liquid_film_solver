@@ -50,7 +50,7 @@ from scipy.optimize import curve_fit
 def exp_func(x, a, b, c):
     return a * np.exp(b * x) + c
 # b is the decay rate in which we are interested.
-Fitting = True
+Fitting = False
 
 # PLOT CUSTOMIZATIONS:
 font = {'family' : 'DejaVu Sans',
@@ -314,13 +314,13 @@ for LIQUID in LIQUIDS:
                             np.exp(-b_guess*peaks_ampl[-21]))
                 
     
-                yn = exp_func(-dx*peaks_ampl[:-19], 
+                yn = exp_func(-dx*peaks_ampl[30:-30], 
                           a_guess, b_guess, c_guess)
                 
                 
                 popt, pcov = curve_fit(exp_func, 
-                                        -dx*peaks_ampl[:-19], 
-                                        H_XT_ampl[peaks_ampl[:-19]], 
+                                        -dx*peaks_ampl[30:-30], 
+                                        H_XT_ampl[peaks_ampl[30:-30]], 
                                         (a_guess, b_guess, c_guess), 
                                         maxfev=5000)
                 
@@ -330,32 +330,32 @@ for LIQUID in LIQUIDS:
                 #
                 # L2 errors:
                 fitting_error = np.linalg.norm(
-                                    exp_func(-dx*peaks_ampl[:-19],
+                                    exp_func(-dx*peaks_ampl[30:-30],
                                     a_1, b_1, c_1) \
-                                        - H_XT_ampl[peaks_ampl[:-19]])
+                                        - H_XT_ampl[peaks_ampl[30:-30]])
                 print('Exponential fitting parameters: \
-                      \n a = {:.3f} \n b = {:.3f} \n c = {:.3f} \
+                      \n a = {:.4f} \n b = {:.4f} \n c = {:.4f} \
                       \n fitting error L2: {:.5f}'
                       .format(a_1, b_1, c_1, fitting_error))
                 #
                 
                 
                 # plot the amplitudes from the wave solutions:
-                plt.plot(-dx*peaks_ampl[:-19], 
-                          H_XT_ampl[peaks_ampl[:-19]],
+                plt.plot(-dx*peaks_ampl[30:-30], 
+                          H_XT_ampl[peaks_ampl[30:-30]],
                           'k*',
                           markersize = 6,
                           label = 'Amplitude',
                           alpha = alpha1)
                 # plot the exponential fit:
-                plt.plot(-dx*peaks_ampl[:-19], 
-                          exp_func(np.array(-dx*peaks_ampl[:-19]),
+                plt.plot(-dx*peaks_ampl[30:-30], 
+                          exp_func(np.array(-dx*peaks_ampl[30:-30]),
                                   a_1, b_1, c_1),
                           'm-.', 
                           linewidth = 2,
-                          label = 'Fit: {:.3f}*exp({:.3f} x) + {:.3f}'
+                          label = 'Fit: {:.4f}*exp({:.4f} x) + {:.4f}'
                                   .format(a_1, b_1, c_1) \
-                                  + '\n $L^2$ error: {:.3f}'
+                                  + '\n $L^2$ error: {:.4f}'
                                   .format(fitting_error),
                           alpha = alpha1)
                 

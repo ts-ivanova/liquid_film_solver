@@ -36,7 +36,7 @@ LIQUIDS = natsorted(glob.glob('3*'))
 
 
 # Choose which plots to produce by setting True or False:
-Surfaces  = True      # liquid film height surfaces h
+Surfaces  = False    # liquid film height surfaces h
 Contourfs = True     # contour plot of the last 
                       # computed time step of h
 Filtered  = False     # filtered third derivatives contourplots
@@ -134,11 +134,24 @@ for LIQUID in LIQUIDS:
                                             exist_ok=True)
 
                 # Plot contourf's:
+                # just last timestep
                 h = np.load(filenames[-1])
                 save_plots.plot_contourfs(h, X, Z, h0,
                                           len(filenames),
                                           directory_plots,
                                           filenames[-1][5:-11])
+                
+                if len(filenames) > 50:
+                    skipfiles = int(len(filenames)/25)
+                else:
+                    skipfiles = 1
+                # all timesteps
+                for j in range(0, len(filenames), skipfiles):
+                    h = np.load(filenames[j])
+                    save_plots.plot_contourfs(h, X, Z, h0,
+                                          len(filenames),
+                                          directory_plots,
+                                          filenames[j][5:-4])
 
             # if it is selected to plot the filtered derivatives:
             if Filtered:

@@ -11,6 +11,7 @@ Plots of the decay rates VS frequencies
 
 
 import numpy as np
+import math
 
 # plots:
 from matplotlib import pyplot as plt
@@ -42,7 +43,7 @@ Re_paths = natsorted(glob.glob('R*'))
 
 for Re_path in Re_paths:
     os.chdir(Re_path)
-    Paths = natsorted(glob.glob('*'))
+    Paths = natsorted(glob.glob('2*'))
     for Path in Paths:
 
         os.chdir(Path)
@@ -58,16 +59,24 @@ for Re_path in Re_paths:
             print('Re = {:.0f}'.format(Re))
             
             freqs = np.load(freqs_list[i])
+            k = 2*math.pi/(1/freqs)
             decay_rates = np.load(decays_list[i])
             
             plt.plot(freqs, decay_rates, 
-                     marker=markers[i], 
-                     linestyle='--',
-                     alpha = alpha1,
-                     label = '$h_0$ = ' + str(h0)
-                     )    
+                      marker=markers[i], 
+                      linestyle='--',
+                      alpha = alpha1,
+                      label = '$h_0$ = ' + str(h0)
+                      )    
+            # plt.plot(k, decay_rates, 
+            #          marker=markers[i], 
+            #          linestyle='--',
+            #          alpha = alpha1,
+            #          label = '$h_0$ = ' + str(h0)
+            #          )   
         
         plt.xlabel('frequency, [-]')
+        # plt.xlabel('wave number k, [-]')
         plt.ylabel('decay rate, [-]')
         plt.legend(loc = 'lower left')
         plt.grid()

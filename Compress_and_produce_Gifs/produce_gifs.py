@@ -29,16 +29,13 @@ files5 = natsorted(os.listdir(subfolder[5]))
 # Assign them to a list:
 files = [files0, files1, files2, files3, files4, files5]
 
-# Specify frames per second
-# as in LaTex presentation:
-fpss = [23,24,24,12,12,12]
 
 # Loop to produce the animated .gif:
 for i in range(len(files)):
     images = [imageio.imread(subfolder[i]+os.sep+file) \
               for file in files[i]]
-    imageio.mimwrite('../../Compressed_movie_{}.gif'
+    imageio.mimwrite('../../produced_gifs/Movie_{}.gif'
                       .format(subfolder[i]),
-                      images, fps=fpss[i])
+                      images, fps=4)
 
 os.chdir('../../../')
