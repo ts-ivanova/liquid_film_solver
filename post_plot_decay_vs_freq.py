@@ -43,7 +43,7 @@ Re_paths = natsorted(glob.glob('R*'))
 
 for Re_path in Re_paths:
     os.chdir(Re_path)
-    Paths = natsorted(glob.glob('2*'))
+    Paths = natsorted(glob.glob('3*'))
     for Path in Paths:
 
         os.chdir(Path)
@@ -68,6 +68,7 @@ for Re_path in Re_paths:
                       alpha = alpha1,
                       label = '$h_0$ = ' + str(h0)
                       )    
+            plt.xlim(0.04,0.15)
             # plt.plot(k, decay_rates, 
             #          marker=markers[i], 
             #          linestyle='--',
@@ -78,7 +79,7 @@ for Re_path in Re_paths:
         plt.xlabel('frequency, [-]')
         # plt.xlabel('wave number k, [-]')
         plt.ylabel('decay rate, [-]')
-        plt.legend(loc = 'lower left')
+        plt.legend(loc = 'upper left')
         plt.grid()
         plt.title('Decay rates of amplitudes, Re = {:.0f}'
                   .format(Re))

@@ -50,7 +50,7 @@ from scipy.optimize import curve_fit
 def exp_func(x, a, b, c):
     return a * np.exp(b * x) + c
 # b is the decay rate in which we are interested.
-Fitting = False
+Fitting = True
 
 # PLOT CUSTOMIZATIONS:
 font = {'family' : 'DejaVu Sans',
@@ -66,8 +66,8 @@ alpha1 = 0.9
 # os.chdir('RESULTS-processed/')
 os.chdir('RESULTS/')
 # Gather all computed configurations:
-LIQUIDS = natsorted(glob.glob('2*'))
-# LIQUIDS = natsorted(glob.glob('3*'))
+# LIQUIDS = natsorted(glob.glob('2*'))
+LIQUIDS = natsorted(glob.glob('3*'))
 
 print('Going to process ', LIQUIDS)
 
