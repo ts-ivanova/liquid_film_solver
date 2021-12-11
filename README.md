@@ -1,6 +1,6 @@
 # liquid_film_solver
-A solver for an integral boundary layer model for liquid films on moving substrates.
-
+A solver for an integral boundary layer model for liquid films on moving substrates developed for a project during RM2021:
+"Physics-based and Data-driven Modelling of Nonlinear Waves in Liquid Films" by T. Ivanova, supervised by Prof. M. Mendez and by F. Pino
 
 This project solves a simplified version of the 3D integral model
 for a liquid film on a moving substrate.
@@ -8,9 +8,9 @@ The unknowns of this integral model are
 the liquid film height h,
 the flow rate along the streamwise direction qx,
 and the flow rate along the spanwise direction qz
-(check RM2021 report).
+(check RM2021 report at VKI).
 
-The main_solver_liquid_film.py script computes the solution of this integral model. The numerical schemes, fluxes and sources computations are all separated in different scripts for easier navigation. Tools for saving and post-processing are also developed during this project.
+The ```main_solver_liquid_film.py``` script computes the solution of this integral model. The numerical schemes, fluxes and sources computations are all separated in different scripts for easier navigation. Tools for saving and post-processing are also developed during this project.
 
 
 The 3D integral model is dimensionless.
