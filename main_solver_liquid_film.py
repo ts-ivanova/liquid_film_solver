@@ -101,8 +101,8 @@ liquid_list = [
 
 # Selection of the configuration:
 configurations = [
-                  # conf['PX01']#, # 2D cases + OpenFOAM JFM case
-                  conf['PXZ1']
+                  conf['PX01']#, # 2D cases + OpenFOAM JFM case
+                  # conf['PXZ1']
                   # conf['PXZ2']
                   ]
 
@@ -132,6 +132,7 @@ for liquid in liquid_list:
     if liquid == liquids['WATER']:
         # Set WATER parameters from JFM:
         Epsilon = 0.23918 # Long-wave parameter, [-]
+        Epsilon = 0.0023918 # Long-wave parameter, [-]
         # Re_list = [319] # Re number in OpenFOAM JFM
         Re_list = [319, 2*319]
     elif liquid == liquids['ZINC']:
@@ -154,6 +155,8 @@ for liquid in liquid_list:
             if configuration == conf['PX01']:
                 dim = '2D_' # to use for namings in tools_for_saving.py
 
+                scheme = schemes['LFried']
+
                 # CFL number is defined as u*dt/dx
                 # from which dt is evaluated below.
                 surface_tension = False
@@ -161,9 +164,10 @@ for liquid in liquid_list:
                 # OpenFOAM case in JFM
                 # frequencies = [0.05] # [-] as in 2D JFM
 
-                freq_list = list(np.arange(0.005, 0.205, 0.015))
-                frequencies = [round(elem, 3) for elem in freq_list]
+                # freq_list = list(np.arange(0.005, 0.205, 0.015))
+                # frequencies = [round(elem, 3) for elem in freq_list]
 
+                frequencies = [0.005, 0.05, 0.1, 0.2]
                 # [-] low, medium and high freqs
                 # Set amplitude for the flow rate perturbations
                 # as in 2D JFM:

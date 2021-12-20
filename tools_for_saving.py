@@ -40,13 +40,13 @@ def create_directories(surface_tension,
 
     if surface_tension:
         all_st = "_with_surf_ten_" + 'Re{:.0f}'.format(Re)
-        results_dir = "RESULTS" + os.sep + dim + liquids_key + all_st
+        results_dir = "RESULTS_December" + os.sep + dim + liquids_key + all_st
         Path(results_dir)\
             .mkdir(parents=True, exist_ok=True)
         os.chdir(results_dir)
     else:
         no_st = "_without_surf_ten_" + 'Re{:.0f}'.format(Re)
-        results_dir = "RESULTS" + os.sep + dim + liquids_key + no_st
+        results_dir = "RESULTS_December" + os.sep + dim + liquids_key + no_st
         Path(results_dir)\
             .mkdir(parents=True, exist_ok=True)
         os.chdir(results_dir)
