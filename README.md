@@ -2,7 +2,7 @@
 A solver for an integral boundary layer model 
 for liquid films on moving substrates 
 developed for a project during RM2021:
-"Physics-based and Data-driven Modelling of Nonlinear Waves in Liquid Films" \ 
+"Physics-based and Data-driven Modelling of Nonlinear Waves in Liquid Films"   
 by T. Ivanova, supervised by Prof. M. Mendez and by F. Pino
 
 This project solves a simplified version of the 3D integral model
