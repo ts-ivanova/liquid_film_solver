@@ -13,7 +13,22 @@ the flow rate along the streamwise direction qx,
 and the flow rate along the spanwise direction qz
 (check RM2021 report at VKI).
 
-The ```main_solver_liquid_film.py``` script computes the solution of this integral model. The numerical schemes, fluxes and sources computations are all separated in different scripts for easier navigation. Tools for saving and post-processing are also developed during this project.
+A sketch of the flow domain and list 
+of reference quantities used to scale variables 
+(indicated in square brackets) together with 
+the relevant dimensionless numbers is shown below. 
+The liquid is assumed to be incompressible. 
+The substrate moves at velocity U_p 
+in the opposite direction of gravity, along axis x, 
+while z is the span-wise direction.
+
+<img src="images_for_readme/schematic.png" width="900">
+
+The ```main_solver_liquid_film.py``` script 
+computes the solution of this integral model. 
+The numerical schemes, fluxes and sources computations 
+are all separated in different scripts for easier navigation. 
+Tools for saving and post-processing are also developed during this project.
 
 
 The 3D integral model is dimensionless.
