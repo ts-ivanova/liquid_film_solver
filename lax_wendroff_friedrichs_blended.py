@@ -23,7 +23,7 @@ def blended_lw_lf(surface_tension,
     This function performs the blended
     Lax-Wendroff (high-order) + Lax-Friedrichs (low-order) scheme
     on a dimensionless integral model
-    for a liquid film.
+    for a liquid film on a moving substrate.
     Unknown quantities: height: h,
                         flow rate along x: qx,
                         flow rate along z: qz.

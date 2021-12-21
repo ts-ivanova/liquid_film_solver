@@ -4,7 +4,9 @@ Created on Wed Mar 24 10:02:30 2021
 Modified in April 2021
 
 @author: mendez
-Adaptations by Tsveti for liquid film height predictions.
+Course: Tools for Scientific Computing
+
+Adaptations by ivanova for liquid film height predictions.
 
 GAUSSIAN PROCESS REGRESSION
 
@@ -49,7 +51,7 @@ alpha3 = 0.5
 
 
 #%%
-# Tsveti
+# ivanova
 # Data folder from Numerical solver for liquid films
 FOLDER = 'SOLUTIONS'
 

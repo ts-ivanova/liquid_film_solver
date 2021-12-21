@@ -28,19 +28,21 @@ import tools_for_plotting as save_plots
 
 
 ####################
-os.chdir('RESULTS/')
+os.chdir('RESULTS_December/')
 
 # Gather all computed configurations:
 # LIQUIDS = natsorted(glob.glob('2D*')) + natsorted(glob.glob('3D*'))
-LIQUIDS = natsorted(glob.glob('3*'))
+LIQUIDS = natsorted(glob.glob('2D*'))
 
 
 # Choose which plots to produce by setting True or False:
-Surfaces  = False    # liquid film height surfaces h
+Surfaces  = True     # liquid film height surfaces h
 Contourfs = True     # contour plot of the last 
-                      # computed time step of h
-Filtered  = False     # filtered third derivatives contourplots
-                      # and comparisons
+                     # computed time step of h
+
+# If surface tension is taken into account:
+Filtered  = False    # filtered third derivatives contourplots
+                     # and comparisons
 
 
 # plotting the filtered derivatives only for a few cases 
@@ -64,6 +66,7 @@ for LIQUID in LIQUIDS:
         
         h0 = float(FOLDER[7:11])
         print('h0 = ', h0)
+        delta = FOLDER[-7:]
         
         subfolder = natsorted(glob.glob("P*"))
 
@@ -96,7 +99,8 @@ for LIQUID in LIQUIDS:
                 print('Plotting height surfaces from ', subfolder[i])
 
                 # To save the plot surfaces:
-                directory = "../../../POSTPROCESSED/height_surfaces_h" + str(h0)
+                directory = "../../../POSTPROCESSED/height_surfaces_h"\
+                            + str(h0) + '_delta' + delta
                 Path(directory).mkdir(parents=True, exist_ok=True)
 
                 directory_plots  =  directory + os.sep \
@@ -125,12 +129,13 @@ for LIQUID in LIQUIDS:
                 print('Plotting contour plots from ', subfolder[i])
 
                 # To save the contourf's:
-                directory = "../../../POSTPROCESSED/contourfs_h" + str(h0)
+                directory = "../../../POSTPROCESSED/contourfs_h"\
+                            + str(h0) + '_delta' + delta
                 Path(directory).mkdir(parents=True, exist_ok=True)
 
                 directory_plots  =  directory + os.sep \
                                     + subfolder[i]
-                Path(directory_plots).mkdir(parents=True, 
+                Path(directory_plots).mkdir(parents=True,
                                             exist_ok=True)
 
                 # Plot contourf's:
@@ -164,7 +169,7 @@ for LIQUID in LIQUIDS:
 
                 directory_plots  =  directory + os.sep \
                                     + subfolder[i]
-                Path(directory_plots).mkdir(parents=True, 
+                Path(directory_plots).mkdir(parents=True,
                                             exist_ok=True)
 
                 # plot at a certain filestep:

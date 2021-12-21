@@ -6,17 +6,18 @@ Created on Thu May  6 16:50:30 2021
 @author: ivanova
 
 Post-processing the liquid film waves:
-Plotting the spectrograms in space,
-characteristics, wave envelopes and 
-exponential fitting of the amplitudes.
+Spectrograms in space,
+characteristics,
+wave envelopes,
+and exponential fitting of the amplitudes.
 
 The spectrograms give information on whether
 the wave evolves towards other frequencies.
 The characteristic lines indicate whether
 the nonlinear effects are weak or not.
-The wave envelopes show the 
+The wave envelopes show the
 minimum and maximum values over time.
-The amplitudes of the waves and their 
+The amplitudes of the waves and their
 exponential fit indicate the decay rate.
 """
 
@@ -50,7 +51,7 @@ from scipy.optimize import curve_fit
 def exp_func(x, a, b, c):
     return a * np.exp(b * x) + c
 # b is the decay rate in which we are interested.
-Fitting = False
+Fitting = True
 
 # PLOT CUSTOMIZATIONS:
 font = {'family' : 'DejaVu Sans',
@@ -64,7 +65,7 @@ alpha1 = 0.9
 
 ####################
 # os.chdir('RESULTS-processed/')
-os.chdir('RESULTS/')
+os.chdir('RESULTS_December/')
 # Gather all computed configurations:
 LIQUIDS = natsorted(glob.glob('2D_WATER_without_surf_ten_Re319'))
 # LIQUIDS = natsorted(glob.glob('3*'))
@@ -73,7 +74,7 @@ print('Going to process ', LIQUIDS)
 
 for LIQUID in LIQUIDS:
     print('Case ', LIQUID)
-    
+
     os.chdir(LIQUID + os.sep + 'SOLUTIONS_n')
     # FOLDERS = natsorted(glob.glob('dx*'))
     FOLDERS = natsorted(glob.glob('R*'))
@@ -82,7 +83,7 @@ for LIQUID in LIQUIDS:
         # Change working directory:
         os.chdir(FOLDER)
         subfolder = natsorted(glob.glob("P*"))
-        
+
         # to save frequencies and decay rates:
         freqs = []
         decay_rates = []
@@ -93,10 +94,14 @@ for LIQUID in LIQUIDS:
             # Extract information 
             # from the naming conventions:
             
-            h0 = float(FOLDER[-10:-6])
+            h0 = float(FOLDER[7:11])
             print('h0 = ', h0)
+            # delta = Epsilon*Re:
+            delta = FOLDER[-7:]
+            # Freq:
             f = float(subfolder[i][-4:])
             print('f = ', f)
+            # Re:
             Re = float(subfolder[i][-10:-7])
             print('Re = {:.0f}'.format(Re))
             
@@ -122,9 +127,10 @@ for LIQUID in LIQUIDS:
             directory = "../../../POSTPROCESSED/" \
                         + "spectrogr_charact_env_ampl" \
                         + "_Re{:.0f}".format(Re) \
-                        + "_h{:.1f}".format(h0)
-                        
-            Path(directory).mkdir(parents=True, 
+                        + "_h{:.1f}".format(h0) \
+                        + "_delta" + delta
+             
+            Path(directory).mkdir(parents=True,
                                   exist_ok=True)
 
             # initialize the height along x in time list:
@@ -144,8 +150,10 @@ for LIQUID in LIQUIDS:
                 # for each time
                 H_XT_list.append([])
                 H_XT_list[ii].append(h)
-                
-            
+
+
+
+
 
             print('Computing spectrograms ... ')
 
@@ -164,8 +172,8 @@ for LIQUID in LIQUIDS:
 
             # t-axis:
             n_files_in_time = len(filelist)
-            t_axis = 100*dt*np.linspace(0, 
-                                        len(filelist), 
+            t_axis = 100*dt*np.linspace(0,
+                                        len(filelist),
                                         len(filelist))
             # ^ multiplication by 100 because the saved solutions
             # are chosen to be every 100 steps (can be modified).
@@ -217,6 +225,7 @@ for LIQUID in LIQUIDS:
 
 
 
+
             print('Plotting characteristics ... ')
             plt.close()
             contourplot_ch = plt.contourf(t_axis,
@@ -236,6 +245,7 @@ for LIQUID in LIQUIDS:
                         format      = 'png',
                         dpi         = 200,
                         bbox_inches = 'tight')
+
 
 
 
@@ -297,10 +307,10 @@ for LIQUID in LIQUIDS:
                 print('Plotting exponential fit to amplitudes ... ')
                 plt.close()
                 plt.figure(figsize = (12,4))
-    
+
                 H_XT_ampl = H_XT_max[xslice,:] - H_XT_min[xslice,:]
                 peaks_ampl, _ = find_peaks(H_XT_ampl, distance = 10)
-    
+
                 # Initial guess of the exp fit:
                 c_guess = 0.1*H_XT_ampl[peaks_ampl[-19]]
                 b_guess = np.log((H_XT_ampl[peaks_ampl[-20]]\
@@ -314,15 +324,15 @@ for LIQUID in LIQUIDS:
                           (np.exp(-b_guess*peaks_ampl[-20]) - \
                             np.exp(-b_guess*peaks_ampl[-21]))
                 
-    
-                yn = exp_func(-dx*peaks_ampl[30:-30], 
+                
+                yn = exp_func(-dx*peaks_ampl[30:-30],
                           a_guess, b_guess, c_guess)
                 
                 
-                popt, pcov = curve_fit(exp_func, 
-                                        -dx*peaks_ampl[30:-30], 
-                                        H_XT_ampl[peaks_ampl[30:-30]], 
-                                        (a_guess, b_guess, c_guess), 
+                popt, pcov = curve_fit(exp_func,
+                                        -dx*peaks_ampl[30:-30],
+                                        H_XT_ampl[peaks_ampl[30:-30]],
+                                        (a_guess, b_guess, c_guess),
                                         maxfev=5000)
                 
                 a_1, b_1, c_1 = popt
@@ -333,7 +343,7 @@ for LIQUID in LIQUIDS:
                 fitting_error = np.linalg.norm(
                                     exp_func(-dx*peaks_ampl[30:-30],
                                     a_1, b_1, c_1) \
-                                        - H_XT_ampl[peaks_ampl[30:-30]])
+                                    - H_XT_ampl[peaks_ampl[30:-30]])
                 print('Exponential fitting parameters: \
                       \n a = {:.4f} \n b = {:.4f} \n c = {:.4f} \
                       \n fitting error L2: {:.5f}'
@@ -342,17 +352,17 @@ for LIQUID in LIQUIDS:
                 
                 
                 # plot the amplitudes from the wave solutions:
-                plt.plot(-dx*peaks_ampl[30:-30], 
+                plt.plot(-dx*peaks_ampl[30:-30],
                           H_XT_ampl[peaks_ampl[30:-30]],
                           'k*',
                           markersize = 6,
                           label = 'Amplitude',
                           alpha = alpha1)
                 # plot the exponential fit:
-                plt.plot(-dx*peaks_ampl[30:-30], 
+                plt.plot(-dx*peaks_ampl[30:-30],
                           exp_func(np.array(-dx*peaks_ampl[30:-30]),
                                   a_1, b_1, c_1),
-                          'm-.', 
+                          'm-.',
                           linewidth = 2,
                           label = 'Fit: {:.4f}*exp({:.4f} x) + {:.4f}'
                                   .format(a_1, b_1, c_1) \
@@ -382,7 +392,7 @@ for LIQUID in LIQUIDS:
                 # for plotting later:
                 freqs.append(f)
                 decay_rates.append(b_1)
-    
+
             os.chdir('../')
             
         if Fitting:
@@ -398,16 +408,18 @@ for LIQUID in LIQUIDS:
                       + LIQUID
             Path(Re_path).mkdir(parents=True,
                                               exist_ok=True)
-                
+             
             freqs_file  = Re_path + os.sep \
                           + 'freqs_h' + str(h0) \
-                          
+                          +'_delta' + delta
+             
             decays_file = Re_path + os.sep \
-                          + 'decays_h' + str(h0)
-            
-            np.save(freqs_file, 
+                          + 'decays_h' + str(h0) \
+                          +'_delta' + delta
+
+            np.save(freqs_file,
                     np.asarray(freqs))
-            np.save(decays_file, 
+            np.save(decays_file,
                     np.asarray(decay_rates))
         
         

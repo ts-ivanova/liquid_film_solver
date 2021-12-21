@@ -6,7 +6,7 @@ Modified in April 2021
 @author: mendez
 Course: Tools for Scientific Computing
 
-Adaptations by Tsveti for liquid film height predictions.
+Adaptations by ivanova for liquid film height predictions.
 
 GAUSSIAN PROCESS REGRESSION
 
@@ -19,7 +19,6 @@ developed during RM2021.
 
 # Tutorial adapted from
 # https://scikit-learn.org/stable/auto_examples/gaussian_process/plot_gpr_co2.html#sphx-glr-auto-examples-gaussian-process-plot-gpr-co2-py
-
 # "The tutorial from the above link
 # on “Gaussian Processes for Machine Learning”
 # illustrates an example of complex kernel engineering

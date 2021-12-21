@@ -7,7 +7,7 @@ Created on Sun Mar 14 12:56:58 2021
 """
 
 import numpy as np
-#from findiff import FinDiff
+from findiff import FinDiff
 from Functions_Miguel import filt_X
 
 def liquid_film_sources(surface_tension,
@@ -25,7 +25,8 @@ def liquid_film_sources(surface_tension,
 
     If the variable surface_tension is set to True in the main loop
     script, then the terms in S2 are taken into account.
-    If it is set to False, the simplified sources are evaluated.
+    If it is set to False, then
+    the surface tension terms are neglected.
 
     Important:
     The filtering of the third derivatives performs well
@@ -33,8 +34,6 @@ def liquid_film_sources(surface_tension,
     Therefore the problems with the third derivatives are possibly
     related to the the blended scheme which has to be checked
     as there are issues with the sources in S3 (the solution explodes).
-    Suggestion for future work is the performance of stability analysis
-    of the schemes.
     Most of the implemented types of limiters have been tested.
     Nevertheless, when running with included sources in S2,
     the solver performs well with about 30-40 points per wavelength
@@ -42,6 +41,7 @@ def liquid_film_sources(surface_tension,
     than the ones without surface tension.
     This results in significant numerical dissipation.
     '''
+    
     # when surface_tension = True, compute the source terms
     # including the third derivatives:
     if surface_tension:
@@ -98,15 +98,13 @@ def liquid_film_sources(surface_tension,
                 - (6*h[1:-1,1:-1] + 6*qx[1:-1,1:-1])/ \
                 (2*Epsilon*Re*h[1:-1,1:-1]**2) \
                 + (h[1:-1,1:-1]/(Epsilon*Re)) \
-                *(hxzz \
-                  - hxxx)
+                *(hxzz + hxxx)
 
         # sources S3 for the qz-eqn:
         S3 = -6*qz[1:-1,1:-1]/ \
                 (2*Epsilon*Re*h[1:-1,1:-1]**2) \
-                # + (h[1:-1,1:-1]/(Epsilon*Re)) \
-                # *(hzzz \
-                #   - hzxx)
+                + (h[1:-1,1:-1]/(Epsilon*Re)) \
+                *(hzzz + hzxx)
 
         hzzz = 0
         hzxx = 0

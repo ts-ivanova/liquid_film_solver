@@ -28,8 +28,8 @@ import datetime
 #from scipy.fft import fftshift
 
 # filtered plots
-#from findiff import FinDiff, coefficients, Coefficient
-#from Functions_Miguel import filt_X
+from findiff import FinDiff, coefficients, Coefficient
+from Functions_Miguel import filt_X
 
 
 # PLOT CUSTOMIZATIONS:

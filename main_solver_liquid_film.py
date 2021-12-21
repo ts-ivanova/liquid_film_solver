@@ -3,17 +3,17 @@
 """
 Created on Tue Mar  9 16:27:43 2021
 
-Liquid Film Solver
+SOLVER FOR A LIQUID FILM ON A MOVING SUBSTRATE
 
 @author: ivanova
 
-This script solves a simplified version of the 3D integral model
+This script solves a simplified version of a 3D integral model
 for a liquid film on a moving substrate.
 The unknowns of this integral model are
 the liquid film height h,
 the flow rate along the streamwise direction qx,
 and the flow rate along the spanwise direction qz
-(RM2021 report).
+(check RM2021 report).
 
 The derived 3D integral model is dimensionless.
 
@@ -21,12 +21,14 @@ The derived 3D integral model is dimensionless.
     \partial_t qx + \partial_x F12 + \partial_z F22 = S2
     \partial_t qz + \partial_x F13 + \partial_z F23 = S3
 
-What is currently not completely implemented
-in this version of the solver are
-pressure gradients, interface shear stresses, and
-the most challenging - surface tension terms
-(the third derivatives of the height h).
+In a simplified version of the model, 
+the following terms are neglected:
+pressure gradients, interface shear stresses,
+and the most challenging to implement numerically -
+surface tension terms (the third derivatives of the height h).
 """
+
+#######################################################################
 
 # Import libraries:
 import numpy as np
@@ -38,7 +40,7 @@ import lax_wendroff_richtmyer as lw
 import lax_friedrichs as lf
 import lax_wendroff_friedrichs_blended as bl
 
-# to monitor the execution time:
+# To monitor the execution time:
 import os
 import logging
 from datetime import datetime
@@ -48,9 +50,10 @@ import tools_for_boundary_conditions as comp
 import tools_for_saving as save_data
 import tools_for_plotting as save_plots
 
-# for freeing up some space:
+# For freeing up some space while computing:
 import gc
 
+#######################################################################
 
 # Possible liquid types:
 liquids = {
@@ -63,24 +66,23 @@ conf = {
         # Perturbations only on x (PX) of qx (OpenFOAM case):
         'PX01' : 0,
         # Perturbations on x and on z (PXZ):
-        # - of the flow rate qx
+        # - 3D perturbations of the flow rate qx:
         'PXZ1' : 1,
-        # - of the height h
+        # - 3D perturbations of the height h:
         'PXZ2' : 2
         }
 
-
-# Possible schemes:
+# Possible numerical schemes:
 schemes  = {
             'LWendr' : 0, # Lax-Wendroff (2-step Richtmyer)
             'LFried' : 1, # Lax-Friedrichs
-            'LWFble' : 2  # Blended Lax-Wendroff-Friedrichs
+            'LWFble' : 2  # Blended Lax-Wendroff -- Lax-Friedrichs
             }
 
-# Possible limiters:
+# Possible flux limiters for the Blended scheme:
 limiters = [
-            'LxFr',  # retrieve the Lax-Friedrichs scheme
-            'LxWe',  # retrieve the Lax-Wendroff scheme
+            'LxFr',  # retrieves the Lax-Friedrichs scheme
+            'LxWe',  # retrieves the Lax-Wendroff scheme
             'BLmi',  # minmode      (also used in 2D BLEW)
             'BLal',  # van Albada   (also used in 2D BLEW)
             'BLa2',  # van Albada 2
@@ -90,10 +92,14 @@ limiters = [
             'BLvl'   # van Leer
             ]
 
-##############################
-# MAKE THE CHOICES HERE (by un-commenting lines etc.):
 
-# Selection of the fluid:
+
+#######################################################################
+######                   MAKE THE CHOICES HERE                   ###### 
+######               (by un-commenting lines etc.)               ######
+#######################################################################
+
+# Selection of the fluid type:
 liquid_list = [
                liquids['WATER']#,
                #liquids['ZINC']
@@ -102,18 +108,19 @@ liquid_list = [
 # Selection of the configuration:
 configurations = [
                   conf['PX01']#, # 2D cases + OpenFOAM JFM case
-                  # conf['PXZ1']
-                  # conf['PXZ2']
+                  # conf['PXZ1'] # 3D cases
+                  # conf['PXZ2'] # 3D cases
                   ]
 
-# Choice of scheme:
+# Choice of the numerical scheme:
 scheme = schemes['LWFble']
 # scheme = schemes['LFried']
 # scheme = schemes['LWendr']
 
-# Specify whether to include surface tension
-# terms in the sources (the third derivatives):
+# Specify whether to include surface tension terms
+# in the sources (the third derivatives of the height h):
 surface_tension = False
+# (False = do not include)
 
 # Dimensionless substrate velocity:
 U_substr = 1
@@ -122,26 +129,39 @@ u = 2*U_substr
 # Time between outputs:
 output_interval = 1.0
 
-# Initial height:
-h0 = 0.3 # [-]
+# Initial film height:
+h0 = 0.2 # [-]
 # h0 = 0.1 # [-] can be suitable for higher Re numbers
 
-# Run the script for all liquid types:
+
+
+#######################################################################
+######              RUN A LOOP FOR ALL LIQUID TYPES,             ###### 
+######      CONFIGURATIONS, REYNOLDS NUMBERS, FREQUENCIES...     ######
+#######################################################################
+
 for liquid in liquid_list:
-    # Liquid parameters:
+    # LIQUID PARAMETERS:
+    # if water has been selected:
     if liquid == liquids['WATER']:
-        # Set WATER parameters from JFM:
+        # Set WATER parameters from JFM 2020 paper:
         Epsilon = 0.23918 # Long-wave parameter, [-]
-        Epsilon = 0.0023918 # Long-wave parameter, [-]
-        # Re_list = [319] # Re number in OpenFOAM JFM
-        Re_list = [319, 2*319]
+        # Epsilon = 0.0023918 # Long-wave parameter, [-]
+        Re_list = [319] # Re number in OpenFOAM JFM
+        # Re_list = [319, 2*319]
+    # or if zinc has been selected:
     elif liquid == liquids['ZINC']:
-        # Set liquid ZINC parameters from JFM:
+        # Set liquid ZINC parameters from JFM 2020 paper:
         Epsilon = 0.15460 # Long-wave parameter, [-]
         # Re = 478 # Reynolds number
         Re_list = [478, 2*478]
 
-    # run for all Reynolds number values in Re_list:
+    # The reduced Reynolds number is defined as:
+    # delta = Epsilon*Re_list
+    # (It is useful to keep track on its value
+    # when investigating stability)
+
+    # RUN FOR ALL REYNOLDS NUMBER VALUES IN Re_list:
     for Re in Re_list:
         # Run for all specified configurations
         # in the list:
@@ -152,37 +172,44 @@ for liquid in liquid_list:
             liquids_key = list(liquids.keys())[liquid]
 
 
+            # if the configuration is 2D:
             if configuration == conf['PX01']:
                 dim = '2D_' # to use for namings in tools_for_saving.py
 
+                surface_tension = False
+
+                # Select the Lax-Friedrichs scheme 
+                # since it is robust and stable for the 2D waves:
                 scheme = schemes['LFried']
 
-                # CFL number is defined as u*dt/dx
-                # from which dt is evaluated below.
-                surface_tension = False
+                # The CFL number is defined as u*dt/dx
+                # from which dt is evaluated below:
                 CFL = 0.3
-                # OpenFOAM case in JFM
-                # frequencies = [0.05] # [-] as in 2D JFM
+
+                # OpenFOAM case in JFM:
+                frequencies = [0.05] # [-] as in 2D JFM
 
                 # freq_list = list(np.arange(0.005, 0.205, 0.015))
                 # frequencies = [round(elem, 3) for elem in freq_list]
-
-                frequencies = [0.005, 0.05, 0.1, 0.2]
+                #frequencies = [0.005, 0.05, 0.1, 0.2]
                 # [-] low, medium and high freqs
-                # Set amplitude for the flow rate perturbations
+
+                # Set the amplitude for the flow rate perturbations
                 # as in 2D JFM:
                 A = 0.2 # [-]
 
+
+            # else if the configuration is 3D:
             else: # parameters for the 3D waves:
                 dim = '3D_' # to use for namings in tools_for_saving.py
 
                 # CFL number is defined as u*dt/dx
-                # from which dt is evaluated below.
+                # from which dt is evaluated below:
                 if surface_tension:
                     CFL = 0.1
                 else:
                     CFL = 0.3
-                # frequencies = [0.05] # [-] as in 2D JFM
+                # frequencies = [0.05]
                 freq_list = list(np.arange(0.005, 0.205, 0.015))
                 frequencies = [round(elem, 3) for elem in freq_list]
                 if configuration == conf['PXZ1']:
@@ -190,17 +217,21 @@ for liquid in liquid_list:
                 elif configuration == conf['PXZ2']:
                     A = 0.07 # amplitude for the height perturbations
 
-            # Specify a scheme (by un-commenting a line):
+            # If the selected scheme is the Blended scheme, 
+            # then specify more precisely which flux limiters
+            # are used (by un-commenting a line):
             if scheme == schemes['LWFble']:
                 # scheme_choice = 'LxFr'
                 # scheme_choice = 'LxWe'
                 scheme_choice = 'BLmi'
+                # ... more options can be added 
+                # for the other limiter types, if they are used.
             else:
                 # extract the string for the naming conventions:
                 scheme_choice = \
                     list(schemes.keys())[scheme][:4]
 
-            # run for all frequencies:
+            # RUN FOR ALL FREQUENCIES:
             for freq in frequencies:
 
                 # mark the beginning of the computations:
@@ -243,30 +274,30 @@ for liquid in liquid_list:
                 nx    = int(L/dx)
                 final_time = int((L+lambd)/U_substr)
 
-                ##############################
-                # # For the OpenFOAM case in JFM:
-                # # (for the validation)
-                # if configuration == conf['PX01']:
-                #     # nx = 2810 is extracted from JFM data
-                #     # by using Lx = nx*dx, where Lx = 77.28
-                #     # and dx = 0.0275 from the JFM paper.
-                #     npoin = int(lambd/0.0275) # is approx. 727
-                #     dx = (lambd/(npoin))*factor
-                #     L  = 4*lambd
-                #     nx = int(2810/factor)
-                #     # z-dimension:
-                #     dz = 1e-2/10
-                #     nz = 100
-                ##############################
+                #######################################################
+                # For the OpenFOAM case in JFM:
+                # (for the validation)
+                if configuration == conf['PX01']:
+                    # nx = 2810 is extracted from JFM data
+                    # by using Lx = nx*dx, where Lx = 77.28
+                    # and dx = 0.0275 from the JFM paper 2020.
+                    npoin = int(lambd/0.0275) # is approx. 727
+                    dx = (lambd/(npoin))*factor
+                    L  = 4*lambd
+                    nx = int(2810/factor)
+                    # z-dimension:
+                    dz = 1e-2/10
+                    nz = 100
+                #######################################################
 
                 # wavelength lambd_z [-] along z
                 lambd_z = 1
                 dz      = lambd_z/100
                 nz      = int(lambd_z/dz)*3
 
-                ##############################
+                #######################################################
                 # TIME INFORMATION
-                # Time is dimensionless; units of time
+                # Time is dimensionless;
                 # Timestep (unit) from the CFL formula:
                 dt = CFL*dx/U_substr
 
@@ -275,7 +306,7 @@ for liquid in liquid_list:
                 time_steps = np.linspace(0,final_time,nt)
                 tsteps_btwn_out = np.fix(output_interval/dt)
                 noutput = int(np.ceil(nt/tsteps_btwn_out))
-                # noutput is the number of output frames
+                # noutput is the number of output frames.
 
                 # Initialize h, qx, qz:
                 h = h0*np.ones((nx,nz), dtype='float32')
@@ -284,14 +315,14 @@ for liquid in liquid_list:
                 qx = (1/3)*h**3-h
                 qz = np.zeros((nx,nz), dtype='float32')
 
-                ##############################
+                #######################################################
                 # Spatial dimensions:
                 x = np.mgrid[0:nx]*dx
                 z = np.mgrid[0:nz]*dz
                 # Create matrices of the coordinate variables
                 [Z,X] = np.meshgrid(z,x)
 
-                ##############################
+                #######################################################
                 # Create directories for storing data:
                 results_dir, \
                 directory_n, \
@@ -306,11 +337,11 @@ for liquid in liquid_list:
                                                  h0, A,
                                                  dx, nx, dz, nz,
                                                  CFL, dt, final_time,
-                                                 Re, freq)
+                                                 Epsilon, Re, freq)
 
                 #%%
-                ##############################
-                # Initialize the 3D arrays
+                #######################################################
+                # INITIALIZE THE 3D ARRAYS
                 # where the output data will be stored
                 qx_save = np.zeros((nx, nz, noutput),
                                    dtype='float32')
@@ -323,7 +354,8 @@ for liquid in liquid_list:
                 # Index of stored data
                 i_save = 0
 
-                ##############################
+                #######################################################
+                # Information about the running case:
                 info =  '\n Results directory: ' \
                         + results_dir \
                         + '\n Liquid type: ' \
@@ -339,7 +371,7 @@ for liquid in liquid_list:
                         + '\n domain length L: {:.2f}'.format(L)
                 print(info)
 
-                ##############################
+                #######################################################
                 # MAIN LOOP
                 for n in range(0, nt):
                     # Save fields for every fixed
@@ -353,8 +385,8 @@ for liquid in liquid_list:
                         t_save[i_save]      = n*dt
                         i_save              = i_save + 1
 
-                    ##############################
-                    # Call a scheme to move one step forward:
+                    ###################################################
+                    # Call the scheme to move one step forward:
                     if scheme == schemes['LWendr']:
                         h_new, qxnew, qznew = \
                             lw.lax_wendroff(surface_tension,
@@ -382,13 +414,13 @@ for liquid in liquid_list:
                                               Epsilon, Re,
                                               nx, nz)
 
-                    ##############################
+                    ###################################################
                     # UPDATE THE FIELDS:
                     h[1:-1,1:-1]  = h_new
                     qx[1:-1,1:-1] = qxnew
                     qz[1:-1,1:-1] = qznew
 
-                    ##############################
+                    ###################################################
                     # ENFORCE BOUNDARY CONDITIONS:
                     # Note: indices for the four
                     # boundaries are as follows:
@@ -400,7 +432,7 @@ for liquid in liquid_list:
                     # INTRODUCING PERTURBATIONS
                     # AT THE INLET [-1,:]
 
-                    # Perturbation along x of qx:
+                    # 2D perturbation along x of qx:
                     if configuration == conf['PX01']:
                         # BOTTOM BOUNDARY (INLET):
                         # BCs at inlet: Dirichlet conditions
@@ -418,7 +450,7 @@ for liquid in liquid_list:
                         # Set qz to zeros at the inlet:
                         qz[-1,:] = np.zeros(nz)
 
-                    # Perturbations of qx along x and z:
+                    # 3D perturbations of qx along x and z:
                     elif configuration == conf['PXZ1']:
                         # BOTTOM BOUNDARY (INLET):
                         # BCs at inlet: Dirichlet conditions
@@ -439,11 +471,16 @@ for liquid in liquid_list:
                                               /(2*(0.4)**2))\
                                       /(0.4*np.sqrt(2*math.pi))
                                       )
+                        # Note: the perturbations are sinusoidal
+                        # along x and along z, 
+                        # and the Gaussian function regulates
+                        # the width of the domain which is affected
+                        # by the perturbations.
 
                         # Set qz to zeros at the inlet:
                         qz[-1,:] = np.zeros(nz)
 
-                    # Perturbations of h along x and z:
+                    # 3D perturbations of h along x and z:
                     elif configuration == conf['PXZ2']:
                         # BCs at inlet: Dirichlet conditions
                         # BOTTOM BOUNDARY (INLET):
@@ -466,6 +503,7 @@ for liquid in liquid_list:
                               % configuration)
                         sys.exit()
 
+                    # BOUNDARY CONDITIONS (LEFT, RIGHT, and TOP):                    
                     # Linear extrapolation along z-azis
                     # (LEFT and RIGHT BOUNDARIES)
                     # and along the
@@ -473,8 +511,8 @@ for liquid in liquid_list:
                     comp.linear_extrap_lrt(h, qx, qz)
 
 
-                    ##############################
-                    # SAVE .dat FILES and PLOTS every 100 steps:
+                    ###################################################
+                    # SAVE .dat AND .npy FILES every 100 steps:
                     if n%100 < 0.0001:
                         # # Save to .dat files a slice
                         # # of the wave along x:
@@ -493,33 +531,38 @@ for liquid in liquid_list:
                         save_data.save_np(h, directory_n,
                                           filename,
                                           n)
+                        # (most efficient format for post-processing)
 
                         # pick up trash:
                         gc.collect()
 
+                    # SAVE PLOTS AND PRINT REMINDERS EVERY 2000 STEPS:
                     if n%2000 < 0.0001:
                         # Save .png's:
-#                        save_plots.plot_surfaces(h, X, Z, n,
-#                                                 h0,
-#                                                 directory_plots,
-#                                                 filename,
-#                                                 conf_key)
+                        save_plots.plot_surfaces(h, X, Z, n,
+                                                 h0,
+                                                 directory_plots,
+                                                 filename,
+                                                 conf_key)
 
                         # Remind me what I've been doing
                         # in the terminal:
                         print("\n Reminder:" + "\n" + info)
 
                         # Monitor the behaviour of the limiters
-                        # for the blended scheme:
+                        # for the blended scheme (only for 3D):
                         if scheme == schemes['LWFble'] \
                         and configuration != conf['PX01']:
+                            # Option to plot the limiters:
                             # save_plots.plot_limiters(nx, dx, nz, dz,
                             #                    Phi_x, Phi_z,
                             #                    directory_lim,
                             #                    scheme_choice,
                             #                    n)
+                            # Check limiters values:
                             print('Phi_x' , Phi_x)
                             print('Phi_z' , Phi_z)
+                            # Check derivatives values:
                             # print('hxxx', hxxx)
                             # print('hzzz', hzzz)
                             # print('hxzz', hxzz)
@@ -527,26 +570,30 @@ for liquid in liquid_list:
                         gc.collect()
 
                 #%%
-                ##############################
-                # Go back to solver directory:
+                #######################################################
+                # Go back to the solver directory:
                 os.chdir('../../')
 
-                # summary of the simulation
+                # Summary of the simulation:
                 summary = info \
                         + '\n Execution time: ' \
                         + str(datetime.now()-startTime) \
                         + '\n h.max() = {:.4f}'.format(h.max()) \
                         + '\n h.min() = {:.4f}'.format(h.min())
 
-                # save the summary to a logfile
+                # Save the summary to a logfile:
                 logging.basicConfig(level    = logging.INFO,
                                     filename = "zlogfile",
                                     filemode = "a+",
                                     format   = \
-                                    "%(asctime)-15s %(levelname)-8s %(message)s")
+                                    "%(asctime)-15s \
+                                    %(levelname)-8s \
+                                    %(message)s")
                 logging.info(summary)
                 print(summary)
                 print('Summary logged.')
+
+                # Clean up a bit before the next case in the loop:
                 gc.collect()
                 del h_new
                 del qxnew

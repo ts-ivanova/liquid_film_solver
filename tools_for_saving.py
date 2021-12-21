@@ -29,24 +29,33 @@ def create_directories(surface_tension,
                        h0, A,
                        dx, nx, dz, nz,
                        CFL, dt, final_time,
-                       Re, freq):
+                       Epsilon, Re, freq):
     # DIRECTORIES
     # To store the numerical data, check if the
     # directories exists. If not, create them.
 
+    # The reduced Reynolds number is defined as:
+    delta = Epsilon*Re
     # A string containing the initial film height value
     # and the perturbation amplitude:
-    h0_and_amplitude = "h{:.2f}".format(h0) + "_A{:.2f}".format(A)
+    h0_amplitude_and_delta = "h{:.2f}".format(h0) \
+                             + "_A{:.2f}".format(A) \
+                             + "_delta{}".format('%07.3F' % delta)
 
     if surface_tension:
         all_st = "_with_surf_ten_" + 'Re{:.0f}'.format(Re)
-        results_dir = "RESULTS_December" + os.sep + dim + liquids_key + all_st
+        results_dir = "RESULTS_December" \
+                        + os.sep + dim + liquids_key + all_st
+
         Path(results_dir)\
             .mkdir(parents=True, exist_ok=True)
         os.chdir(results_dir)
+
     else:
         no_st = "_without_surf_ten_" + 'Re{:.0f}'.format(Re)
-        results_dir = "RESULTS_December" + os.sep + dim + liquids_key + no_st
+        results_dir = "RESULTS_December" \
+                        + os.sep + dim + liquids_key + no_st
+
         Path(results_dir)\
             .mkdir(parents=True, exist_ok=True)
         os.chdir(results_dir)
@@ -78,7 +87,7 @@ def create_directories(surface_tension,
     # -> separated by folders Re
     directory_n = "SOLUTIONS_n" \
                     + os.sep + 'Re{:.0f}'.format(Re) \
-                    + '_' + h0_and_amplitude \
+                    + '_' + h0_amplitude_and_delta \
                     + os.sep + saving
     Path(directory_n).mkdir(parents=True, exist_ok=True)
 

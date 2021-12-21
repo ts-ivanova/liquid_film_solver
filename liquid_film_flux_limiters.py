@@ -6,7 +6,7 @@ Created on Sun Mar 14 12:56:58 2021
 @author: ivanova
 
 A script that provides different limiter types for
-the blended scheme.
+the blended scheme (Lax-Wendroff -- Lax-Friedrichs).
 """
 
 import numpy as np

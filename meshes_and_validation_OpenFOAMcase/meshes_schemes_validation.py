@@ -3,7 +3,7 @@
 """
 Created on Sun Mar 21 16:40:46 2021
 
-@author: tsveti
+@author: ivanova
 
 Compare numerical solutions from .dat files
 for different mesh sizes and different schemes
@@ -141,4 +141,4 @@ for j in range(len(titles)):
                handlelength=4,
                markerscale=0.6)
     plt.savefig('PLOTS' + os.sep + 'OF_' + FOLDERS[j] + '.png',
-                format='png', dpi=400)
+                 format='png', dpi=400)

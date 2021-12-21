@@ -3,7 +3,7 @@
 """
 Created on Sat Mar 27 21:07:25 2021
 
-@author: tsveti
+@author: ivanova
 """
 
 # Compress the png's

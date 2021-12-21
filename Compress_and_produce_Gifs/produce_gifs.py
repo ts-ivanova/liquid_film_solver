@@ -5,7 +5,7 @@ Created on Fri Mar 26 11:14:24 2021
 
 Produce gifs from the .png frames
 
-@author: tsveti
+@author: ivanova
 """
 
 import imageio

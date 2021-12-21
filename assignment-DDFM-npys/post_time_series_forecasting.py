@@ -3,7 +3,7 @@
 """
 Created on Thu May  9 15:16:30 2021
 
-@author: tsveti
+@author: ivanova
 
 Post-processing the liquid film waves:
 Time series forecasting
