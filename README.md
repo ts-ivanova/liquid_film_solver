@@ -2,7 +2,7 @@
 A solver for an integral boundary layer model 
 for liquid films on moving substrates 
 developed for a project during RM2021:
-"Physics-based and Data-driven Modelling of Nonlinear Waves in Liquid Films" 
+"Physics-based and Data-driven Modelling of Nonlinear Waves in Liquid Films" \\ 
 by T. Ivanova, supervised by Prof. M. Mendez and by F. Pino
 
 This project solves a simplified version of the 3D integral model
@@ -22,7 +22,7 @@ The substrate moves at velocity U_p
 in the opposite direction of gravity, along axis x, 
 while z is the span-wise direction.
 
-<img src="images_for_readme/schematic.png" width="900">
+<img src="images_for_readme/schematic.png" width="800">
 
 The ```main_solver_liquid_film.py``` script 
 computes the solution of this integral model. 
