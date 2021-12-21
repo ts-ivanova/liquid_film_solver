@@ -146,9 +146,12 @@ for liquid in liquid_list:
     if liquid == liquids['WATER']:
         # Set WATER parameters from JFM 2020 paper:
         Epsilon = 0.23918 # Long-wave parameter, [-]
-        # Epsilon = 0.0023918 # Long-wave parameter, [-]
-        Re_list = [319] # Re number in OpenFOAM JFM
-        # Re_list = [319, 2*319]
+        #
+        # To run for a lower value of delta:
+        # Epsilon = 0.0023918
+        #
+        # Re_list = [319] # Re number in OpenFOAM JFM
+        Re_list = [319, 2*319]
     # or if zinc has been selected:
     elif liquid == liquids['ZINC']:
         # Set liquid ZINC parameters from JFM 2020 paper:
@@ -172,6 +175,11 @@ for liquid in liquid_list:
             liquids_key = list(liquids.keys())[liquid]
 
 
+            freq_list = list(np.arange(0.005, 0.205, 0.015))
+            frequencies = [round(elem, 3) for elem in freq_list]
+            # [-] low, medium and high freqs
+
+
             # if the configuration is 2D:
             if configuration == conf['PX01']:
                 dim = '2D_' # to use for namings in tools_for_saving.py
@@ -187,12 +195,7 @@ for liquid in liquid_list:
                 CFL = 0.3
 
                 # OpenFOAM case in JFM:
-                frequencies = [0.05] # [-] as in 2D JFM
-
-                # freq_list = list(np.arange(0.005, 0.205, 0.015))
-                # frequencies = [round(elem, 3) for elem in freq_list]
-                #frequencies = [0.005, 0.05, 0.1, 0.2]
-                # [-] low, medium and high freqs
+                # frequencies = [0.05] # [-] as in 2D JFM
 
                 # Set the amplitude for the flow rate perturbations
                 # as in 2D JFM:
@@ -209,9 +212,9 @@ for liquid in liquid_list:
                     CFL = 0.1
                 else:
                     CFL = 0.3
+
                 # frequencies = [0.05]
-                freq_list = list(np.arange(0.005, 0.205, 0.015))
-                frequencies = [round(elem, 3) for elem in freq_list]
+
                 if configuration == conf['PXZ1']:
                     A = 0.2 # amplitude for the flow rate perturbations
                 elif configuration == conf['PXZ2']:

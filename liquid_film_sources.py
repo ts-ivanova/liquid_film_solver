@@ -7,8 +7,6 @@ Created on Sun Mar 14 12:56:58 2021
 """
 
 import numpy as np
-from findiff import FinDiff
-from Functions_Miguel import filt_X
 
 def liquid_film_sources(surface_tension,
                         dx, dz, nx, nz,
@@ -45,6 +43,8 @@ def liquid_film_sources(surface_tension,
     # when surface_tension = True, compute the source terms
     # including the third derivatives:
     if surface_tension:
+        from findiff import FinDiff
+        from Functions_Miguel import filt_X
 
         # First derivatives operators:
         d_dx = FinDiff((0, dx, 1))

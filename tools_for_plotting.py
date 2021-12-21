@@ -27,9 +27,11 @@ import pandas as pd
 import datetime
 #from scipy.fft import fftshift
 
-# filtered plots
-from findiff import FinDiff, coefficients, Coefficient
-from Functions_Miguel import filt_X
+# If surface tension is not neglected, 
+# then plots of the filtered derivatives can be produced.
+# For the purpose, uncomment the following two lines:
+#from findiff import FinDiff, coefficients, Coefficient
+#from Functions_Miguel import filt_X
 
 
 # PLOT CUSTOMIZATIONS:
