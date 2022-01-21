@@ -44,7 +44,7 @@ def create_directories(surface_tension,
 
     if surface_tension:
         all_st = "_with_surf_ten_" + 'Re{:.0f}'.format(Re)
-        results_dir = "RESULTS_December" \
+        results_dir = "RESULTS_December_fixed" \
                         + os.sep + dim + liquids_key + all_st
 
         Path(results_dir)\
@@ -53,7 +53,7 @@ def create_directories(surface_tension,
 
     else:
         no_st = "_without_surf_ten_" + 'Re{:.0f}'.format(Re)
-        results_dir = "RESULTS_December" \
+        results_dir = "RESULTS_December_fixed" \
                         + os.sep + dim + liquids_key + no_st
 
         Path(results_dir)\
@@ -84,15 +84,17 @@ def create_directories(surface_tension,
     # directory_n = "SOLUTIONS_n" \
     #                 + os.sep + 'dx{:.4f}'.format(dx) \
     #                 + os.sep + saving
-    # -> separated by folders Re
+    # -> separated by folders Re::
+    Re_folder = 'Re{:.0f}'.format(Re) + '_' + h0_amplitude_and_delta
+
     directory_n = "SOLUTIONS_n" \
-                    + os.sep + 'Re{:.0f}'.format(Re) \
-                    + '_' + h0_amplitude_and_delta \
+                    + os.sep + Re_folder \
                     + os.sep + saving
     Path(directory_n).mkdir(parents=True, exist_ok=True)
 
     # To store plots every few steps for the configuration:
     directory_plots = "PLOTS/FRAMES" \
+                    + os.sep + Re_folder \
                     + os.sep + saving
     Path(directory_plots).mkdir(parents=True, exist_ok=True)
 

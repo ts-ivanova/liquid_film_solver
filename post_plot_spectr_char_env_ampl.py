@@ -65,7 +65,7 @@ alpha1 = 0.9
 
 ####################
 # os.chdir('RESULTS-processed/')
-os.chdir('RESULTS_December/')
+os.chdir('RESULTS_December_fixed/')
 # Gather all computed configurations:
 LIQUIDS = natsorted(glob.glob('2D_WATER_without_surf_ten_Re319'))
 # LIQUIDS = natsorted(glob.glob('3*'))

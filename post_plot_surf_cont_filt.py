@@ -28,7 +28,7 @@ import tools_for_plotting as save_plots
 
 
 ####################
-os.chdir('RESULTS_December/')
+os.chdir('RESULTS_December_fixed/')
 
 # Gather all computed configurations:
 # LIQUIDS = natsorted(glob.glob('2D*')) + natsorted(glob.glob('3D*'))

@@ -37,7 +37,7 @@ markers = ['o', 'X', 'v']
 
 
 #######################################################################
-os.chdir('RESULTS_December/decay/')
+os.chdir('RESULTS_December_fixed/decay/')
 
 Re_paths = natsorted(glob.glob('R*'))
 
