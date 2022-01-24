@@ -116,7 +116,7 @@ def liquid_film_sources(surface_tension,
     S1 = np.zeros((nx-2,nz-2))
 
     # sources S2 for the qx-eqn:
-    S2 = - h[1:-1,1:-1]/(Epsilon*Re) \
+    S2 = h[1:-1,1:-1]/(Epsilon*Re) \
             - (3*qx[1:-1,1:-1])/ \
             (Epsilon*Re*h[1:-1,1:-1]**2)
 

@@ -46,7 +46,7 @@ import logging
 from datetime import datetime
 
 # Import home-made script for saving things in directories etc.
-import tools_for_boundary_conditions as comp
+import tools_for_boundary_conditions_fixed_plate as comp
 import tools_for_saving as save_data
 import tools_for_plotting as save_plots
 
@@ -151,7 +151,7 @@ for liquid in liquid_list:
         # Epsilon = 0.0023918
         #
         Re_list = [319] # Re number in OpenFOAM JFM
-        # Re_list = [319, 2*319]
+        #Re_list = [319, 2*319]
     # or if zinc has been selected:
     elif liquid == liquids['ZINC']:
         # Set liquid ZINC parameters from JFM 2020 paper:
@@ -175,11 +175,11 @@ for liquid in liquid_list:
             liquids_key = list(liquids.keys())[liquid]
 
 
-            # freq_list = list(np.arange(0.005, 0.205, 0.015))
-            # frequencies = [round(elem, 3) for elem in freq_list]
+            #freq_list = list(np.arange(0.005, 0.205, 0.015))
+            #frequencies = [round(elem, 3) for elem in freq_list]
             # [-] low, medium and high freqs
-            # frequencies = [0.05]
-            frequencies = [0.02]
+            frequencies = [0.05]
+
 
 
             # if the configuration is 2D:
@@ -201,7 +201,10 @@ for liquid in liquid_list:
 
                 # Set the amplitude for the flow rate perturbations
                 # as in 2D JFM:
-                A = 0.2 # [-]
+                #A = 0.2 # [-]
+                A = 0.9 # [-]
+
+
 
             # else if the configuration is 3D:
             else: # parameters for the 3D waves:
@@ -251,7 +254,7 @@ for liquid in liquid_list:
                 # npoin - number of points per lambd
                 # final_time - total simulation length, [-]
                 lambd    = U_substr/freq
-                factor   = 1
+                factor   = 4
                 freq_JFM = 0.05
 
                 # Depending on whether the surface tension is
@@ -316,7 +319,9 @@ for liquid in liquid_list:
                 h = h0*np.ones((nx,nz), dtype='float32')
                 # Initial values for the flow rates
                 # Quasi-steady state:
-                qx = (1/3)*h**3-h
+                #qx = (1/3)*h**3-h
+                # FOR FALLING FILMS:
+                qx = (1/3)*h**3
                 qz = np.zeros((nx,nz), dtype='float32')
 
                 #######################################################
@@ -423,6 +428,10 @@ for liquid in liquid_list:
                     h[1:-1,1:-1]  = h_new
                     qx[1:-1,1:-1] = qxnew
                     qz[1:-1,1:-1] = qznew
+                    if np.isnan(h).any():
+                        print("Reached NaNs. Stopping computation. Logging summary...")
+                        info = '\n COMPUTATION REACHED NaNs.' + info
+                        break
 
                     ###################################################
                     # ENFORCE BOUNDARY CONDITIONS:
@@ -444,16 +453,37 @@ for liquid in liquid_list:
                         # From quasi-steady formula,
                         # compute qx with introduced
                         # perturbations as in JFM:
-                        qx[-1,:] = (1/3*h[-1,:]**3 \
-                                    - h[-1,:])\
-                                    *(1 + \
-                                     # A*np.sin(2*np.pi\
-                                     #           *freq\
-                                     #           *time_steps[n])\
-                                    A*np.sin(2*np.pi\
-                                              *time_steps[n]/\
-                                              lambd)\
-                                    *np.ones((nz,)))/100
+                        #qx[-1,:] = (1/3*h[-1,:]**3 \
+                        #            - h[-1,:])\
+                        #            *(1 + \
+                        #              A*np.sin(2*np.pi\
+                        #                        *freq\
+                        #                        *time_steps[n])\
+                        #              *np.ones((nz,)))
+                        qx[-1,:] = np.zeros(nz)
+                        #qx[-1000,:] = (1/3*h[-1000,:]**3 \
+                        #            - h[-1000,:])\
+                        #            *(1 + \
+                        #             # A*np.sin(2*np.pi\
+                        #             #           *freq\
+                        #             #           *time_steps[n])\
+                        #            A*np.sin(2*np.pi\
+                        #                      *time_steps[n]\
+                        #                      /lambd)\
+                        #            *np.ones((nz,)))
+                        #FOR FALLING FILMS:
+                        #qx[-int(1000/factor),:] = (1/3*h[-int(1000/factor),:]**3)\
+                        #            *(1 + \
+                        #             # A*np.sin(2*np.pi\
+                        #             #           *freq\
+                        #             #           *time_steps[n])\
+                        #            A*np.sin(2*np.pi\
+                        #                      *time_steps[n]\
+                        #                      /lambd)\
+                        #            *np.ones((nz,)))
+                        qx[-int(nx/2),:] = 0.1*(1/3)\
+                                    *np.sin(2*np.pi*freq*time_steps[n])\
+                                    *np.ones((nz,))
                         # Set qz to zeros at the inlet:
                         qz[-1,:] = np.zeros(nz)
 

@@ -175,9 +175,11 @@ for liquid in liquid_list:
             liquids_key = list(liquids.keys())[liquid]
 
 
-            freq_list = list(np.arange(0.005, 0.205, 0.015))
-            frequencies = [round(elem, 3) for elem in freq_list]
+            #freq_list = list(np.arange(0.005, 0.205, 0.015))
+            #frequencies = [round(elem, 3) for elem in freq_list]
             # [-] low, medium and high freqs
+            frequencies = [0.05]
+
 
 
             # if the configuration is 2D:
@@ -422,6 +424,10 @@ for liquid in liquid_list:
                     h[1:-1,1:-1]  = h_new
                     qx[1:-1,1:-1] = qxnew
                     qz[1:-1,1:-1] = qznew
+                    if np.isnan(h).any():
+                        print("Reached NaNs. Stopping computation. Logging summary...")
+                        info = '\n COMPUTATION REACHED NaNs.' + info
+                        break
 
                     ###################################################
                     # ENFORCE BOUNDARY CONDITIONS:
@@ -450,6 +456,21 @@ for liquid in liquid_list:
                                                 *freq\
                                                 *time_steps[n])\
                                       *np.ones((nz,)))
+                        #####
+                        # To introduce perturbations in the middle
+                        # of the domain, 
+                        # the boundary conditions have to be changed
+                        # (linear extrapolation also at the inlet)
+                        # and the following has to be used:
+                        #qx[-1,:] = np.zeros(nz)
+                        #qx[-int(nx/2),:] = (1/3*h[-int(nx/2),:]**3 \
+                        #            - h[-int(nx/2),:])\
+                        #            *(1 + \
+                        #             A*np.sin(2*np.pi\
+                        #                        *freq\
+                        #                        *time_steps[n])\
+                        #            *np.ones((nz,)))
+                        #####
                         # Set qz to zeros at the inlet:
                         qz[-1,:] = np.zeros(nz)
 

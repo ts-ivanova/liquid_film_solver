@@ -36,3 +36,16 @@ def linear_extrap_lrt(h, qx, qz):
     qz[0,:]  = 2*qz[1,:] - qz[2,:]
     qx[0,:]  = 2*qx[1,:] - qx[2,:]
     h[0,:]   = 2*h[1,:] - h[2,:]
+
+
+
+
+    # If the perturbations are introduced in the middle
+    # of the domain, uncomment the following lines:
+    #
+	# # BOTTOM BOUNDART (INLET):
+    #
+	# # Linear extrapolation along x
+    #qz[-1,:]  = 2*qz[-2,:] - qz[-3,:]
+    #qx[-1,:]  = 2*qx[-2,:] - qx[-3,:]
+    #h[-1,:]   = 2*h[-2,:] - h[-3,:]
