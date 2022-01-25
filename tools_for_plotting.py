@@ -66,8 +66,8 @@ def plot_surfaces(h, X, Z, n,
         h_max = h0 + 0.05
         h_min = h0 - 0.05
     else:
-        h_max = h0 + 0.2
-        h_min = h0 - 0.2
+        h_max = h0 + 0.9
+        h_min = h0 - 0.9
 
     fig = plt.figure()
     ax = fig.add_subplot(111, projection= '3d')

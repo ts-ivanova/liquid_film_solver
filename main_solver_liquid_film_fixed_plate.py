@@ -130,8 +130,11 @@ u = 2*U_substr
 output_interval = 1.0
 
 # Initial film height:
-h0 = 0.2 # [-]
+#h0 = 0.2 # [-]
 # h0 = 0.1 # [-] can be suitable for higher Re numbers
+
+# falling plate:
+h0 = 1
 
 
 
@@ -145,13 +148,16 @@ for liquid in liquid_list:
     # if water has been selected:
     if liquid == liquids['WATER']:
         # Set WATER parameters from JFM 2020 paper:
-        Epsilon = 0.23918 # Long-wave parameter, [-]
+        #Epsilon = 0.23918 # Long-wave parameter, [-]
         #
         # To run for a lower value of delta:
         # Epsilon = 0.0023918
         #
-        Re_list = [319] # Re number in OpenFOAM JFM
+        #Re_list = [319] # Re number in OpenFOAM JFM
         #Re_list = [319, 2*319]
+        # FOR A FIXED PLATE:
+        Epsilon = 0.165
+        Re_list = [20.1]
     # or if zinc has been selected:
     elif liquid == liquids['ZINC']:
         # Set liquid ZINC parameters from JFM 2020 paper:
@@ -178,8 +184,9 @@ for liquid in liquid_list:
             #freq_list = list(np.arange(0.005, 0.205, 0.015))
             #frequencies = [round(elem, 3) for elem in freq_list]
             # [-] low, medium and high freqs
-            frequencies = [0.05]
-
+            #frequencies = [0.05]
+            # FIXED PLATE:
+            frequencies = [5.61]
 
 
             # if the configuration is 2D:
@@ -194,7 +201,10 @@ for liquid in liquid_list:
 
                 # The CFL number is defined as u*dt/dx
                 # from which dt is evaluated below:
-                CFL = 0.3
+                #CFL = 0.3
+
+                # FIXED PLATE:
+                CFL = 0.5
 
                 # OpenFOAM case in JFM:
                 # frequencies = [0.05] # [-] as in 2D JFM
@@ -202,7 +212,7 @@ for liquid in liquid_list:
                 # Set the amplitude for the flow rate perturbations
                 # as in 2D JFM:
                 #A = 0.2 # [-]
-                A = 0.9 # [-]
+                A = 0.1 # [-]
 
 
 
@@ -274,13 +284,19 @@ for liquid in liquid_list:
                 # the numerical dissipation is negligible,
                 # as confirmed with the validation test case:
                 else:
-                    npoin = int((U_substr/freq_JFM)/(0.0275*2))
+                    #npoin = int((U_substr/freq_JFM)/(0.0275*2))
+                    # FIXED PLATE:
+                    npoin = 32
 
-                dx    = (lambd/(npoin))*factor
-                L     = 8*lambd
+                #dx    = (lambd/(npoin))*factor
+                #L     = 8*lambd
+                #nx    = int(L/dx)
+                #final_time = int(10*(L+lambd)/U_substr)
+                # FIXED PLATE:
+                dx    = 0.1
+                L     = 350
                 nx    = int(L/dx)
-                final_time = int(10*(L+lambd)/U_substr)
-
+                final_time = int(100*(L+lambd)/U_substr)
                 #######################################################
                 # For the OpenFOAM case in JFM:
                 # (for the validation)
@@ -288,28 +304,32 @@ for liquid in liquid_list:
                     # nx = 2810 is extracted from JFM data
                     # by using Lx = nx*dx, where Lx = 77.28
                     # and dx = 0.0275 from the JFM paper 2020.
-                    npoin = int(lambd/0.0275) # is approx. 727
-                    dx = (lambd/(npoin))*factor
-                    L  = 4*lambd
-                    nx = int(2810/factor)
+                    #npoin = int(lambd/0.0275) # is approx. 727
+                    #dx = (lambd/(npoin))*factor
+                    #L  = 4*lambd
+                    #nx = int(2810/factor)
                     # z-dimension:
-                    dz = 1e-2/10
-                    nz = 100
+                    dz = 1e-1
+                    nz = 10
                 #######################################################
 
                 # wavelength lambd_z [-] along z
                 lambd_z = 1
-                dz      = lambd_z/100
-                nz      = int(lambd_z/dz)*3
+                #dz      = lambd_z/100
+                #nz      = int(lambd_z/dz)*3
 
                 #######################################################
                 # TIME INFORMATION
                 # Time is dimensionless;
                 # Timestep (unit) from the CFL formula:
-                dt = CFL*dx/U_substr
+                U_ref = 5
+                dt = CFL*dx/U_ref
 
                 # Number of timesteps:
-                nt = int(np.fix(final_time/dt)+1)
+                # FIXED PLATE:
+                nt = 30000
+                # (old below)
+                #nt = int(np.fix(final_time/dt)+1)
                 time_steps = np.linspace(0,final_time,nt)
                 tsteps_btwn_out = np.fix(output_interval/dt)
                 noutput = int(np.ceil(nt/tsteps_btwn_out))
@@ -481,9 +501,9 @@ for liquid in liquid_list:
                         #                      *time_steps[n]\
                         #                      /lambd)\
                         #            *np.ones((nz,)))
-                        qx[0,:] = 0.1*(1/3)\
+                        h[0,:] = 3*(1/3 + A*(1/3)\
                                     *np.sin(2*np.pi*freq*time_steps[n])\
-                                    *np.ones((nz,))
+                                    *np.ones((nz,)))**(1/3)
                         # Set qz to zeros at the inlet:
                         qz[0,:] = np.zeros(nz)
 
@@ -573,8 +593,8 @@ for liquid in liquid_list:
                         # pick up trash:
                         gc.collect()
 
-                    # SAVE PLOTS AND PRINT REMINDERS EVERY 2000 STEPS:
-                    if n%2000 < 0.0001:
+                    # SAVE PLOTS AND PRINT REMINDERS EVERY 500 STEPS:
+                    if n%500 < 0.0001:
                         # Save .png's:
                         save_plots.plot_surfaces(h, X, Z, n,
                                                  h0,
