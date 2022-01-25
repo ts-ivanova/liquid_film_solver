@@ -33,9 +33,9 @@ def linear_extrap_lrt(h, qx, qz):
     # TOP BOUNDARY (OUTLET):
 
     # Linear extrapolation along x
-    qz[0,:]  = 2*qz[1,:] - qz[2,:]
-    qx[0,:]  = 2*qx[1,:] - qx[2,:]
-    h[0,:]   = 2*h[1,:] - h[2,:]
+    #qz[0,:]  = 2*qz[1,:] - qz[2,:]
+    #qx[0,:]  = 2*qx[1,:] - qx[2,:]
+    #h[0,:]   = 2*h[1,:] - h[2,:]
 
 	# BOTTOM BOUNDART (INLET):
 

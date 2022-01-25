@@ -28,7 +28,7 @@ import tools_for_plotting as save_plots
 
 
 ####################
-os.chdir('RESULTS_December_fixed/')
+os.chdir('RESULTS_January_fixed/')
 
 # Gather all computed configurations:
 # LIQUIDS = natsorted(glob.glob('2D*')) + natsorted(glob.glob('3D*'))
@@ -36,7 +36,7 @@ LIQUIDS = natsorted(glob.glob('2D*'))
 
 
 # Choose which plots to produce by setting True or False:
-Surfaces  = True     # liquid film height surfaces h
+Surfaces  = False    # liquid film height surfaces h
 Contourfs = True     # contour plot of the last 
                      # computed time step of h
 

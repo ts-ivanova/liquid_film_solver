@@ -254,7 +254,7 @@ for liquid in liquid_list:
                 # npoin - number of points per lambd
                 # final_time - total simulation length, [-]
                 lambd    = U_substr/freq
-                factor   = 4
+                factor   = 1
                 freq_JFM = 0.05
 
                 # Depending on whether the surface tension is
@@ -279,7 +279,7 @@ for liquid in liquid_list:
                 dx    = (lambd/(npoin))*factor
                 L     = 8*lambd
                 nx    = int(L/dx)
-                final_time = int((L+lambd)/U_substr)
+                final_time = int(10*(L+lambd)/U_substr)
 
                 #######################################################
                 # For the OpenFOAM case in JFM:
@@ -449,7 +449,7 @@ for liquid in liquid_list:
                     if configuration == conf['PX01']:
                         # BOTTOM BOUNDARY (INLET):
                         # BCs at inlet: Dirichlet conditions
-                        h[-1,:] = h0*np.ones(nz)
+                        h[0,:] = h0*np.ones(nz)
                         # From quasi-steady formula,
                         # compute qx with introduced
                         # perturbations as in JFM:
@@ -460,7 +460,7 @@ for liquid in liquid_list:
                         #                        *freq\
                         #                        *time_steps[n])\
                         #              *np.ones((nz,)))
-                        qx[-1,:] = np.zeros(nz)
+                        #qx[-1,:] = np.zeros(nz)
                         #qx[-1000,:] = (1/3*h[-1000,:]**3 \
                         #            - h[-1000,:])\
                         #            *(1 + \
@@ -481,11 +481,11 @@ for liquid in liquid_list:
                         #                      *time_steps[n]\
                         #                      /lambd)\
                         #            *np.ones((nz,)))
-                        qx[-int(nx/2),:] = 0.1*(1/3)\
+                        qx[0,:] = 0.1*(1/3)\
                                     *np.sin(2*np.pi*freq*time_steps[n])\
                                     *np.ones((nz,))
                         # Set qz to zeros at the inlet:
-                        qz[-1,:] = np.zeros(nz)
+                        qz[0,:] = np.zeros(nz)
 
                     # 3D perturbations of qx along x and z:
                     elif configuration == conf['PXZ1']:

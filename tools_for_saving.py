@@ -44,7 +44,7 @@ def create_directories(surface_tension,
 
     if surface_tension:
         all_st = "_with_surf_ten_" + 'Re{:.0f}'.format(Re)
-        results_dir = "RESULTS_December_fixed" \
+        results_dir = "RESULTS_January_fixed" \
                         + os.sep + dim + liquids_key + all_st
 
         Path(results_dir)\
@@ -53,7 +53,7 @@ def create_directories(surface_tension,
 
     else:
         no_st = "_without_surf_ten_" + 'Re{:.0f}'.format(Re)
-        results_dir = "RESULTS_December_fixed" \
+        results_dir = "RESULTS_January_fixed" \
                         + os.sep + dim + liquids_key + no_st
 
         Path(results_dir)\
