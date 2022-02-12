@@ -109,7 +109,7 @@ u = 2*U_substr
 
 # Specify whether to include surface tension terms
 # in the sources (the third derivatives of the height h):
-surface_tension = False
+surface_tension = True
 # (False = do not include)
 
 # Time between outputs:
@@ -515,7 +515,7 @@ for liquid in liquid_list:
                             #                      /lambd)\
                             #            *np.ones((nz,)))
 
-                            q_a = 0.0
+                            q_a = 0.1
 
                             # Miguel style:
                             qx[0,:] = q_a*1/3\
@@ -523,13 +523,14 @@ for liquid in liquid_list:
                                       *freq*time_steps[n])\
                                       + 1/3
                             h[0,:] = (3*qx[0,:])**(1/3)
-
+                            #qx[0,:] = 1/3
+                            #h[0,:] = (3*qx[0,:])**(1/3)
                             # Fabien Style
-                            # qx[0,:] = (1+q_a\
-                            #           *np.sin(2*np.pi\
-                            #           *freq*time_steps[n]))\
-                            #           *1/3
-                            # h[0,:]=np.ones(nz)
+                            #qx[0,:] = (1+q_a\
+                            #          *np.sin(2*np.pi\
+                            #          *freq*time_steps[n]))\
+                            #          *1/3
+                            #h[0,:]=np.ones(nz)
 
 
                     # 3D perturbations of qx along x and z:
@@ -613,7 +614,7 @@ for liquid in liquid_list:
                         #save_data.save_np(h, directory_n,
                         #                  filename,
                         #                  n)
-                        save_data.save_np(qx, directory_n,
+                        save_data.save_np(h, directory_n,
                                           filename,
                                           n)
                         # (most efficient format for post-processing)
@@ -624,7 +625,7 @@ for liquid in liquid_list:
                     # SAVE PLOTS AND PRINT REMINDERS EVERY 500 STEPS:
                     if n%500 < 0.0001:
                         # Save .png's:
-                        save_plots.plot_surfaces(qx, X, Z, n,
+                        save_plots.plot_surfaces(h, X, Z, n,
                                                  h0,
                                                  directory_plots,
                                                  filename,

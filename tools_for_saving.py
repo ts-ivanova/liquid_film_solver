@@ -186,7 +186,7 @@ def save_np(h, directory_n,
 
     # height:
     file = directory_n_np + os.sep \
-            + "q_np_" \
+            + "h_np_" \
             + filename \
             + "_n{0:05d}".format(n)
     np.save(file, h)
