@@ -3,7 +3,7 @@
 """
 Created on Tue May 18 15:55:10 2021
 
-@author: ivanova
+@author: tsvetelina ivanova
 
 Definition of functions used for saving
 of plots for the purposes of the Liquid film solver.
@@ -66,8 +66,8 @@ def plot_surfaces(h, X, Z, n,
         h_max = h0 + 0.05
         h_min = h0 - 0.05
     else:
-        h_max = h0 + 0.9
-        h_min = h0 - 0.9
+        h_max = h0 -0.6 + 0.3
+        h_min = h0 -0.6 - 0.4
 
     fig = plt.figure()
     ax = fig.add_subplot(111, projection= '3d')

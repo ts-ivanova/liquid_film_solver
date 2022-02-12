@@ -3,7 +3,7 @@
 """
 Created on Sun Aug 29 15:14:21 2021
 
-@author: ivanova
+@author: tsvetelina ivanova
 
 Plots of the waves decay rates VS perturbation frequencies
 

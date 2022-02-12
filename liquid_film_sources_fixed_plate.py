@@ -3,7 +3,7 @@
 """
 Created on Sun Mar 14 12:56:58 2021
 
-@author: ivanova
+@author: tsvetelina ivanova
 """
 
 import numpy as np
@@ -113,16 +113,19 @@ def liquid_film_sources(surface_tension,
     # # without the third derivatives:
     # else:
     # sources S1 for the h-eqn:
+    delta = 9.95
     S1 = np.zeros((nx-2,nz-2))
 
     # sources S2 for the qx-eqn:
-    S2 = h[1:-1,1:-1]/(Epsilon*Re) \
+    S2 = h[1:-1,1:-1]/(3*Epsilon*Re) \
             - (3*qx[1:-1,1:-1])/ \
-            (Epsilon*Re*h[1:-1,1:-1]**2)
+            (delta*h[1:-1,1:-1]**2)
+            #(3*Epsilon*Re*h[1:-1,1:-1]**2)
 
     # sources S3 for the qz-eqn:
     S3 = -3*qz[1:-1,1:-1]/ \
-            (Epsilon*Re*h[1:-1,1:-1]**2)
+            (delta*h[1:-1,1:-1]**2)
+            #(3*Epsilon*Re*h[1:-1,1:-1]**2)
 
     # set the third derivatives to zero as they have to be returned
     hzzz = 0

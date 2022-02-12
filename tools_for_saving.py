@@ -8,7 +8,7 @@ of plots, .dat files, .npy solutions
 creating paths etc.
 for the purposes of the Liquid film solver
 
-@author: ivanova
+@author: tsvetelina ivanova
 """
 
 import numpy as np
@@ -181,12 +181,12 @@ def save_np(h, directory_n,
     '''
     # To store the height .npy's:
     directory_n_np = directory_n \
-                        + os.sep + 'h_np'
+                        + os.sep + 'q_np'
     Path(directory_n_np).mkdir(parents=True, exist_ok=True)
 
     # height:
     file = directory_n_np + os.sep \
-            + "h_np_" \
+            + "q_np_" \
             + filename \
             + "_n{0:05d}".format(n)
     np.save(file, h)

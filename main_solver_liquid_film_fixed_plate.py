@@ -5,7 +5,7 @@ Created on Tue Mar  9 16:27:43 2021
 
 SOLVER FOR A LIQUID FILM ON A MOVING SUBSTRATE
 
-@author: ivanova
+@author: tsvetelina ivanova
 
 This script solves a simplified version of a 3D integral model
 for a liquid film on a moving substrate.
@@ -99,6 +99,30 @@ limiters = [
 ######               (by un-commenting lines etc.)               ######
 #######################################################################
 
+# Specify whether the substrate is fixed or moving:
+Fixed_substrate = True
+
+# Dimensionless substrate velocity:
+U_substr = 1
+# Wave travel speed for CFL:
+u = 2*U_substr
+
+# Specify whether to include surface tension terms
+# in the sources (the third derivatives of the height h):
+surface_tension = False
+# (False = do not include)
+
+# Time between outputs:
+output_interval = 1.0
+
+# Initial film height:
+h0 = 0.2 # [-]
+# h0 = 0.1 # [-] can be suitable for higher Re numbers
+
+# for a fixed substrate:
+if Fixed_substrate:
+    h0 = 1
+
 # Selection of the fluid type:
 liquid_list = [
                liquids['WATER']#,
@@ -117,24 +141,13 @@ scheme = schemes['LWFble']
 # scheme = schemes['LFried']
 # scheme = schemes['LWendr']
 
-# Specify whether to include surface tension terms
-# in the sources (the third derivatives of the height h):
-surface_tension = False
-# (False = do not include)
+# The CFL number is defined as u*dt/dx
+# from which dt is evaluated below:
+CFL = 0.3
 
-# Dimensionless substrate velocity:
-U_substr = 1
-# Wave travel speed for CFL:
-u = 2*U_substr
-# Time between outputs:
-output_interval = 1.0
-
-# Initial film height:
-#h0 = 0.2 # [-]
-# h0 = 0.1 # [-] can be suitable for higher Re numbers
-
-# falling plate:
-h0 = 1
+# FIXED PLATE:
+if Fixed_substrate:
+    CFL = 0.5
 
 
 
@@ -148,16 +161,15 @@ for liquid in liquid_list:
     # if water has been selected:
     if liquid == liquids['WATER']:
         # Set WATER parameters from JFM 2020 paper:
-        #Epsilon = 0.23918 # Long-wave parameter, [-]
-        #
-        # To run for a lower value of delta:
-        # Epsilon = 0.0023918
-        #
-        #Re_list = [319] # Re number in OpenFOAM JFM
+        Epsilon = 0.23918 # Long-wave parameter, [-]
+        Re_list = [319] # Re number in OpenFOAM JFM
         #Re_list = [319, 2*319]
+
         # FOR A FIXED PLATE:
-        Epsilon = 0.165
-        Re_list = [20.1]
+        if Fixed_substrate:
+            Epsilon = 0.165
+            #Re_list = [20.1]
+            Re_list = [69]
     # or if zinc has been selected:
     elif liquid == liquids['ZINC']:
         # Set liquid ZINC parameters from JFM 2020 paper:
@@ -180,13 +192,15 @@ for liquid in liquid_list:
             # Liquid type:
             liquids_key = list(liquids.keys())[liquid]
 
-
             #freq_list = list(np.arange(0.005, 0.205, 0.015))
             #frequencies = [round(elem, 3) for elem in freq_list]
             # [-] low, medium and high freqs
             #frequencies = [0.05]
+
             # FIXED PLATE:
-            frequencies = [5.61]
+            if Fixed_substrate:
+                #frequencies = [0.0912]
+                frequencies = [0.152]
 
 
             # if the configuration is 2D:
@@ -198,13 +212,6 @@ for liquid in liquid_list:
                 # Select the Lax-Friedrichs scheme 
                 # since it is robust and stable for the 2D waves:
                 scheme = schemes['LFried']
-
-                # The CFL number is defined as u*dt/dx
-                # from which dt is evaluated below:
-                #CFL = 0.3
-
-                # FIXED PLATE:
-                CFL = 0.5
 
                 # OpenFOAM case in JFM:
                 # frequencies = [0.05] # [-] as in 2D JFM
@@ -224,8 +231,6 @@ for liquid in liquid_list:
                 # from which dt is evaluated below:
                 if surface_tension:
                     CFL = 0.1
-                else:
-                    CFL = 0.3
 
                 # frequencies = [0.05]
 
@@ -238,11 +243,13 @@ for liquid in liquid_list:
             # then specify more precisely which flux limiters
             # are used (by un-commenting a line):
             if scheme == schemes['LWFble']:
+                # for naming purposes, 
+                # to indicate which limiters are used:
                 # scheme_choice = 'LxFr'
                 # scheme_choice = 'LxWe'
                 scheme_choice = 'BLmi'
                 # ... more options can be added 
-                # for the other limiter types, if they are used.
+                # for the other limiter types if they are used.
             else:
                 # extract the string for the naming conventions:
                 scheme_choice = \
@@ -286,17 +293,19 @@ for liquid in liquid_list:
                 else:
                     #npoin = int((U_substr/freq_JFM)/(0.0275*2))
                     # FIXED PLATE:
-                    npoin = 32
+                    if Fixed_substrate:
+                        npoin = 32
 
                 #dx    = (lambd/(npoin))*factor
                 #L     = 8*lambd
                 #nx    = int(L/dx)
                 #final_time = int(10*(L+lambd)/U_substr)
                 # FIXED PLATE:
-                dx    = 0.1
-                L     = 350
-                nx    = int(L/dx)
-                final_time = int(100*(L+lambd)/U_substr)
+                if Fixed_substrate:
+                    dx    = 0.1
+                    L     = 350
+                    nx    = int(L/dx)
+                    final_time = 300
                 #######################################################
                 # For the OpenFOAM case in JFM:
                 # (for the validation)
@@ -449,7 +458,8 @@ for liquid in liquid_list:
                     qx[1:-1,1:-1] = qxnew
                     qz[1:-1,1:-1] = qznew
                     if np.isnan(h).any():
-                        print("Reached NaNs. Stopping computation. Logging summary...")
+                        print("Reached NaNs. Stopping computation.")
+                        print("Logging summary...")
                         info = '\n COMPUTATION REACHED NaNs.' + info
                         break
 
@@ -469,7 +479,9 @@ for liquid in liquid_list:
                     if configuration == conf['PX01']:
                         # BOTTOM BOUNDARY (INLET):
                         # BCs at inlet: Dirichlet conditions
-                        h[0,:] = h0*np.ones(nz)
+                        #h[0,:] = h0*np.ones(nz)
+                        # Set qz to zeros at the inlet to have 2D:
+                        #qz[0,:] = np.zeros(nz)
                         # From quasi-steady formula,
                         # compute qx with introduced
                         # perturbations as in JFM:
@@ -492,20 +504,33 @@ for liquid in liquid_list:
                         #                      /lambd)\
                         #            *np.ones((nz,)))
                         #FOR FALLING FILMS:
-                        #qx[-int(1000/factor),:] = (1/3*h[-int(1000/factor),:]**3)\
-                        #            *(1 + \
-                        #             # A*np.sin(2*np.pi\
-                        #             #           *freq\
-                        #             #           *time_steps[n])\
-                        #            A*np.sin(2*np.pi\
-                        #                      *time_steps[n]\
-                        #                      /lambd)\
-                        #            *np.ones((nz,)))
-                        h[0,:] = 3*(1/3 + A*(1/3)\
-                                    *np.sin(2*np.pi*freq*time_steps[n])\
-                                    *np.ones((nz,)))**(1/3)
-                        # Set qz to zeros at the inlet:
-                        qz[0,:] = np.zeros(nz)
+                        if Fixed_substrate:
+                            #qx[-int(1000/factor),:] = (1/3*h[-int(1000/factor),:]**3)\
+                            #            *(1 + \
+                            #             # A*np.sin(2*np.pi\
+                            #             #           *freq\
+                            #             #           *time_steps[n])\
+                            #            A*np.sin(2*np.pi\
+                            #                      *time_steps[n]\
+                            #                      /lambd)\
+                            #            *np.ones((nz,)))
+
+                            q_a = 0.0
+
+                            # Miguel style:
+                            qx[0,:] = q_a*1/3\
+                                      *np.sin(2*np.pi\
+                                      *freq*time_steps[n])\
+                                      + 1/3
+                            h[0,:] = (3*qx[0,:])**(1/3)
+
+                            # Fabien Style
+                            # qx[0,:] = (1+q_a\
+                            #           *np.sin(2*np.pi\
+                            #           *freq*time_steps[n]))\
+                            #           *1/3
+                            # h[0,:]=np.ones(nz)
+
 
                     # 3D perturbations of qx along x and z:
                     elif configuration == conf['PXZ1']:
@@ -585,7 +610,10 @@ for liquid in liquid_list:
                         #                       n)
 
                         # Save the np solutions:
-                        save_data.save_np(h, directory_n,
+                        #save_data.save_np(h, directory_n,
+                        #                  filename,
+                        #                  n)
+                        save_data.save_np(qx, directory_n,
                                           filename,
                                           n)
                         # (most efficient format for post-processing)
@@ -596,7 +624,7 @@ for liquid in liquid_list:
                     # SAVE PLOTS AND PRINT REMINDERS EVERY 500 STEPS:
                     if n%500 < 0.0001:
                         # Save .png's:
-                        save_plots.plot_surfaces(h, X, Z, n,
+                        save_plots.plot_surfaces(qx, X, Z, n,
                                                  h0,
                                                  directory_plots,
                                                  filename,

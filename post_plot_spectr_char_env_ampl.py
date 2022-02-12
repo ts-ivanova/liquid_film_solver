@@ -3,7 +3,7 @@
 """
 Created on Thu May  6 16:50:30 2021
 
-@author: ivanova
+@author: tsvetelina ivanova
 
 Post-processing the liquid film waves:
 Spectrograms in space,

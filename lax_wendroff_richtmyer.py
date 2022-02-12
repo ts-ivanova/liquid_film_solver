@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-@author: ivanova
+@author: tsvetelina ivanova
 
 Two-step two dimensional Richtmyer-Lax-Wendroff scheme.
 """

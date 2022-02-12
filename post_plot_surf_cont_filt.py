@@ -3,7 +3,7 @@
 """
 Created on Wed Jun 02 18:00:03 2021
 
-@author: ivanova
+@author: tsvetelina ivanova
 
 Possible options are to plot the height surfaces
 from the liquid film solver,

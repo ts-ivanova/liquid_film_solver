@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-@author: ivanova
+@author: tsvetelina ivanova
 
 Blended Lax-Wendroff & Lax-Friedrichs scheme
 for solving the integral model for liquid films.

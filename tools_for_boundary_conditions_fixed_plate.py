@@ -3,7 +3,7 @@
 """
 Created on Tue May 18 17:33:33 2021
 
-@author: ivanova
+@author: tsvetelina ivanova
 
 
 Definition of a function for imposing linear extrapolation
