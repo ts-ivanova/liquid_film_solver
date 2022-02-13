@@ -61,7 +61,7 @@ def create_directories(surface_tension,
         os.chdir(results_dir)
 
     Path("PLOTS").mkdir(parents=True, exist_ok=True)
-    Path("PLOTS/FRAMES").mkdir(parents=True, exist_ok=True)
+    Path("PLOTS" + os.sep + "FRAMES").mkdir(parents=True, exist_ok=True)
     # To store solution every few steps for the configuration:
     saving = conf_key \
              + '_' + scheme_choice \
@@ -93,13 +93,13 @@ def create_directories(surface_tension,
     Path(directory_n).mkdir(parents=True, exist_ok=True)
 
     # To store plots every few steps for the configuration:
-    directory_plots = "PLOTS/FRAMES" \
+    directory_plots = "PLOTS" + os.sep + "FRAMES" \
                     + os.sep + Re_folder \
                     + os.sep + saving
     Path(directory_plots).mkdir(parents=True, exist_ok=True)
 
     # To store plots every few steps for the configuration:
-    directory_lim = "PLOTS/Limites"
+    directory_lim = "PLOTS" + os.sep + "Limites"
     Path(directory_lim).mkdir(parents=True, exist_ok=True)
 
     return  results_dir, directory_n, directory_plots, \
@@ -190,3 +190,21 @@ def save_np(h, directory_n,
             + filename \
             + "_n{0:05d}".format(n)
     np.save(file, h)
+
+def save_np_q(qx, directory_n,
+            filename,
+            n):
+    '''
+    Save the qx as an .npy-file in (x,z)-dimensions.
+    '''
+    # To store the height .npy's:
+    directory_q_np = directory_n \
+                        + os.sep + 'q_np'
+    Path(directory_q_np).mkdir(parents=True, exist_ok=True)
+
+    # height:
+    file = directory_q_np + os.sep \
+            + "q_np_" \
+            + filename \
+            + "_n{0:05d}".format(n)
+    np.save(file, qx)

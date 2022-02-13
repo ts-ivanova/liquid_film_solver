@@ -340,7 +340,7 @@ for liquid in liquid_list:
                     dx    = 0.1
                     L     = 350
                     nx    = int(L/dx)
-                    final_time = 2040 #300 #30
+                    final_time = 1200 #300 #30
                 #######################################################
                 # For the OpenFOAM case in JFM:
                 # (for the validation)
@@ -636,7 +636,7 @@ for liquid in liquid_list:
 
                     ###################################################
                     # SAVE .dat AND .npy FILES every 100 steps:
-                    if n%100 < 0.0001:
+                    if n%10 < 0.0001:
                         # # Save to .dat files a slice
                         # # of the wave along x:
                         # save_data.save_to_dat(h, qx, qz,
@@ -657,6 +657,9 @@ for liquid in liquid_list:
                         save_data.save_np(h, directory_n,
                                           filename,
                                           n)
+                        save_data.save_np_q(qx, directory_n,
+                                          filename,
+                                          n)                        
                         # (most efficient format for post-processing)
 
                         # pick up trash:
@@ -689,10 +692,10 @@ for liquid in liquid_list:
                             print('Phi_x' , Phi_x)
                             print('Phi_z' , Phi_z)
                         # Check derivatives values:
-                        print('hxxx', hxxx)
-                        print('hzzz', hzzz)
-                        print('hxzz', hxzz)
-                        print('hzxx', hzxx)
+#                        print('hxxx', hxxx)
+#                        print('hzzz', hzzz)
+#                        print('hxzz', hxzz)
+#                        print('hzxx', hzxx)
                         print('h.min()', h.min())
                         print('h.max()', h.max())
                         gc.collect()
