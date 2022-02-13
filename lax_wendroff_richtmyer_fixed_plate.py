@@ -88,4 +88,8 @@ def lax_wendroff(surface_tension,
             + dt*S3
 
 
-    return h_new, qx_new, qz_new
+    # return the computed quantities
+    # as well as the limiters to monitor/plot their behaviour
+    return h_new, qx_new, qz_new, \
+           Phi_x, Phi_z, \
+           hzzz, hxxx, hzxx, hxzz

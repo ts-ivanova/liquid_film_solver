@@ -125,6 +125,7 @@ h0 = 0.2 # [-]
 # for a fixed substrate:
 if Fixed_substrate:
     h0 = 1
+    #h0 = 0.2
 
 # Selection of the fluid type:
 liquid_list = [
@@ -430,7 +431,8 @@ for liquid in liquid_list:
                     ###################################################
                     # Call the scheme to move one step forward:
                     if scheme == schemes['LWendr']:
-                        h_new, qxnew, qznew = \
+                        h_new, qxnew, qznew, \
+                        hzzz, hxxx, hzxx, hxzz = \
                             lw.lax_wendroff(surface_tension,
                                             scheme_choice,
                                             dx, dz, dt,
@@ -448,7 +450,8 @@ for liquid in liquid_list:
                                              Epsilon, Re,
                                              nx, nz)
                     elif scheme == schemes['LFried']:
-                        h_new, qxnew, qznew = \
+                        h_new, qxnew, qznew, \
+                        hzzz, hxxx, hzxx, hxzz = \
                             lf.lax_friedrichs(surface_tension,
                                               scheme_choice,
                                               dx, dz, dt,

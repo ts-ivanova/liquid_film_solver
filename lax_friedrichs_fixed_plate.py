@@ -57,4 +57,7 @@ def lax_friedrichs(surface_tension,
             - 0.5*(dt/dz)*(F23[1:-1,2:] - F23[1:-1,:-2]) \
             + dt*S3
 
-    return h_new, qx_new, qz_new
+    # return the computed quantities
+    # as well as the limiters to monitor/plot their behaviour
+    return h_new, qx_new, qz_new, \
+           hzzz, hxxx, hzxx, hxzz

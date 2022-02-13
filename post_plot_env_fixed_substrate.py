@@ -39,7 +39,8 @@ alpha1 = 0.9
 # os.chdir('RESULTS-processed/')
 os.chdir('RESULTS_January_fixed/')
 # Gather all computed configurations:
-LIQUIDS = natsorted(glob.glob('2D_WATER_without_surf_ten_Re069'))
+#LIQUIDS = natsorted(glob.glob('2D_WATER_without_surf_ten_Re069'))
+LIQUIDS = natsorted(glob.glob('2D_WATER_with_surf_ten_Re069'))
 # LIQUIDS = natsorted(glob.glob('3*'))
 
 print('Going to process ', LIQUIDS)
