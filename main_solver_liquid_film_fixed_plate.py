@@ -340,7 +340,7 @@ for liquid in liquid_list:
                     dx    = 0.1
                     L     = 350
                     nx    = int(L/dx)
-                    final_time = 1200 #300 #30
+                    final_time = 1200
                 #######################################################
                 # For the OpenFOAM case in JFM:
                 # (for the validation)
@@ -374,10 +374,11 @@ for liquid in liquid_list:
 
                 # Number of timesteps:
                 # FIXED PLATE:
-                nt = 30000 #3000
+                nt = int(final_time/dt) #3000
                 # (old below)
                 #nt = int(np.fix(final_time/dt)+1)
-                time_steps = np.linspace(0,final_time,nt)
+                #time_steps = np.linspace(0,final_time,nt)
+                time_steps = np.arange(1,nt+1,1)*dt
                 tsteps_btwn_out = np.fix(output_interval/dt)
                 noutput = int(np.ceil(nt/tsteps_btwn_out))
                 # noutput is the number of output frames.
@@ -449,7 +450,7 @@ for liquid in liquid_list:
 
                 #######################################################
                 # MAIN LOOP
-                for n in range(0, nt):
+                for n in range(0, nt+1): #0,1,2,3,...,nt
                     # Save fields for every fixed
                     # number of timesteps
                     if np.mod(n, tsteps_btwn_out) == 0:
@@ -558,9 +559,13 @@ for liquid in liquid_list:
                             q_a = 0.1
 
                             # Miguel style:
+                            #qx[0,:] = q_a*1/3\
+                            #          *np.sin(2*np.pi\
+                            #          *freq*time_steps[n])\
+                            #          + 1/3
                             qx[0,:] = q_a*1/3\
                                       *np.sin(2*np.pi\
-                                      *freq*time_steps[n])\
+                                      *freq*n*dt)\
                                       + 1/3
                             h[0,:] = (3*qx[0,:])**(1/3)
                             #qx[0,:] = 1/3
@@ -570,6 +575,7 @@ for liquid in liquid_list:
                             #          *np.sin(2*np.pi\
                             #          *freq*time_steps[n]))\
                             #          *1/3
+
                             #h[0,:]=np.ones(nz)
 
 
@@ -636,7 +642,7 @@ for liquid in liquid_list:
 
                     ###################################################
                     # SAVE .dat AND .npy FILES every 100 steps:
-                    if n%10 < 0.0001:
+                    if n%100 < 0.0001:
                         # # Save to .dat files a slice
                         # # of the wave along x:
                         # save_data.save_to_dat(h, qx, qz,

@@ -90,7 +90,7 @@ for LIQUID in LIQUIDS:
             [Z,X] = np.meshgrid(z,x)
 
             os.chdir(subfolder[i])
-            filelist = natsorted(glob.glob('q_np' + os.sep \
+            filelist = natsorted(glob.glob('h_np' + os.sep \
                                             + '*.npy'))
 
             # To save the contourf's:
