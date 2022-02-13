@@ -24,8 +24,7 @@ The derived 3D integral model is dimensionless.
 In a simplified version of the model, 
 the following terms are neglected:
 pressure gradients, interface shear stresses,
-and the most challenging to implement numerically -
-surface tension terms (the third derivatives of the height h).
+and surface tension terms (the third derivatives of the height h).
 """
 
 #######################################################################
@@ -171,9 +170,39 @@ for liquid in liquid_list:
 
         # FOR A FIXED PLATE:
         if Fixed_substrate:
-            Epsilon = 0.217101402524
+            dx=0.1
+            U_REF = 5
+            points_per_period = 32
+            npoin = points_per_period
+
+            Re_list     = [69]
+            Re          = Re_list[0]
+            F           = 45
+            rho         = 998.2 
+            g           = 9.78
+            sigma       = 0.073
+            nu          = 1*10**(-6)
+            mu          = nu*rho
+            t_nu        = (nu/g**2)**(1/3)
+            l_nu        = (nu**2/g)**(1/3)
+            l_sigma     = (sigma/(rho*g))**(1/2)
+            Ka          = sigma/(g**(1/3)*nu**(4/3)*rho)
+            H_S         = l_nu*(3*Re)**(1/3)
+            WE          = sigma/(rho*g*H_S**2)
+            Epsilon     = WE**(-1/3)
+            X_S         = H_S/Epsilon
+            U_S         = g/nu*H_S**2
+            T_S         = X_S/U_S
+            Epsilon     = (3*Re)**(2/9)/(Ka**(1/3))
+            delta       = 3*Epsilon*Re
+            f_hP        = F*T_S
+            dt_LIQ      = CFL*dx/U_REF
+            PERIOD_PROB =  1/f_hP
+            dtS         = PERIOD_PROB/points_per_period
+
+            #Epsilon = 0.217101402524
             #Re_list = [20.1]
-            Re_list = [69]
+            #Re_list = [69]
     # or if zinc has been selected:
     elif liquid == liquids['ZINC']:
         # Set liquid ZINC parameters from JFM 2020 paper:
@@ -205,14 +234,15 @@ for liquid in liquid_list:
             if Fixed_substrate:
                 #frequencies = [0.0912]
                 #frequencies = [0.152]
-                frequencies = [0.076619]
-
+                #frequencies = [0.076619]
+                #frequencies = [0.04597112339394301437]
+                frequencies = [F*T_S]
 
             # if the configuration is 2D:
             if configuration == conf['PX01']:
                 dim = '2D_' # to use for namings in tools_for_saving.py
 
-                surface_tension = True
+                #surface_tension = False
 
                 # Select the Lax-Friedrichs scheme 
                 # since it is robust and stable for the 2D waves:
@@ -299,7 +329,7 @@ for liquid in liquid_list:
                     #npoin = int((U_substr/freq_JFM)/(0.0275*2))
                     # FIXED PLATE:
                     if Fixed_substrate:
-                        npoin = 32
+                        points_per_period = 32
 
                 #dx    = (lambd/(npoin))*factor
                 #L     = 8*lambd
@@ -310,7 +340,7 @@ for liquid in liquid_list:
                     dx    = 0.1
                     L     = 350
                     nx    = int(L/dx)
-                    final_time = 300 #30
+                    final_time = 2040 #300 #30
                 #######################################################
                 # For the OpenFOAM case in JFM:
                 # (for the validation)
@@ -338,6 +368,9 @@ for liquid in liquid_list:
                 # Timestep (unit) from the CFL formula:
                 U_ref = 5
                 dt = CFL*dx/U_ref
+                PERIOD_PROB = 1/freq
+                dtS = PERIOD_PROB/points_per_period
+                #dt = dtS
 
                 # Number of timesteps:
                 # FIXED PLATE:
@@ -632,11 +665,11 @@ for liquid in liquid_list:
                     # SAVE PLOTS AND PRINT REMINDERS EVERY 500 STEPS:
                     if n%500 < 0.0001:
                         # Save .png's:
-                        save_plots.plot_surfaces(h, X, Z, n,
-                                                 h0,
-                                                 directory_plots,
-                                                 filename,
-                                                 conf_key)
+                        #save_plots.plot_surfaces(h, X, Z, n,
+                        #                         h0,
+                        #                         directory_plots,
+                        #                         filename,
+                        #                         conf_key)
 
                         # Remind me what I've been doing
                         # in the terminal:
