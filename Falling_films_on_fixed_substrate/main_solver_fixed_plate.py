@@ -17,11 +17,11 @@ import math
 import sys
 
 # Import numerical scheme procedures:
-import lax_wendroff_richtmyer_fixed_plate as lw 
+import lax_wendroff_richtmyer_fixed_plate as lw
 #^not performing well
 import lax_friedrichs_fixed_plate as lf
 #^performing well
-import lax_wendroff_friedrichs_blended_fixed_plate as bl 
+import lax_wendroff_friedrichs_blended_fixed_plate as bl
 #^not performing well
 
 # To monitor the execution time:
@@ -130,7 +130,7 @@ PERIOD_PROB = 1/f_hP
 
 print('Re = ', Re)
 print('F = ', F)
-print('f_hP = ', f_hP)
+print('f_hP = ', freq)
 print('Ka = ', Ka)
 print('Epsilon = ', Epsilon)
 
