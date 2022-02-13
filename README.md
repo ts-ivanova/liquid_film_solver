@@ -22,7 +22,7 @@ The substrate moves at velocity U_p
 in the opposite direction of gravity, along axis x, 
 while z is the span-wise direction.
 
-<img src="images_for_readme/schematic.png" width="800">
+<img src="readme_images/schematic.png" width="800">
 
 The ```main_solver_liquid_film.py``` script 
 computes the solution of this integral model. 
@@ -58,19 +58,19 @@ costs of the liquid film simulations.
 
 This system accounts for all physical forces and the equations are:
 
-<img src="images_for_readme/system.png" width="600">
+<img src="readme_images/system.png" width="600">
 
 Flux matrix elements:
 
-<img src="images_for_readme/fluxes.png" width="600">
+<img src="readme_images/fluxes.png" width="600">
 
 To discretise this system, the 2D formulation of the finite volume method is applied:
 
-<img src="images_for_readme/fv.png" width="500">
+<img src="readme_images/fv.png" width="500">
 
 The numerical fluxes are approximated by a blended scheme between high order and low order schemes:
 
-<img src="images_for_readme/flux_approx_bl.png" width="500">
+<img src="readme_images/flux_approx_bl.png" width="500">
 
 
 What is currently not completely implemented
@@ -82,8 +82,8 @@ and the most challenging - surface tension terms
 
 This is the working simplified version of the 3D model that the solver currently can investigate:
 
-<img src="images_for_readme/implemented.png" width="600">
+<img src="readme_images/implemented.png" width="600">
 
 Without surface tension, pressure gradient and interface shear stress, the system reads:
 
-<img src="images_for_readme/solved_system_simplified.png" width="600">
+<img src="readme_images/solved_system_simplified.png" width="600">
