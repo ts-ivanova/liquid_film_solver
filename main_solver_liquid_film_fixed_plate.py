@@ -36,9 +36,12 @@ import math
 import sys
 
 # Import numerical scheme procedures:
-import lax_wendroff_richtmyer as lw
+import lax_wendroff_richtmyer_fixed_plate as lw 
+#^not performing well
 import lax_friedrichs_fixed_plate as lf
-import lax_wendroff_friedrichs_blended_fixed_plate as bl
+#^performing well
+import lax_wendroff_friedrichs_blended_fixed_plate as bl 
+#^not performing well
 
 # To monitor the execution time:
 import os
@@ -109,7 +112,7 @@ u = 2*U_substr
 
 # Specify whether to include surface tension terms
 # in the sources (the third derivatives of the height h):
-surface_tension = True
+surface_tension = False
 # (False = do not include)
 
 # Time between outputs:
@@ -167,7 +170,7 @@ for liquid in liquid_list:
 
         # FOR A FIXED PLATE:
         if Fixed_substrate:
-            Epsilon = 0.165
+            Epsilon = 0.217101402524
             #Re_list = [20.1]
             Re_list = [69]
     # or if zinc has been selected:
@@ -200,18 +203,20 @@ for liquid in liquid_list:
             # FIXED PLATE:
             if Fixed_substrate:
                 #frequencies = [0.0912]
-                frequencies = [0.152]
+                #frequencies = [0.152]
+                frequencies = [0.076619]
 
 
             # if the configuration is 2D:
             if configuration == conf['PX01']:
                 dim = '2D_' # to use for namings in tools_for_saving.py
 
-                surface_tension = False
+                surface_tension = True
 
                 # Select the Lax-Friedrichs scheme 
                 # since it is robust and stable for the 2D waves:
                 scheme = schemes['LFried']
+                #scheme = schemes['LWendr']
 
                 # OpenFOAM case in JFM:
                 # frequencies = [0.05] # [-] as in 2D JFM
@@ -219,8 +224,7 @@ for liquid in liquid_list:
                 # Set the amplitude for the flow rate perturbations
                 # as in 2D JFM:
                 #A = 0.2 # [-]
-                A = 0.1 # [-]
-
+                A = 0.1
 
 
             # else if the configuration is 3D:
@@ -230,7 +234,7 @@ for liquid in liquid_list:
                 # CFL number is defined as u*dt/dx
                 # from which dt is evaluated below:
                 if surface_tension:
-                    CFL = 0.1
+                    CFL = 0.3
 
                 # frequencies = [0.05]
 
@@ -305,7 +309,7 @@ for liquid in liquid_list:
                     dx    = 0.1
                     L     = 350
                     nx    = int(L/dx)
-                    final_time = 300
+                    final_time = 300 #30
                 #######################################################
                 # For the OpenFOAM case in JFM:
                 # (for the validation)
@@ -319,7 +323,7 @@ for liquid in liquid_list:
                     #nx = int(2810/factor)
                     # z-dimension:
                     dz = 1e-1
-                    nz = 10
+                    nz = 100
                 #######################################################
 
                 # wavelength lambd_z [-] along z
@@ -336,7 +340,7 @@ for liquid in liquid_list:
 
                 # Number of timesteps:
                 # FIXED PLATE:
-                nt = 30000
+                nt = 30000 #3000
                 # (old below)
                 #nt = int(np.fix(final_time/dt)+1)
                 time_steps = np.linspace(0,final_time,nt)
@@ -648,11 +652,13 @@ for liquid in liquid_list:
                             # Check limiters values:
                             print('Phi_x' , Phi_x)
                             print('Phi_z' , Phi_z)
-                            # Check derivatives values:
-                            # print('hxxx', hxxx)
-                            # print('hzzz', hzzz)
-                            # print('hxzz', hxzz)
-                            # print('hzxx', hzxx)
+                        # Check derivatives values:
+                        print('hxxx', hxxx)
+                        print('hzzz', hzzz)
+                        print('hxzz', hxzz)
+                        print('hzxx', hzxx)
+                        print('h.min()', h.min())
+                        print('h.max()', h.max())
                         gc.collect()
 
                 #%%

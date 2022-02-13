@@ -43,7 +43,7 @@ def create_directories(surface_tension,
                              + "_delta{}".format('%07.3F' % delta)
 
     if surface_tension:
-        all_st = "_with_surf_ten_" + 'Re{:.0f}'.format(Re)
+        all_st = "_with_surf_ten_" + 'Re{0:03d}'.format(Re)
         results_dir = "RESULTS_January_fixed" \
                         + os.sep + dim + liquids_key + all_st
 
@@ -52,7 +52,7 @@ def create_directories(surface_tension,
         os.chdir(results_dir)
 
     else:
-        no_st = "_without_surf_ten_" + 'Re{:.0f}'.format(Re)
+        no_st = "_without_surf_ten_" + 'Re{0:03d}'.format(Re)
         results_dir = "RESULTS_January_fixed" \
                         + os.sep + dim + liquids_key + no_st
 
@@ -70,7 +70,7 @@ def create_directories(surface_tension,
              + '_nx{0:04d}'.format(nx) \
              + '_dz{:.3f}'.format(dz) \
              + '_nz{0:04d}'.format(nz) \
-             + '_Re{:.0f}'.format(Re) \
+             + '_Re{0:03d}'.format(Re) \
              + '_f{:.3f}'.format(freq)
 
     filename = conf_key \
@@ -85,7 +85,7 @@ def create_directories(surface_tension,
     #                 + os.sep + 'dx{:.4f}'.format(dx) \
     #                 + os.sep + saving
     # -> separated by folders Re::
-    Re_folder = 'Re{:.0f}'.format(Re) + '_' + h0_amplitude_and_delta
+    Re_folder = 'Re{0:03d}'.format(Re) + '_' + h0_amplitude_and_delta
 
     directory_n = "SOLUTIONS_n" \
                     + os.sep + Re_folder \
@@ -181,7 +181,7 @@ def save_np(h, directory_n,
     '''
     # To store the height .npy's:
     directory_n_np = directory_n \
-                        + os.sep + 'q_np'
+                        + os.sep + 'h_np'
     Path(directory_n_np).mkdir(parents=True, exist_ok=True)
 
     # height:

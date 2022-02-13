@@ -50,88 +50,66 @@ def liquid_film_sources(surface_tension,
         d_dx = FinDiff((0, dx, 1))
         d_dz = FinDiff((1, dz, 1))
 
-        # Filter the height along x and along z:
-        #H_Xf = filt_X(h[1:-1,1:-1],31,boundaries="extrap",s=0.2)
-        #H_Zf = filt_X(h[1:-1,1:-1].T,31,boundaries="extrap",s=0.2)
-        #H_Zf = H_Zf.T
-        H_Xf = h[1:-1,1:-1]
-        H_Zf = h[1:-1,1:-1]
+        H_X = h[1:-1,1:-1]
+        H_Z = h[1:-1,1:-1]
         # Computations of the third derivatives
         # that are included in sources S2 and S3:
 
         # d3_dx3 h:
-        # take the first derivative:
-        hx_Xf = d_dx(H_Xf)
-        # filter it along x:
-        #hx_Xf = filt_X(hx,31,boundaries="extrap",s=0.2)
-        # take the second derivative:
-        hxx_Xf = d_dx(hx_Xf)
-        # filter again:
-        #hxx_Xf = filt_X(hxx,31,boundaries="extrap",s=0.2)
-        # take the third derivative:
-        hxxx = d_dx(hxx_Xf)
-        # and filter it:
-        #hxxx = filt_X(hxxx0,31,boundaries="extrap",s=0.2)
+        hx = d_dx(H_X)
+        hxx = d_dx(hx)
+        hxxx = d_dx(hxx)
 
-        # d3_dz3 h:
-        hz_Zf = d_dz(H_Zf)
-        #hz_Zf = filt_X(hz.T,31,boundaries="extrap",s=0.2)
-        hzz_Zf = d_dz(hz_Zf)
-        #hzz_Zf = filt_X(hzz.T,31,boundaries="extrap",s=0.2)
-        # hzzz0 = d_dz(hzz_Zf.T)
-        # hzzz = filt_X(hzzz0,31,boundaries="extrap",s=0.2)
+        hz = d_dz(H_Z)
+        hzz = d_dz(hz)
+        hzzz = d_dz(hzz)
 
         # d3_dxdz2 h:
-        hxzz = d_dx(hzz_Zf)
-        #hxzz = filt_X(hxzz0,31,boundaries="extrap",s=0.2)
+        hxzz = d_dx(hzz)
 
         # d3_dzdx2 h:
-        # hxx_Zf = filt_X(hxx.T,31,boundaries="extrap",s=0.2)
-        # hzxx0 = d_dz(hxx_Zf.T)
-        # hzxx = filt_X(hzxx0,31,boundaries="extrap",s=0.2)
+        hzxx = d_dz(hxx)
 
-        ########################
+    
         # sources S1 for the h-eqn:
+        delta = 3*Epsilon*Re
+
         S1 = np.zeros((nx-2,nz-2))
-
+    
         # sources S2 for the qx-eqn:
-        S2 = h[1:-1,1:-1]/(Epsilon*Re) \
-                - (6*h[1:-1,1:-1] + 6*qx[1:-1,1:-1])/ \
-                (2*Epsilon*Re*h[1:-1,1:-1]**2) \
-                + (h[1:-1,1:-1]/(Epsilon*Re)) \
+        S2 = h[1:-1,1:-1]/(3*Epsilon*Re) \
+                - (3*qx[1:-1,1:-1])/ \
+                (delta*h[1:-1,1:-1]**2) \
+                + (h[1:-1,1:-1]/(delta)) \
                 *(hxzz + hxxx)
-
         # sources S3 for the qz-eqn:
-        S3 = -6*qz[1:-1,1:-1]/ \
-                (2*Epsilon*Re*h[1:-1,1:-1]**2) \
-                + (h[1:-1,1:-1]/(Epsilon*Re)) \
+        S3 = -3*qz[1:-1,1:-1]/ \
+                (delta*h[1:-1,1:-1]**2) \
+                + (h[1:-1,1:-1]/(delta)) \
                 *(hzzz + hzxx)
-
-        hzzz = 0
-        hzxx = 0
 
     # when surface_tension = False, compute the source terms
     # without the third derivatives:
     else:
-    sources S1 for the h-eqn:
-    delta = 3*Epsilon*Re
-    S1 = np.zeros((nx-2,nz-2))
+        # sources S1 for the h-eqn:
+        delta = 3*Epsilon*Re
+        S1 = np.zeros((nx-2,nz-2))
 
-    # sources S2 for the qx-eqn:
-    S2 = h[1:-1,1:-1]/(3*Epsilon*Re) \
-            - (3*qx[1:-1,1:-1])/ \
-            (delta*h[1:-1,1:-1]**2)
-            #(3*Epsilon*Re*h[1:-1,1:-1]**2)
+        # sources S2 for the qx-eqn:
+        S2 = h[1:-1,1:-1]/(3*Epsilon*Re) \
+                - (3*qx[1:-1,1:-1])/ \
+                (delta*h[1:-1,1:-1]**2)
+                #(3*Epsilon*Re*h[1:-1,1:-1]**2)
 
-    # sources S3 for the qz-eqn:
-    S3 = -3*qz[1:-1,1:-1]/ \
-            (delta*h[1:-1,1:-1]**2)
-            #(3*Epsilon*Re*h[1:-1,1:-1]**2)
+        # sources S3 for the qz-eqn:
+        S3 = -3*qz[1:-1,1:-1]/ \
+                (delta*h[1:-1,1:-1]**2)
+                #(3*Epsilon*Re*h[1:-1,1:-1]**2)
 
-    # set the third derivatives to zero as they have to be returned
-    hzzz = 0
-    hxxx = 0
-    hzxx = 0
-    hxzz = 0
+        # set the third derivatives to zero as they have to be returned
+        hzzz = 0
+        hxxx = 0
+        hzxx = 0
+        hxzz = 0
 
     return S1, S2, S3, hzzz, hxxx, hzxx, hxzz
