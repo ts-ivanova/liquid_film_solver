@@ -18,17 +18,17 @@ from pathlib import Path
 # Change working directory:
 os.chdir('../RESULTS_January_fixed/case_of_interest/')
 
-subfolder = natsorted(glob.glob("P*"))
+subfolder = natsorted(glob.glob("*"))
 
 # Extract frame names:
 files0 = natsorted(os.listdir(subfolder[0]))
-#files1 = natsorted(os.listdir(subfolder[1]))
+files1 = natsorted(os.listdir(subfolder[1]))
 #files2 = natsorted(os.listdir(subfolder[2]))
 #files3 = natsorted(os.listdir(subfolder[3]))
 #files4 = natsorted(os.listdir(subfolder[4]))
 #files5 = natsorted(os.listdir(subfolder[5]))
 # Assign them to a list:
-files = [files0]#, files1, files2, files3, files4, files5]
+files = [files0, files1]#, files2, files3, files4, files5]
 
 # Create the directory to save the gifs:
 Path("../../produced_gifs").mkdir(parents=True, exist_ok=True)
@@ -39,6 +39,6 @@ for i in range(len(files)):
               for file in files[i]]
     imageio.mimwrite('../../produced_gifs/Movie_{}.gif'
                       .format(subfolder[i]),
-                      images, fps=4)
+                      images, fps=1)
 
 os.chdir('../../../')

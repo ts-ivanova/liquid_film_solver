@@ -17,8 +17,8 @@ def lax_wendroff(surface_tension,
                  nx, nz):
     '''
     This function performs the Richtmyer-Lax-Wendroff scheme
-    on a dimensionless integral model for a liquid film
-    on a moving substrate.
+    on a dimensionless integral model 
+    for a falling liquid film on a fixed substrate.
     Unknowns: height: h,
               flow rate along x: qx,
               flow rate along z: qz.

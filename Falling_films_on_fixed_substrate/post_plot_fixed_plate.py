@@ -28,7 +28,7 @@ from pathlib import Path
 # PLOT CUSTOMIZATIONS:
 font = {'family' : 'DejaVu Sans',
         'weight' : 'normal',
-        'size'   : 16}
+        'size'   : 14}
 rc('font', **font)
 
 # transparency level
@@ -37,10 +37,9 @@ alpha1 = 0.9
 
 ####################
 # os.chdir('RESULTS-processed/')
-os.chdir('RESULTS_January_fixed/')
+os.chdir('RESULTS_fixed_plate/')
 # Gather all computed configurations:
-#LIQUIDS = natsorted(glob.glob('2D_WATER_without_surf_ten_Re069'))
-LIQUIDS = natsorted(glob.glob('2D_WATER_without_surf_ten_Re069'))
+LIQUIDS = natsorted(glob.glob('*'))
 # LIQUIDS = natsorted(glob.glob('3*'))
 
 print('Going to process ', LIQUIDS)
@@ -55,7 +54,7 @@ for LIQUID in LIQUIDS:
     for FOLDER in FOLDERS:
         # Change working directory:
         os.chdir(FOLDER)
-        subfolder = natsorted(glob.glob("P*"))
+        subfolder = natsorted(glob.glob("*"))
 
 
         for i in range(len(subfolder)):
@@ -77,10 +76,10 @@ for LIQUID in LIQUIDS:
             
             conf_key = subfolder[i][:4]
 
-            dx = float(subfolder[i][20:26])
-            nx = int(subfolder[i][29:33])
-            dz = float(subfolder[i][36:40])
-            nz = int(subfolder[i][44:48])
+            dx = float(subfolder[i][15:21])
+            nx = int(subfolder[i][24:28])
+            dz = float(subfolder[i][31:35])
+            nz = int(subfolder[i][39:43])
             
 
             # Spatial dimensions:
@@ -135,32 +134,35 @@ for LIQUID in LIQUIDS:
 
             # %%
             print('Plotting bcs ... ')
-            plt.close()
-            plt.figure(figsize = (12,4))
-            #plt.ylim(0.1,0.4)
+            for j in range(1,len(filelist),100):
+                plt.close()
+                plt.figure(figsize = (12,4))
+                #plt.ylim(0.1,0.4)
 
-            plt.plot(x_axis,
-                      H_XT.T[:,-1],
-                      linestyle = 'solid',
-                      color = '#574d57',
-                      linewidth = 2,
-                      alpha = alpha1,
-                      label = 'height')
+                plt.plot(x_axis,
+                         H_XT.T[:,j],
+                         linestyle = 'solid',
+                         color = '#574d57',
+                         linewidth = 2,
+                         alpha = alpha1,
+                         label = 'height')
 
 
-            plt.xlabel('length x, [-]')
-            plt.ylabel('film thickness h, [-]')
-            plt.title('Profile in time for each position x')
-            plt.legend(loc = 'upper right')
-            # plt.ylim(h0 - 0.2, h0 + 0.4)
-            plt.grid()
-            # plt.title(subfolder[i])
-            plt.savefig(directory + os.sep \
-                        + 'env_' + subfolder[i] \
-                        + '.png',
-                        format      = 'png',
-                        dpi         = 200,
-                        bbox_inches = 'tight')
+                plt.xlabel('length x, [-]')
+                plt.ylabel('film thickness h, [-]')
+                plt.title('Profile in x, time index ' + str(j))
+                plt.legend(loc = 'upper right')
+                plt.ylim(h0 - 0.6, h0 + 1.5)
+                plt.grid()
+                # plt.title(subfolder[i])
+                plt.savefig(directory + os.sep \
+                            + 'env_' + str(j) + '_' \
+                            + subfolder[i] \
+                            + '.png', \
+                            format      = 'png', \
+                            dpi         = 200, \
+                            bbox_inches = 'tight')
+                #plt.show()
 
 
             os.chdir('../')
@@ -168,4 +170,4 @@ for LIQUID in LIQUIDS:
     os.chdir('../../')
     
 os.chdir('../')
-print("Great success")
+print("completed")

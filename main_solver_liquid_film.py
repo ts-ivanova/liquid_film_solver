@@ -55,6 +55,8 @@ import gc
 
 #######################################################################
 
+# The solver is intended to loop through many different configurations.
+
 # Possible liquid types:
 liquids = {
             'WATER' : 0,
@@ -129,6 +131,10 @@ u = 2*U_substr
 # Time between outputs:
 output_interval = 1.0
 
+# The CFL number is defined as u*dt/dx
+# from which dt is evaluated below:
+CFL = 0.3
+
 # Initial film height:
 h0 = 0.2 # [-]
 # h0 = 0.1 # [-] can be suitable for higher Re numbers
@@ -146,10 +152,6 @@ for liquid in liquid_list:
     if liquid == liquids['WATER']:
         # Set WATER parameters from JFM 2020 paper:
         Epsilon = 0.23918 # Long-wave parameter, [-]
-        #
-        # To run for a lower value of delta:
-        # Epsilon = 0.0023918
-        #
         # Re_list = [319] # Re number in OpenFOAM JFM
         Re_list = [319, 2*319]
     # or if zinc has been selected:
@@ -161,8 +163,6 @@ for liquid in liquid_list:
 
     # The reduced Reynolds number is defined as:
     # delta = Epsilon*Re_list
-    # (It is useful to keep track on its value
-    # when investigating stability)
 
     # RUN FOR ALL REYNOLDS NUMBER VALUES IN Re_list:
     for Re in Re_list:
@@ -174,12 +174,10 @@ for liquid in liquid_list:
             # Liquid type:
             liquids_key = list(liquids.keys())[liquid]
 
-
             #freq_list = list(np.arange(0.005, 0.205, 0.015))
             #frequencies = [round(elem, 3) for elem in freq_list]
             # [-] low, medium and high freqs
             frequencies = [0.05]
-
 
 
             # if the configuration is 2D:
@@ -191,10 +189,6 @@ for liquid in liquid_list:
                 # Select the Lax-Friedrichs scheme 
                 # since it is robust and stable for the 2D waves:
                 scheme = schemes['LFried']
-
-                # The CFL number is defined as u*dt/dx
-                # from which dt is evaluated below:
-                CFL = 0.3
 
                 # OpenFOAM case in JFM:
                 # frequencies = [0.05] # [-] as in 2D JFM
@@ -212,10 +206,6 @@ for liquid in liquid_list:
                 # from which dt is evaluated below:
                 if surface_tension:
                     CFL = 0.1
-                else:
-                    CFL = 0.3
-
-                # frequencies = [0.05]
 
                 if configuration == conf['PXZ1']:
                     A = 0.2 # amplitude for the flow rate perturbations
@@ -258,15 +248,8 @@ for liquid in liquid_list:
                 # Depending on whether the surface tension is
                 # taken into account or not, the number of points
                 # per wavelength are specified below:
-
-                # Currently (end of RM2021),
-                # the presence of surface tension terms
-                # causes issues when the cell size is too small,
-                # therefore for now a working option is of the order of
-                # 30-40 points per wavelength:
                 if surface_tension:
                     npoin = int((U_substr/freq_JFM)/(0.0275*2*10))
-
                 # Otherwise without surface tension,
                 # the minimum npoin is around 363 for which
                 # the numerical dissipation is negligible,
@@ -332,8 +315,7 @@ for liquid in liquid_list:
                 results_dir, \
                 directory_n, \
                 directory_plots, \
-                filename, \
-                directory_lim = \
+                filename = \
                     save_data.create_directories(surface_tension,
                                                  liquids_key,
                                                  conf_key,
@@ -344,7 +326,6 @@ for liquid in liquid_list:
                                                  CFL, dt, final_time,
                                                  Epsilon, Re, freq)
 
-                #%%
                 #######################################################
                 # INITIALIZE THE 3D ARRAYS
                 # where the output data will be stored
@@ -425,7 +406,8 @@ for liquid in liquid_list:
                     qx[1:-1,1:-1] = qxnew
                     qz[1:-1,1:-1] = qznew
                     if np.isnan(h).any():
-                        print("Reached NaNs. Stopping computation. Logging summary...")
+                        print("Reached NaNs. Stopping computation.") 
+                        print("Logging summary...")
                         info = '\n COMPUTATION REACHED NaNs.' + info
                         break
 
@@ -440,7 +422,6 @@ for liquid in liquid_list:
 
                     # INTRODUCING PERTURBATIONS
                     # AT THE INLET [-1,:]
-
                     # 2D perturbation along x of qx:
                     if configuration == conf['PX01']:
                         # BOTTOM BOUNDARY (INLET):
@@ -456,21 +437,6 @@ for liquid in liquid_list:
                                                 *freq\
                                                 *time_steps[n])\
                                       *np.ones((nz,)))
-                        #####
-                        # To introduce perturbations in the middle
-                        # of the domain, 
-                        # the boundary conditions have to be changed
-                        # (linear extrapolation also at the inlet)
-                        # and the following has to be used:
-                        #qx[-1,:] = np.zeros(nz)
-                        #qx[-int(nx/2),:] = (1/3*h[-int(nx/2),:]**3 \
-                        #            - h[-int(nx/2),:])\
-                        #            *(1 + \
-                        #             A*np.sin(2*np.pi\
-                        #                        *freq\
-                        #                        *time_steps[n])\
-                        #            *np.ones((nz,)))
-                        #####
                         # Set qz to zeros at the inlet:
                         qz[-1,:] = np.zeros(nz)
 
@@ -552,7 +518,7 @@ for liquid in liquid_list:
                         #                       n)
 
                         # Save the np solutions:
-                        save_data.save_np(h, directory_n,
+                        save_data.save_np(h, qx, directory_n,
                                           filename,
                                           n)
                         # (most efficient format for post-processing)
@@ -593,7 +559,6 @@ for liquid in liquid_list:
                             # print('hzxx', hzxx)
                         gc.collect()
 
-                #%%
                 #######################################################
                 # Go back to the solver directory:
                 os.chdir('../../')

@@ -16,8 +16,8 @@ def lax_friedrichs(surface_tension,
                   nx, nz):
     '''
     This function performs the Lax-Friedrichs scheme
-    on the dimensionless integral model for a liquid film
-    on a moving substrate.
+    on the dimensionless integral model 
+    for a falling liquid film on a fixed substrate.
     
     Unknowns: height: h,
               flow rate along x: qx,

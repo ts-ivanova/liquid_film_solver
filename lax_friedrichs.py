@@ -5,10 +5,8 @@ Created on Wed Mar 17 15:21:59 2021
 
 """
 
-#import liquid_film_fluxes as fluxes
-#import liquid_film_sources as sources
-import liquid_film_fluxes_fixed_plate as fluxes
-import liquid_film_sources_fixed_plate as sources
+import liquid_film_fluxes as fluxes
+import liquid_film_sources as sources
 
 def lax_friedrichs(surface_tension,
                   scheme_choice,
