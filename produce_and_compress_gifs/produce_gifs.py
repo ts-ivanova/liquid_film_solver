@@ -39,6 +39,6 @@ for i in range(len(files)):
               for file in files[i]]
     imageio.mimwrite('../produced_gifs/Movie_{}.gif'
                       .format(subfolder[i]),
-                      images, fps=1)
+                      images, fps=10)
 
 os.chdir('../../../')

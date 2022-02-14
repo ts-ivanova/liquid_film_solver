@@ -98,41 +98,56 @@ liquids_key = 'water'
 #######################################################################
 
 # PHYSICAL PROPERTIES AND SCALING
+# LIQUID TYPE: DMSO
+Re          = 15 # Reynolds number
+F           = 16 # [Hz], perturbation frequency
+rho         = 1098.3 # [kg/m^3], density of DMSO
+g           = 9.78 # [m/s^2]
+sigma       = 0.0484 #0.073 # [N/m]
+nu          = 2.85*10**(-6) #1*10**(-6) # [m^2/s], kinematic viscosity
+mu          = nu*rho # dynamic viscosity
+t_nu        = (nu/g**2)**(1/3) # [s], time scale
+l_nu        = (nu**2/g)**(1/3) # [m], length scale
+l_sigma     = (sigma/(rho*g))**(1/2) # capillary length
+Ka          = sigma/(g**(1/3)*nu**(4/3)*rho) # Kapitza
+H_S         = l_nu*(3*Re)**(1/3) # [m], height scale
+WE          = sigma/(rho*g*H_S**2) # Weber
+Epsilon     = WE**(-1/3) # [-], long-wave parameter
+X_S         = H_S/Epsilon # [m], reference
+U_S         = g/nu*H_S**2 # [m/s], reference
+T_S         = X_S/U_S # [s], ref time
+Epsilon     = (3*Re)**(2/9)/(Ka**(1/3)) # [-]
+delta       = 3*Epsilon*Re # [-]
+
+f_hP = F*T_S # dimensionless perturbation freq
+points_per_period = 32
+# Perturbation period:
+PERIOD_PROB = 1/f_hP
+# Miguel's saving times:
+dtS = PERIOD_PROB/points_per_period
+freq = f_hP
+# perturbation amplitude
+q_a = 0.05
+#freq = f_hP/(10*dtS)
+#freq = 1/53
+
+print('Epsilon = ', Epsilon)
+print('Re = ', Re)
+print('Ka = ', Ka)
+print('H_S = ', H_S)
+print('F = ', F)
+print('f_hP = ', f_hP)
+print('PERIOD_PROB = ', PERIOD_PROB)
+print('dtS = ', dtS)
+print('freq = ', freq)
 
 # Initial dimensionless film height:
-h0 = 1 # [-]
+h0 = 1.047 #1 # [-]
+U_REF = 5 # [m/s], reference velocity
 
-Re          = 69 # Reynolds number
-U_REF       = 5 # [m/s], reference velocity
-F           = 45 #[Hz], perturbation frequency
+#breakpoint()
 
-rho         = 998.2 # [kg/m^3], density
-g           = 9.78 # [m/s^2]
-sigma       = 0.073 #
-nu          = 1*10**(-6) # kinematic viscosity
-mu          = nu*rho # dynamic viscosity
-t_nu        = (nu/g**2)**(1/3) # time scale
-l_nu        = (nu**2/g)**(1/3) # length scale
-l_sigma     = (sigma/(rho*g))**(1/2)
-Ka          = sigma/(g**(1/3)*nu**(4/3)*rho) # Kapitza
-H_S         = l_nu*(3*Re)**(1/3)
-WE          = sigma/(rho*g*H_S**2) # Weber
-Epsilon     = WE**(-1/3)
-X_S         = H_S/Epsilon
-U_S         = g/nu*H_S**2
-T_S         = X_S/U_S
-Epsilon     = (3*Re)**(2/9)/(Ka**(1/3))
-delta       = 3*Epsilon*Re
-f_hP        = F*T_S # dimensionless perturbation freq
-freq        = f_hP/4
 
-PERIOD_PROB = 1/f_hP
-
-print('Re = ', Re)
-print('F = ', F)
-print('f_hP = ', freq)
-print('Ka = ', Ka)
-print('Epsilon = ', Epsilon)
 
 #######################################################################
 
@@ -142,11 +157,10 @@ print('Epsilon = ', Epsilon)
 # dz - cell size along z-axis, [-]
 # nz - number of cells along z-axis
 # L - domain length along x, [-]
-# lambd - dimensionless wavelength [-] along x
 
 # x
 dx    = 0.1
-L     = 350
+L     = 140 
 nx    = int(L/dx)
 # z
 dz    = 0.1
@@ -165,22 +179,16 @@ z = np.mgrid[0:nz]*dz
 # TIME INFORMATION
 # Time is dimensionless.
 # final_time - total simulation length, [-]
-final_time = 1200
+#final_time = int(PERIOD_PROB*100) #1200
+final_time = int(PERIOD_PROB*36) #1200
 # CFL number:
 CFL = 0.5
 # Timestep (unit) from the CFL formula:
 dt = CFL*dx/U_REF
-
-# points_per_period - number of points per lambd
-points_per_period = 32
-
-# Perturbation period:
-PERIOD_PROB = 1/freq
-# Miguel's saving times:
-# dtS = PERIOD_PROB/points_per_period
+print('dt = ', dt)
 
 # Number of timesteps:
-nt = int(final_time/dt) #3000
+nt = int(final_time/dt) 
 time_steps = np.arange(1,nt+1,1)*dt
 
 # Time between outputs:
@@ -189,10 +197,6 @@ output_interval = 1.0
 tsteps_btwn_out = np.fix(output_interval/dt)
 noutput = int(np.ceil(nt/tsteps_btwn_out))
 # noutput is the number of output frames.
-
-print('CFL = ', CFL)
-print('dt = ', dt)
-print('PERIOD_PROB = ', PERIOD_PROB)
 
 
 
@@ -274,7 +278,6 @@ for n in range(0, nt): #0,1,2,3,...,nt-1
                                                  Epsilon, Re, nx, nz)
     elif scheme == schemes['LWFble']:
         h_new, qxnew, qznew, \
-        Phi_x, Phi_z, \
         hzzz, hxxx, hzxx, hxzz = bl.blended_lw_lf(surface_tension,
                                                   scheme_choice,
                                                   dx, dz, dt,
@@ -310,10 +313,9 @@ for n in range(0, nt): #0,1,2,3,...,nt-1
 
     # INTRODUCING PERTURBATIONS
     # AT THE INLET [0,:]
-    # perturbation amplitude
-    q_a = 0.1
+
     # Miguel style:
-    qx[0,:] = q_a*1/3*np.sin(2*np.pi*freq*n*dt) + 1/3
+    qx[0,:] = q_a*(1/3)*np.sin(2*np.pi*freq*n*dt) + (1/3)
     h[0,:] = (3*qx[0,:])**(1/3)
     #qx[0,:] = 1/3
     #h[0,:] = (3*qx[0,:])**(1/3)
@@ -336,28 +338,25 @@ for n in range(0, nt): #0,1,2,3,...,nt-1
     # SAVE .dat AND .npy FILES every 100 steps:
     if n%100 < 0.0001:
         # Save the np solutions:
-        save_data.save_np(h, qx, directory_n, filename, n)                 
+        save_data.save_np(h, #qx, 
+                          directory_n, filename, n)
         # (most efficient format for post-processing)
         # pick up trash:
         gc.collect()
 
-    # PRINT REMINDERS EVERY 500 STEPS:
-    if n%500 < 0.0001:
+    # PRINT REMINDERS EVERY 10000 STEPS:
+    if n%10000 < 0.0001:
         # Remind me what I've been doing
         # in the terminal:
         print("\n Reminder:" + "\n" + info)
 
-        # Monitor the behaviour of the limiters
-        # for the blended scheme (only for 3D):
-        if scheme == schemes['LWFble']:
-            # Check limiters values:
-            print('Phi_x' , Phi_x)
-            print('Phi_z' , Phi_z)
-        # Check derivatives values:
-        #print('hxxx', hxxx)
-        #print('hzzz', hzzz)
-        #print('hxzz', hxzz)
-        #print('hzxx', hzxx)
+        if surface_tension:
+            # Check derivatives values:
+            print('hxxx', hxxx)
+            print('hzzz', hzzz)
+            print('hxzz', hxzz)
+            print('hzxx', hzxx)
+
         print('h.min() = ', h.min())
         print('h.max() = ', h.max())
         gc.collect()
@@ -378,7 +377,9 @@ summary = info + '\n Execution time: ' \
 logging.basicConfig(level    = logging.INFO,
                     filename = "zlogfile",
                     filemode = "a+",
-                    format   = "%(asctime)-15s %(levelname)-8s %(message)s")
+                    format   = "%(asctime)-15s \
+                                %(levelname)-8s \
+                                %(message)s")
 logging.info(summary)
 print(summary)
 print('Summary logged.')
@@ -391,8 +392,5 @@ del qznew
 del h
 del qx
 del qz
-if scheme == schemes['LWFble']:
-    del Phi_x
-    del Phi_z
 
 print('Auf Wiedersehen.')

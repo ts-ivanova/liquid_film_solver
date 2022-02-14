@@ -40,7 +40,7 @@ def create_directories(surface_tension,
     h0_amplitude_and_delta = "h{:.2f}".format(h0) \
                              + "_delta{}".format('%07.3F' % delta)
 
-    main_res = 'RESULTS_fixed_plate'
+    main_res = 'RESULTS_fixed_substrate'
     
     if surface_tension:
         all_st = "_with_surf_ten_" + 'Re{0:03d}'.format(Re)
@@ -93,7 +93,8 @@ def create_directories(surface_tension,
 
 
 #################################################
-def save_np(h, qx, directory_n,
+def save_np(h, #qx, 
+            directory_n,
             filename,
             n):
     '''
@@ -112,13 +113,13 @@ def save_np(h, qx, directory_n,
     np.save(file, h)
     
     # To store the qx .npy's:
-    directory_q_np = directory_n \
-                        + os.sep + 'q_np'
-    Path(directory_q_np).mkdir(parents=True, exist_ok=True)
-    # qx:
-    file = directory_q_np + os.sep \
-            + "q_np_" \
-            + filename \
-            + "_n{0:05d}".format(n)
-    np.save(file, qx)
+    #directory_q_np = directory_n \
+    #                    + os.sep + 'q_np'
+    #Path(directory_q_np).mkdir(parents=True, exist_ok=True)
+    ## qx:
+    #file = directory_q_np + os.sep \
+    #        + "q_np_" \
+    #        + filename \
+    #        + "_n{0:05d}".format(n)
+    #np.save(file, qx)
 
