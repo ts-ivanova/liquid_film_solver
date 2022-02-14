@@ -131,7 +131,7 @@ dmypy.json
 # Solver stuff
 RESULTS*
 ./Falling_films_on_fixed_substrate/RESULTS*
-produced_gifs
+produce*
 
 # Solver log file
 zlogfile
