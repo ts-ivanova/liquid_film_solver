@@ -19,32 +19,94 @@ def liquid_film_sources(surface_tension,
     # when surface_tension = True, compute the source terms
     # including the third derivatives:
     if surface_tension:
+        # WITH FILTERING: 
         from findiff import FinDiff
-        #from Functions_Miguel import filt_X
+        from Functions_Miguel import filt_X
+        # Mask to avoid having third derivatives on boundaries:
+        M = np.ones(h.shape)
+        M = np.ones((nx,nz), dtype = 'float32')
+        x = dx*np.linspace(0,nx-1,nx)
+        M[-1,:] = np.zeros((1,nz))
+        M[int((1-0.2)*nx):,:] = np.zeros((int(0.2*nx),nz))
+        M[int((1-0.3)*nx):int((1-0.2)*nx-1),:] = \
+            0.5*np.ones((int(0.1*nx),nz))
+        M[:,0] = np.zeros((nx,))
+        M[:,-1] = np.zeros((nx,))
+        M1 = np.hamming(nx-2)
+        M = M[1:-1,1:-1]*M1
+        # (matrix M of 0 and 1s)
 
         # First derivatives operators:
         d_dx = FinDiff((0, dx, 1))
         d_dz = FinDiff((1, dz, 1))
 
-        H_X = h[1:-1,1:-1]
-        H_Z = h[1:-1,1:-1]
+        # Filter the height along x and along z:
+        H_Xf = filt_X(h[1:-1,1:-1],31,boundaries="extrap",s=0.2)
+        H_Zf = filt_X(h[1:-1,1:-1].T,31,boundaries="extrap",s=0.2)
+        H_Zf = H_Zf.T
+
         # Computations of the third derivatives
         # that are included in sources S2 and S3:
 
         # d3_dx3 h:
-        hx = d_dx(H_X)
-        hxx = d_dx(hx)
-        hxxx = d_dx(hxx)
+        # take the first derivative:
+        hx = d_dx(H_Xf)
+        # filter it along x:
+        hx_Xf = filt_X(hx,31,boundaries="extrap",s=0.2)
+        # take the second derivative:
+        hxx = d_dx(hx_Xf)
+        # filter again:
+        hxx_Xf = filt_X(hxx,31,boundaries="extrap",s=0.2)
+        # take the third derivative:
+        hxxx0 = d_dx(hxx_Xf)
+        # and filter it:
+        hxxx = filt_X(hxxx0,31,boundaries="extrap",s=0.2)
 
-        hz = d_dz(H_Z)
-        hzz = d_dz(hz)
-        hzzz = d_dz(hzz)
+        # # d3_dz3 h:
+        # hz = d_dz(H_Zf)
+        # hz_Zf = filt_X(hz.T,31,boundaries="extrap",s=0.2)
+        # hzz = d_dz(hz_Zf.T)
+        # hzz_Zf = filt_X(hzz.T,31,boundaries="extrap",s=0.2)
+        # hzzz0 = d_dz(hzz_Zf.T)
+        # hzzz = filt_X(hzzz0,31,boundaries="extrap",s=0.2)
 
-        # d3_dxdz2 h:
-        hxzz = d_dx(hzz)
+        # # d3_dxdz2 h:
+        # hxzz0 = d_dx(hzz_Zf.T)
+        # hxzz = filt_X(hxzz0,31,boundaries="extrap",s=0.2)
 
-        # d3_dzdx2 h:
-        hzxx = d_dz(hxx)
+        # # d3_dzdx2 h:
+        # hxx_Zf = filt_X(hxx.T,31,boundaries="extrap",s=0.2)
+        # hzxx0 = d_dz(hxx_Zf.T)
+        # hzxx = filt_X(hzxx0,31,boundaries="extrap",s=0.2)
+
+        # # WITHOUT FILTERING:
+        # # First derivatives operators:
+        # d_dx = FinDiff((0, dx, 1))
+        # d_dz = FinDiff((1, dz, 1))
+
+        # H_X = h[1:-1,1:-1]
+        # H_Z = h[1:-1,1:-1]
+        # # Computations of the third derivatives
+        # # that are included in sources S2 and S3:
+
+        # # d3_dx3 h:
+        # hx = d_dx(H_X)
+        # hxx = d_dx(hx)
+        # hxxx = d_dx(hxx)
+
+        # # d3_dz3 h:
+        # hz = d_dz(H_Z)
+        # hzz = d_dz(hz)
+        # hzzz = d_dz(hzz)
+
+        # # d3_dxdz2 h:
+        # hxzz = d_dx(hzz)
+
+        # # d3_dzdx2 h:
+        # hzxx = d_dz(hxx)
+        hzzz = 0
+        hzxx = 0
+        hxzz = 0
 
     
         # sources S1 for the h-eqn:
@@ -57,12 +119,14 @@ def liquid_film_sources(surface_tension,
                 - (3*qx[1:-1,1:-1])/ \
                 (delta1*h[1:-1,1:-1]**2) \
                 + (h[1:-1,1:-1]/(delta1)) \
-                *(hxzz + hxxx)
+                *(hxxx)*M1#[1:-1,1:-1] # hxzz missing
         # sources S3 for the qz-eqn:
-        S3 = -3*qz[1:-1,1:-1]/ \
-                (delta1*h[1:-1,1:-1]**2) \
-                + (h[1:-1,1:-1]/(delta1)) \
-                *(hzzz + hzxx)
+        S3 = np.zeros((nx-2,nz-2))
+               #  -3*qz[1:-1,1:-1]/ \
+               #  (delta1*h[1:-1,1:-1]**2) \
+               #  + (h[1:-1,1:-1]/(delta1)) \
+               #  *(hzzz + hzxx)*M[1:-1,1:-1]
+
 
     # when surface_tension = False, compute the source terms
     # without the third derivatives:
@@ -75,12 +139,10 @@ def liquid_film_sources(surface_tension,
         S2 = h[1:-1,1:-1]/(3*Epsilon*Re) \
                 - (3*qx[1:-1,1:-1])/ \
                 (delta1*h[1:-1,1:-1]**2)
-                #(3*Epsilon*Re*h[1:-1,1:-1]**2)
 
         # sources S3 for the qz-eqn:
         S3 = -3*qz[1:-1,1:-1]/ \
                 (delta1*h[1:-1,1:-1]**2)
-                #(3*Epsilon*Re*h[1:-1,1:-1]**2)
 
         # set the third derivatives to zero as they have to be returned
         hzzz = 0

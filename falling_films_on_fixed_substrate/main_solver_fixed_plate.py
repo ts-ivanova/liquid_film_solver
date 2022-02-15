@@ -61,8 +61,8 @@ limiters = [
             ]
 
 # Choice of the numerical scheme:
-# scheme = schemes['LWFble']
-scheme = schemes['LFried']
+scheme = schemes['LWFble']
+# scheme = schemes['LFried']
 # scheme = schemes['LWendr']
 
 # If the selected scheme is the Blended scheme, 
@@ -87,7 +87,7 @@ else:
 
 # Specify whether to include surface tension terms
 # in the sources (the third derivatives of the height h):
-surface_tension = False
+surface_tension = True
 # (False = do not include)
 
 # for naming purposes:
@@ -182,7 +182,7 @@ z = np.mgrid[0:nz]*dz
 #final_time = int(PERIOD_PROB*100) #1200
 final_time = int(PERIOD_PROB*36) #1200
 # CFL number:
-CFL = 0.5
+CFL = 0.3
 # Timestep (unit) from the CFL formula:
 dt = CFL*dx/U_REF
 print('dt = ', dt)
