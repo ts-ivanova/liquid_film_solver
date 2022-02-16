@@ -140,6 +140,7 @@ def liquid_film_sources(surface_tension,
     else:
         # sources S1 for the h-eqn:
         delta1 = 3*Epsilon*Re
+
         S1 = np.zeros((nx-2,nz-2))
 
         # sources S2 for the qx-eqn:
