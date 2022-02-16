@@ -156,7 +156,7 @@ for LIQUID in LIQUIDS:
             # %%
             print('Plotting ... ')
 
-            for j in range(540,550):
+            for j in range(1,len(filelist)):
                 plt.close()
                 plt.figure(figsize = (10,5))
 
@@ -176,12 +176,12 @@ for LIQUID in LIQUIDS:
                              pad=10, fontsize = 14)
                 plt.legend(loc = 'upper right')
                 plt.ylim(0.1, 0.6)
-                plt.xlim(0.065,0.12)
+                #plt.xlim(0.065,0.12)
                 plt.grid()
-                plt.plot(x_doro,#*((total-shift)/0.12)+shift)/1000-offset,
-                         y_doro,
-                         '.-',
-                         label = 'Doro et al., 2013')
+                # plt.plot(x_doro,#*((total-shift)/0.12)+shift)/1000-offset,
+                #          y_doro,
+                #          '.-',
+                #          label = 'Doro et al., 2013')
                 plt.legend()
                 plt.savefig(directory + os.sep \
                             + 'env_' + 'f_' + str(f) \

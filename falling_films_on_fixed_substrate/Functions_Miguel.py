@@ -9,7 +9,15 @@ Created on Wed May 19 18:17:02 2021
 import numpy as np
 from scipy.signal import firwin # To create FIR kernels
 from scipy import signal
+from scipy.special import comb
 
+def smoothstep(x, x_min=0, x_max=1, N=100):
+    x = np.clip((x - x_min) / (x_max - x_min), 0, 1)
+    result = 0
+    for n in range(0, N + 1):
+         result += comb(N + n, n) * comb(2 * N + 1, N - n) * (-x) ** n
+    result *= x ** (N + 1)
+    return result
 
 def Bound_EXT(S,Ex,boundaries):
     """

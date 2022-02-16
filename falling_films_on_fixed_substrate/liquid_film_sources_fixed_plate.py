@@ -22,19 +22,7 @@ def liquid_film_sources(surface_tension,
         # WITH FILTERING: 
         from findiff import FinDiff
         from Functions_Miguel import filt_X
-        # Mask to avoid having third derivatives on boundaries:
-        M = np.ones(h.shape)
-        M = np.ones((nx,nz), dtype = 'float32')
-        x = dx*np.linspace(0,nx-1,nx)
-        M[-1,:] = np.zeros((1,nz))
-        M[int((1-0.2)*nx):,:] = np.zeros((int(0.2*nx),nz))
-        M[int((1-0.3)*nx):int((1-0.2)*nx-1),:] = \
-            0.5*np.ones((int(0.1*nx),nz))
-        M[:,0] = np.zeros((nx,))
-        M[:,-1] = np.zeros((nx,))
-        M1 = np.hamming(nx-2)
-        M = M[1:-1,1:-1]*M1
-        # (matrix M of 0 and 1s)
+        from Functions_Miguel import smoothstep
 
         # First derivatives operators:
         d_dx = FinDiff((0, dx, 1))
@@ -62,22 +50,39 @@ def liquid_film_sources(surface_tension,
         # and filter it:
         hxxx = filt_X(hxxx0,31,boundaries="extrap",s=0.2)
 
-        # # d3_dz3 h:
-        # hz = d_dz(H_Zf)
-        # hz_Zf = filt_X(hz.T,31,boundaries="extrap",s=0.2)
-        # hzz = d_dz(hz_Zf.T)
-        # hzz_Zf = filt_X(hzz.T,31,boundaries="extrap",s=0.2)
-        # hzzz0 = d_dz(hzz_Zf.T)
-        # hzzz = filt_X(hzzz0,31,boundaries="extrap",s=0.2)
+        # d3_dz3 h:
+        hz = d_dz(H_Zf)
+        hz_Zf = filt_X(hz.T,31,boundaries="extrap",s=0.2)
+        hzz = d_dz(hz_Zf.T)
+        hzz_Zf = filt_X(hzz.T,31,boundaries="extrap",s=0.2)
+        #hzzz0 = d_dz(hzz_Zf.T)
+        #hzzz = filt_X(hzzz0,31,boundaries="extrap",s=0.2)
 
-        # # d3_dxdz2 h:
-        # hxzz0 = d_dx(hzz_Zf.T)
-        # hxzz = filt_X(hxzz0,31,boundaries="extrap",s=0.2)
+        # d3_dxdz2 h:
+        hxzz0 = d_dx(hzz_Zf.T)
+        hxzz = filt_X(hxzz0,31,boundaries="extrap",s=0.2)
 
         # # d3_dzdx2 h:
-        # hxx_Zf = filt_X(hxx.T,31,boundaries="extrap",s=0.2)
-        # hzxx0 = d_dz(hxx_Zf.T)
-        # hzxx = filt_X(hzxx0,31,boundaries="extrap",s=0.2)
+        #hxx_Zf = filt_X(hxx.T,31,boundaries="extrap",s=0.2)
+        #hzxx0 = d_dz(hxx_Zf.T)
+        #hzxx = filt_X(hzxx0,31,boundaries="extrap",s=0.2)
+
+        # Mask:
+        xn=np.arange(1,nx-1,1)
+        zn=np.arange(1,nz-1,1)
+
+        ## Here I construct the smoothed step in x
+        X_L = smoothstep(xn, 200, 600,N=10)
+        X_H = smoothstep(xn, 3000, 3400,N=10)
+        STEP_X=X_L-X_H
+        
+        ## Here I construct the smoothed step in z
+        Z_L = smoothstep(zn, 10, 50,N=10)
+        Z_H = smoothstep(zn, 350, 390,N=10)
+        STEP_Z=Z_L-Z_H
+        
+        MASK_2D=np.outer(STEP_X,STEP_Z)
+        
 
         # # WITHOUT FILTERING:
         # # First derivatives operators:
@@ -104,6 +109,8 @@ def liquid_film_sources(surface_tension,
 
         # # d3_dzdx2 h:
         # hzxx = d_dz(hxx)
+
+        # Here we are 2D:
         hzzz = 0
         hzxx = 0
         hxzz = 0
@@ -119,7 +126,7 @@ def liquid_film_sources(surface_tension,
                 - (3*qx[1:-1,1:-1])/ \
                 (delta1*h[1:-1,1:-1]**2) \
                 + (h[1:-1,1:-1]/(delta1)) \
-                *(hxxx)*M1#[1:-1,1:-1] # hxzz missing
+                *(hxxx)*MASK_2D #(hxxx+hxzz)
         # sources S3 for the qz-eqn:
         S3 = np.zeros((nx-2,nz-2))
                #  -3*qz[1:-1,1:-1]/ \
