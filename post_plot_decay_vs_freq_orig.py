@@ -28,24 +28,24 @@ import glob
 # PLOT CUSTOMIZATIONS:
 font = {'family' : 'DejaVu Sans',
         'weight' : 'normal',
-        'size'   : 16}
+        'size'   : 12}
 rc('font', **font)
 
 # transparency level
 alpha1 = 0.9
 markers = ['o', 'X', 'v']
 
-
+# Long-wave parameter:
+Epsilon = 0.23918
 #######################################################################
-os.chdir('RESULTS_December/decay/')
-plt.rcParams['svg.fonttype'] = 'none'  #outputs text as text in svg file
-plt.rcParams["axes.unicode_minus"] = False
-plt.rcParams["axes.formatter.min_exponent"] = True
+os.chdir('RESULTS/decay/')
+
 Re_paths = natsorted(glob.glob('R*'))
 
 for Re_path in Re_paths:
     os.chdir(Re_path)
-    Paths = natsorted(glob.glob('*'))
+    Paths = natsorted(glob.glob('2*'))
+    plt.close()
     for Path in Paths:
         os.chdir(Path)
         
@@ -56,42 +56,38 @@ for Re_path in Re_paths:
 
             h0 = float(decays_list[i][8:11])
             print('h0 = ', h0)
-            delta = decays_list[i][-11:-4]
+            #delta = decays_list[i][-11:-4]
 
             Re = float(Re_path[-3:])
             print('Re = {:.0f}'.format(Re))
             
             freqs = np.load(freqs_list[i])
-            k = 2*math.pi/(1/freqs)
             decay_rates = np.load(decays_list[i])
             
             plt.plot(freqs, decay_rates,
                       marker=markers[i],
                       linestyle='--',
                       alpha = alpha1,
-                      label = '\$h_0$ = ' + str(h0) \
-                              + ', $\delta$ = ' + str(float(delta))
+                      label = '$h_0$ = ' + str(h0) \
+                             # + ', $\delta$ = ' + str(float(delta))
                       )
-            plt.xlim(0.04,0.15)
-            # plt.plot(k, decay_rates, 
-            #          marker=markers[i], 
-            #          linestyle='--',
-            #          alpha = alpha1,
-            #          label = '$h_0$ = ' + str(h0)
-            #          )   
+            plt.xlim(-0.001,0.21)
+
         
         plt.xlabel('frequency, [-]')
-        # plt.xlabel('wave number k, [-]')
         plt.ylabel('decay rate, [-]')
-        plt.legend(loc = 'upper left')
+        plt.legend(loc = 'lower left')
         plt.grid()
 
         title1 = 'Decay rates of amplitudes, '
-        plt.title(title1 + 'Re = {:.0f}'.format(Re))
+        plt.title(title1 + '$\delta$ = {:.0f}'.format(Epsilon*Re))
         
-        plt.savefig('plot_' + 'Re{:.0f}'.format(Re) \
-                    + '.svg',
-                    format      = 'svg')
+        plt.savefig('plot_' + 'delta{:.0f}'.format(Epsilon*Re) \
+                    + '.png',
+                    bbox_inches = 'tight',
+                    format      = 'png',
+                    dpi         = 600
+                    )
         plt.show()
          
         os.chdir('../')

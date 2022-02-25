@@ -29,7 +29,7 @@ Path("PLOTS").mkdir(parents=True, exist_ok=True)
 plt.close()
 font = {'family'    : 'DejaVu Sans',
         'weight'    : 'normal',
-        'size'      : 14}
+        'size'      : 18}
 matplotlib.rc('font', **font)
 
 # DATA FOLDERS:
@@ -62,8 +62,8 @@ for j in range(len(titles)):
     ##############
 
     # plots properties
-    plt.figure(figsize=(12,4))
-    plt.suptitle(titles[j])
+    plt.figure(figsize=(12,6))
+    plt.title(titles[j])
     plt.xlabel(xlabel1)
     plt.ylabel(ylabel1)
     alpha1 = 0.7
@@ -116,15 +116,15 @@ for j in range(len(titles)):
 
     plt.grid()
     plt.legend(loc='lower right',
-               fontsize=10,
+               fontsize=14,
                numpoints=4,
                handlelength=4,
                markerscale=0.6)
     plt.tight_layout()
     plt.savefig('PLOTS' + os.sep + FOLDERS[j] + '.png',
-                format='png', dpi=400)
+                format='png', dpi=600)
 
-
+    # %%
     # Plot also OF solution:
     # Domain length 77.28 = nx*dx = 1680*0.046 from JFM paper
     plt.plot(x_OF - 77.28,
@@ -136,9 +136,10 @@ for j in range(len(titles)):
              alpha = alpha1)
 
     plt.legend(loc='lower right',
-               fontsize=10,
+               fontsize=16,
                numpoints=4,
                handlelength=4,
                markerscale=0.6)
     plt.savefig('PLOTS' + os.sep + 'OF_' + FOLDERS[j] + '.png',
-                 format='png', dpi=400)
+                 format='png', dpi=600)
+    plt.show()
