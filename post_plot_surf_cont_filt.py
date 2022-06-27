@@ -28,15 +28,15 @@ import tools_for_plotting as save_plots
 
 
 ####################
-os.chdir('RESULTS_January_fixed/')
+os.chdir('RESULTS_January/')
 
 # Gather all computed configurations:
 # LIQUIDS = natsorted(glob.glob('2D*')) + natsorted(glob.glob('3D*'))
-LIQUIDS = natsorted(glob.glob('2D*'))
+LIQUIDS = natsorted(glob.glob('3D*'))
 
 
 # Choose which plots to produce by setting True or False:
-Surfaces  = False    # liquid film height surfaces h
+Surfaces  = False     # liquid film height surfaces h
 Contourfs = True     # contour plot of the last 
                      # computed time step of h
 
@@ -69,6 +69,7 @@ for LIQUID in LIQUIDS:
         delta = FOLDER[-7:]
         
         subfolder = natsorted(glob.glob("P*"))
+        # subfolder = ["PXZ1_BLmi_CFL0.30_dx0.0551_nx2904_dz0.010_nz0300_Re319_f0.050"]
 
         # loop over all saved configurations
         for i in range(len(subfolder)):
@@ -93,6 +94,12 @@ for LIQUID in LIQUIDS:
             os.chdir(subfolder[i])
             filenames = natsorted(glob.glob('h_np' + os.sep \
                                            + '*.npy'))
+            
+            filenames_qx = natsorted(glob.glob('qx_np' + os.sep \
+                                           + '*.npy'))
+            
+            filenames_qz = natsorted(glob.glob('qz_np' + os.sep \
+                                           + '*.npy'))
 
             # if it has been selected to plot the surfaces, then:
             if Surfaces:
@@ -108,9 +115,9 @@ for LIQUID in LIQUIDS:
                 Path(directory_plots).mkdir(parents=True, 
                                             exist_ok=True)
 
-                # if the files are too many, plot once every 5 files:
+                # if the files are too many, plot once every 20 files:
                 if len(filenames) > 50:
-                    skipfiles = int(len(filenames)/25)
+                    skipfiles = int(len(filenames)/5)
                 else:
                     skipfiles = 1
 
@@ -132,31 +139,62 @@ for LIQUID in LIQUIDS:
                 directory = "../../../POSTPROCESSED/contourfs_h"\
                             + str(h0) + '_delta' + delta
                 Path(directory).mkdir(parents=True, exist_ok=True)
+                
+                directory_qx = "../../../POSTPROCESSED/contourfs_qx"\
+                            + str(h0) + '_delta' + delta
+                Path(directory).mkdir(parents=True, exist_ok=True)
+                
+                directory_qz = "../../../POSTPROCESSED/contourfs_qz"\
+                            + str(h0) + '_delta' + delta
+                Path(directory).mkdir(parents=True, exist_ok=True)
+                
 
                 directory_plots  =  directory + os.sep \
                                     + subfolder[i]
                 Path(directory_plots).mkdir(parents=True,
                                             exist_ok=True)
+                
+                directory_plots_qx  =  directory_qx + os.sep \
+                                    + subfolder[i]
+                Path(directory_plots_qx).mkdir(parents=True,
+                                            exist_ok=True)
+                
+                directory_plots_qz  =  directory_qz + os.sep \
+                                    + subfolder[i]
+                Path(directory_plots_qz).mkdir(parents=True,
+                                            exist_ok=True)
 
                 # Plot contourf's:
                 # just last timestep
                 h = np.load(filenames[-1])
+                qx = np.load(filenames_qx[-1])
+                qz = np.load(filenames_qz[-1])
                 save_plots.plot_contourfs(h, X, Z, h0,
                                           len(filenames),
                                           directory_plots,
                                           filenames[-1][5:-11])
                 
-                if len(filenames) > 50:
-                    skipfiles = int(len(filenames)/25)
-                else:
-                    skipfiles = 1
-                # all timesteps
-                for j in range(0, len(filenames), skipfiles):
-                    h = np.load(filenames[j])
-                    save_plots.plot_contourfs(h, X, Z, h0,
+                save_plots.plot_contourfs(qx, X, Z, h0,
                                           len(filenames),
-                                          directory_plots,
-                                          filenames[j][5:-4])
+                                          directory_plots_qx,
+                                          filenames[-1][5:-11])
+                
+                save_plots.plot_contourfs(qz, X, Z, h0,
+                                          len(filenames),
+                                          directory_plots_qz,
+                                          filenames[-1][5:-11])
+                
+                # if len(filenames) > 50:
+                #     skipfiles = int(len(filenames)/25)
+                # else:
+                #     skipfiles = 1
+                # # all timesteps
+                # for j in range(0, len(filenames), skipfiles):
+                #     h = np.load(filenames[j])
+                #     save_plots.plot_contourfs(h, X, Z, h0,
+                #                           len(filenames),
+                #                           directory_plots,
+                #                           filenames[j][5:-4])
 
             # if it is selected to plot the filtered derivatives:
             if Filtered:

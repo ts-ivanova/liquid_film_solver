@@ -65,10 +65,10 @@ alpha1 = 0.9
 
 ####################
 # os.chdir('RESULTS-processed/')
-os.chdir('RESULTS_January_fixed/')
+os.chdir('RESULTS_January/')
 # Gather all computed configurations:
-LIQUIDS = natsorted(glob.glob('2D_WATER_without_surf_ten_Re069'))
-# LIQUIDS = natsorted(glob.glob('3*'))
+# LIQUIDS = natsorted(glob.glob('2D_WATER_without_surf_ten_Re069'))
+LIQUIDS = natsorted(glob.glob('3*'))
 
 print('Going to process ', LIQUIDS)
 
@@ -138,7 +138,7 @@ for LIQUID in LIQUIDS:
 
             # an arbitrary chosen xslice of the domain:
             # xslice = int(0.5*nz/8)
-            xslice = int(0.35*nz)
+            xslice = int(0.4*nz)
 
             # Loop over all data files to extract the height
             # and attach them to the dictionary:
@@ -263,29 +263,29 @@ for LIQUID in LIQUIDS:
                       alpha = alpha1,
                       label = 'height')
 
-            # identify for which indices there are peaks
-            # of the wave maxima:
-            peaks_max, _ = find_peaks(H_XT_max[xslice,:])
+            # # identify for which indices there are peaks
+            # # of the wave maxima:
+            # peaks_max, _ = find_peaks(H_XT_max[xslice,:])
 
-            plt.plot(-dx*peaks_max,
-                      H_XT_max[xslice,:][peaks_max],
-                      linestyle = 'dashed',
-                      color = '#9e2ec9',
-                      linewidth = 2,
-                      alpha = alpha1,
-                      label = 'max')
+            # plt.plot(-dx*peaks_max,
+            #           H_XT_max[xslice,:][peaks_max],
+            #           linestyle = 'dashed',
+            #           color = '#9e2ec9',
+            #           linewidth = 2,
+            #           alpha = alpha1,
+            #           label = 'max')
 
-            # identify for which indices there are peaks
-            # of the wave minima:
-            peaks_min, _ = find_peaks(H_XT_min[xslice,:])
+            # # identify for which indices there are peaks
+            # # of the wave minima:
+            # peaks_min, _ = find_peaks(H_XT_min[xslice,:])
 
-            plt.plot(-dx*peaks_min,
-                      H_XT_min[xslice,:][peaks_min],
-                      linestyle = 'dashdot',
-                      color = '#2878b5',
-                      linewidth = 2,
-                      alpha = alpha1,
-                      label = 'min')
+            # plt.plot(-dx*peaks_min,
+            #           H_XT_min[xslice,:][peaks_min],
+            #           linestyle = 'dashdot',
+            #           color = '#2878b5',
+            #           linewidth = 2,
+            #           alpha = alpha1,
+            #           label = 'min')
 
             plt.xlabel('length x, [-]')
             plt.ylabel('film thickness h, [-]')

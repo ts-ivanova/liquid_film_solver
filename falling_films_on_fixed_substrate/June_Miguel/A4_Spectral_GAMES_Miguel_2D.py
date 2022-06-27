@@ -1,141 +1,83 @@
-#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Wed May 19 18:17:02 2021
+Created on Mon Jun 13 16:13:54 2022
 
-@author: mendez
+@author: Mendez
 """
 
 import numpy as np
-from scipy.signal import firwin # To create FIR kernels
-from scipy import signal
-from scipy.special import comb
 
-def smoothstep(x, x_min=0, x_max=1, N=100):
-    x = np.clip((x - x_min) / (x_max - x_min), 0, 1)
-    result = 0
-    for n in range(0, N + 1):
-         result += comb(N + n, n) * comb(2 * N + 1, N - n) * (-x) ** n
-    result *= x ** (N + 1)
-    return result
+import matplotlib.pyplot as plt
 
-def Bound_EXT(S,Ex,boundaries):
-    """
-    This function computes the extension of a 1D signal for
-    filtering purposes
+#%% Introduction
 
-    :param S: The Input signal
-    :param Ex: Ex The extension to be introduced
-    (must be an odd number!)
-    :param boundaries: The type of extension:
-        ‘reflect’ (d c b a | a b c d | d c b a)
-        The input is extended by reflecting about
-        the edge of the last pixel.
-        ‘nearest’ (a a a a | a b c d | d d d d)
-        The input is extended by replicating the last pixel.
-        ‘wrap’ (a b c d | a b c d | a b c d)
-        The input is extended by wrapping around to
-        the opposite edge.
-        ‘extrap’ Extrapolation
-        The input is extended via linear extrapolation.
-    """
-    # We first perform a zero padding
-    #Ex = int((Nf-1)/2) # Extension on each size
+# In this file we play use the trick from the file A3 to compute the surface
+# tension terms. The 3D data is provided by the analytic function used by David
+# in the codes A1-A2.
+# The workflow is as follow:
+    
+# 1. Define the functions in 3D and show the derivatives along three lines.
+# 2. Create a function Partial_deriv which computes the derivatives along a direction.
+     # This include first derivatives and second derivatives
+# 3. Compute the surface tension term ( gradient of the laplacian) for this 
+#    configuration and compare with the analytical solution
 
-    # Compute the size of the extended signal:
-    size_Ext = 2*Ex+len(S)
-    # Initialize extended signal:
-    S_extend = np.zeros((size_Ext))
-    # Assign the Signal on the zeroes:
-    S_extend[Ex:(int((size_Ext)-Ex))] = S
 
-    if boundaries == "reflect":
-        # Prepare the reflection on the left:
-        LEFT = np.flip(S[0:Ex])
-        # Prepare the reflection on the right:
-        RIGHT = np.flip(S[len(S)-Ex:len(S)])
-        S_extend[0:Ex] = LEFT;
-        S_extend[len(S_extend)-Ex:len(S_extend)] = RIGHT
-    elif boundaries == "nearest":
-        # Prepare the constant on the left:
-        LEFT = np.ones(Ex)*S[0]
-        # Prepare the constant on the right:
-        RIGHT = np.ones(Ex)*S[len(S)-1]
-        S_extend[0:Ex] = LEFT
-        S_extend[len(S_extend)-Ex:len(S_extend)] = RIGHT
-    elif boundaries == "wrap":
-        # Wrap on the Left:
-        LEFT = S[len(S)-Ex:len(S)]
-        # Wrap on the Right:
-        RIGHT = S[0:Ex]
-        S_extend[0:Ex] = LEFT
-        S_extend[len(S_extend)-Ex:len(S_extend)] = RIGHT
-    elif boundaries == "extrap":
-        # Linear extrapolation on the left
-        # Take the first slope.
-        ds = S[1]-S[0]
-        # First and last added values on the left:
-        In = S[0]-Ex*ds; Fin = S[0]-ds
-        LEFT = np.linspace(In,Fin,Ex)
-        # Linear extrapolation on the right
-        ds = S[-1]-S[-2] # Take the last slope
-        In = S[-1]+ds; Fin = S[-1]+Ex*ds
-        # Prepare the constant on the Right:
-        RIGHT = np.linspace(In,Fin,Ex)
-        S_extend[0:Ex] = LEFT
-        S_extend[len(S_extend)-Ex:len(S_extend)] = RIGHT
-    return S_extend
+#%% Create the Analytic function for validation purposes
+n_x=1000; n_z=500 # Number of points along x and y.
+# Define the 1D grids
+x=np.linspace(0,80,n_x); z=np.linspace(-25,25,n_z)
+# Define the mesh grid
+Xg,Zg=np.meshgrid(x,z)
+
+# Define the analytic thickness distributions
+h0=0.2; A=0.1; k_x=2*np.pi/(26); k_z=2*np.pi/(19)
+h = h0*(1 + A*np.sin(k_x*Xg)*np.sin(k_z*Zg)) # thickness distribution
+plt.contourf(Zg,Xg,h)
+
+# Important note: te kx and kz are taken so as NOT to have periodic BCs.
+
+
+# Show first derivatives along two positions
+I_X=20; z_v1=Zg[:,I_X]
+I_Z=20; x_v1=Xg[I_Z,:]
+
+# Partial_X along x_v1
+partial_x_h=k_x*h0*A*np.cos(k_x*Xg)*np.sin(k_z*Zg)
+partial_z_h=k_z*h0*A*np.sin(k_x*Xg)*np.cos(k_z*Zg)
+
+# Second Derivatives
+partial_xx_h=-k_x**2*h0*A*np.sin(k_x*Xg)*np.sin(k_z*Zg)
+partial_zz_h=-k_z**2*h0*A*np.sin(k_x*Xg)*np.sin(k_z*Zg)
+
+# Third Derivatives
+partial_xxx_h=-k_x**3*h0*A*np.cos(k_x*Xg)*np.sin(k_z*Zg)
+partial_zxx_h=-k_z*k_x**2*h0*A*np.sin(k_x*Xg)*np.cos(k_z*Zg)
+
+# Show second and third derivative terms along both coordinates
+
+# Plot the function
+fig, ax = plt.subplots(figsize=(10,4))
+plt.plot(z_v1,partial_xx_h[:,I_X]/np.max(partial_xx_h[:,I_X]),'k--',label='h_xx')
+plt.plot(z_v1,partial_zxx_h[:,I_X]/np.max(partial_zxx_h[:,I_X]),'b--',label='h_zxx')
+plt.xlabel('z')
+plt.legend()
+plt.title('Normalized derivatives along z')
+
+# Plot the function
+fig, ax = plt.subplots(figsize=(10,4))
+plt.plot(x_v1,partial_xx_h[I_Z,:]/np.max(partial_xx_h[I_Z,:]),'k--',label='h_xx')
+plt.plot(x_v1,partial_zxx_h[I_Z,:]/np.max(partial_zxx_h[I_Z,:]),'b--',label='h_zxx')
+plt.xlabel('x')
+plt.legend()
+plt.title('Normalized derivatives along x')
 
 
 
-def filt_X(H,ORD,boundaries = "extrap",s = 0.1):
-    """
-    This function filters the matrix h along the rows
-    (assuming the x is there)
-    It can filter the other direction if you simply
-    give the transpose of it.
+#%% Numerical Computation of derivative along x and z
 
-    :param h: Input matrix for the thickness
-    :param s: cut off frequency in the digital settings.
-    The lower, the smoother
-    :param ORD: Order of the Filter
-    :param boundaries: The type of extension:
-        ‘reflect’ (d c b a | a b c d | d c b a)
-        The input is extended by reflecting about
-        the edge of the last pixel.
-        ‘nearest’ (a a a a | a b c d | d d d d)
-        The input is extended by replicating the last pixel.
-        ‘wrap’ (a b c d | a b c d | a b c d)
-        The input is extended by wrapping around
-        to the opposite edge.
-        ‘extrap’ Extrapolation (not yet available)
-        The input is extended via linear extrapolation.
-    """
-    # Filter along the raws
-    n_x = np.shape(H)[1] # Number of points to filter
-    H_F = np.zeros(np.shape(H)) # Initialize the filtered result
-    kernel = firwin(ORD, s, window = 'hamming')
-    # You could the transfer function like this if you want:
-    #w, H_T  =  signal.freqz(kernel)
-
-    # K_F = np.zeros(np.shape(K))
-    for k in range(0,n_x):
-        S = H[:,k]
-        S_Ext = Bound_EXT(S,ORD,boundaries)
-        S_Filt_1 = signal.fftconvolve(S_Ext, kernel, mode = 'valid')
-        S_Filt = np.flip(signal.fftconvolve(np.flip(S_Filt_1),
-                                           kernel, mode = 'valid'))
-        # Check
-        # plt.plot(S_Ext);plt.plot((S_Filt))
-        # Compute where to take the signal
-        Ex1 = int((len(S_Filt)-len(S))/2)
-
-        H_F[:,k] = S_Filt[Ex1:(len(S_Filt)-Ex1)]
-
-    return H_F
-
-
-
+from Functions_Miguel import Bound_EXT
+from Functions_Miguel import smoothstep
 from scipy import interpolate
 
 
@@ -174,6 +116,21 @@ def FFT_diff_X(h,Xg,Zg,P=400,Frac=4):
 
 
 
+# Test the gradient
+partial_x_h_N=FFT_diff_X(h,Xg,Zg,P=400,Frac=2)
+# Check the overal error
+Err=partial_x_h_N-partial_x_h
+
+# Plot the function (this seems to be working very well)
+I_Z=20
+fig, ax = plt.subplots(figsize=(10,4))
+plt.plot(x_v1,partial_x_h_N[I_Z,:],'k--',label='Analytic')
+plt.plot(x_v1,partial_x_h[I_Z,:],'b--',label='Numerics')
+plt.xlabel('x')
+plt.legend()
+plt.title('Partial derivatives along x')
+
+
 
 def FFT_diff_Z(h,Xg,Zg,P=200,Frac=4):
     # Usual smoothing: P 
@@ -209,6 +166,20 @@ def FFT_diff_Z(h,Xg,Zg,P=200,Frac=4):
       
     return partial_z
 
+
+# Test the gradient
+partial_z_h_N=FFT_diff_Z(h,Xg,Zg,P=400,Frac=2)
+# Check the overal error
+Err=partial_z_h_N-partial_z_h
+
+# Plot the function (this seems to be working very well)
+I_Z=20
+fig, ax = plt.subplots(figsize=(10,4))
+plt.plot(z_v1,partial_z_h[:,I_Z],'k--',label='Analytic')
+plt.plot(z_v1,partial_z_h_N[:,I_Z],'b--',label='Numerics')
+plt.xlabel('z')
+plt.legend()
+plt.title('Partial derivatives along z')
 
 
 def FFT_LAP_X(h,Xg,Zg,P=200,Frac=4):
@@ -279,6 +250,27 @@ def FFT_LAP_Z(h,Xg,Zg,P=200,Frac=4):
       return partial_zz
 
 
+# Test the Laplacian
+partial_xx_h_N=FFT_LAP_X(h,Xg,Zg,P=400,Frac=2)
+partial_zz_h_N=FFT_LAP_Z(h,Xg,Zg,P=400,Frac=2)
+
+
+# Check the overal error
+Err_x=partial_xx_h_N-partial_xx_h
+Err_z=partial_zz_h_N-partial_zz_h
+
+
+# Plot the function (this seems to be working very well)
+I_Z=499
+fig, ax = plt.subplots(figsize=(10,4))
+plt.plot(z_v1,partial_zz_h[:,I_Z],'k--',label='Analytic')
+plt.plot(z_v1,partial_zz_h_N[:,I_Z],'b--',label='Numerics')
+plt.xlabel('z')
+plt.legend()
+plt.title('Partial derivatives along z')
+
+
+
 #%% 3. Surface tension implementation
 
 
@@ -290,11 +282,30 @@ def Surf_T(h,Xg,Zg,P=500,Frac=2):
     h_xxx=FFT_diff_X(h_xx,Xg,Zg,P=P,Frac=Frac)
     h_xzz=FFT_diff_X(h_zz,Xg,Zg,P=P,Frac=Frac)
     # Second terms
-    # h_zxx=FFT_diff_Z(h_xx,Xg,Zg,P=P,Frac=Frac)
-    # h_zzz=FFT_diff_Z(h_zz,Xg,Zg,P=P,Frac=Frac)   
-    
-    h_zxx=0
-    h_zzz=0
+    h_zxx=FFT_diff_Z(h_xx,Xg,Zg,P=P,Frac=Frac)
+    h_zzz=FFT_diff_Z(h_zz,Xg,Zg,P=P,Frac=Frac)   
     
     return h_xxx,h_xzz, h_zxx,h_zzz
+
+
+h_xxx,h_xzz, h_zxx,h_zzz=Surf_T(h,Xg,Zg,P=500,Frac=2)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

@@ -36,7 +36,7 @@ import tools_for_saving_fixed_plate as save_data
 # For freeing up some space while computing:
 import gc
 
-
+from Functions_Miguel import Surf_T
 
 #######################################################################
 
@@ -87,7 +87,7 @@ else:
 
 # Specify whether to include surface tension terms
 # in the sources (the third derivatives of the height h):
-surface_tension = False
+surface_tension = True
 # (False = do not include)
 
 # for naming purposes:

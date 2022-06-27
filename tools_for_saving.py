@@ -170,7 +170,7 @@ def save_matrix(h, directory_n,
 
 
 #################################################
-def save_np(h, qx, directory_n,
+def save_np(h, qx, qz, directory_n,
             filename,
             n):
     '''
@@ -189,13 +189,23 @@ def save_np(h, qx, directory_n,
     np.save(file, h)
     
     # To store the qx .npy's:
-    directory_q_np = directory_n \
-                        + os.sep + 'q_np'
-    Path(directory_q_np).mkdir(parents=True, exist_ok=True)
+    directory_qx_np = directory_n \
+                        + os.sep + 'qx_np'
+    Path(directory_qx_np).mkdir(parents=True, exist_ok=True)
     # qx:
-    file = directory_q_np + os.sep \
-            + "q_np_" \
+    file = directory_qx_np + os.sep \
+            + "qx_np_" \
             + filename \
             + "_n{0:05d}".format(n)
     np.save(file, qx)
 
+    # To store the qz .npy's:
+    directory_qz_np = directory_n \
+                        + os.sep + 'qz_np'
+    Path(directory_qz_np).mkdir(parents=True, exist_ok=True)
+    # qx:
+    file = directory_qz_np + os.sep \
+            + "qz_np_" \
+            + filename \
+            + "_n{0:05d}".format(n)
+    np.save(file, qz)

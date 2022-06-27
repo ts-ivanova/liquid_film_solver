@@ -109,8 +109,8 @@ liquid_list = [
 
 # Selection of the configuration:
 configurations = [
-                  conf['PX01']#, # 2D cases + OpenFOAM JFM case
-                  # conf['PXZ1'] # 3D cases
+                  # conf['PX01']#, # 2D cases + OpenFOAM JFM case
+                   conf['PXZ1'] # 3D cases
                   # conf['PXZ2'] # 3D cases
                   ]
 
@@ -152,8 +152,8 @@ for liquid in liquid_list:
     if liquid == liquids['WATER']:
         # Set WATER parameters from JFM 2020 paper:
         Epsilon = 0.23918 # Long-wave parameter, [-]
-        # Re_list = [319] # Re number in OpenFOAM JFM
-        Re_list = [319, 2*319]
+        Re_list = [319] # Re number in OpenFOAM JFM
+        # Re_list = [319, 2*319]
     # or if zinc has been selected:
     elif liquid == liquids['ZINC']:
         # Set liquid ZINC parameters from JFM 2020 paper:
@@ -178,7 +178,7 @@ for liquid in liquid_list:
             #frequencies = [round(elem, 3) for elem in freq_list]
             # [-] low, medium and high freqs
             frequencies = [0.05]
-
+            # frequencies = [0.2]
 
             # if the configuration is 2D:
             if configuration == conf['PX01']:
@@ -210,7 +210,7 @@ for liquid in liquid_list:
                 if configuration == conf['PXZ1']:
                     A = 0.2 # amplitude for the flow rate perturbations
                 elif configuration == conf['PXZ2']:
-                    A = 0.07 # amplitude for the height perturbations
+                    A = 0.05 # amplitude for the height perturbations
 
             # If the selected scheme is the Blended scheme, 
             # then specify more precisely which flux limiters
@@ -469,6 +469,7 @@ for liquid in liquid_list:
 
                         # Set qz to zeros at the inlet:
                         qz[-1,:] = np.zeros(nz)
+                        # qz[-1,:] = 1/3*h[-1,:]**3
 
                     # 3D perturbations of h along x and z:
                     elif configuration == conf['PXZ2']:
@@ -478,14 +479,15 @@ for liquid in liquid_list:
                                 A*np.sin(2*np.pi*freq\
                                             *time_steps[n])\
                                 *np.sin((2*np.pi/lambd_z)*z)\
-                                # *np.exp(-(z-z.mean())**2\
-                                #         /(2*(0.4)**2))\
-                                # /(0.4*np.sqrt(2*math.pi))
+                                *np.exp(-(z-z.mean())**2\
+                                        /(2*(0.4)**2))\
+                                /(0.4*np.sqrt(2*math.pi))
                         # From the quasi-steady formula,
                         # compute qx:
                         qx[-1,:] = 1/3*h[-1,:]**3 - h[-1,:]
                         # Set qz to zeros at the inlet:
-                        qz[-1,:] = np.zeros(nz)
+                        qz[-1,:] = np.zeros(nz)                        
+                        # qz[-1,:] = 1/3*h[-1,:]**3
 
 
                     else:
@@ -518,7 +520,7 @@ for liquid in liquid_list:
                         #                       n)
 
                         # Save the np solutions:
-                        save_data.save_np(h, qx, directory_n,
+                        save_data.save_np(h, qx, qz, directory_n,
                                           filename,
                                           n)
                         # (most efficient format for post-processing)

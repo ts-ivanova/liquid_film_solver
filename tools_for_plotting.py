@@ -37,7 +37,7 @@ import datetime
 # PLOT CUSTOMIZATIONS:
 font = {'family' : 'DejaVu Sans',
         'weight' : 'normal',
-        'size'   : 16}
+        'size'   : 14}
 rc('font', **font)
 
 
@@ -54,7 +54,7 @@ def plot_surfaces(h, X, Z, n,
     plt.close()
     font = {'family' : 'DejaVu Sans',
             'weight' : 'normal',
-            'size'   : 12}
+            'size'   : 10}
     rc('font', **font)
 
     plt.rcParams['xtick.labelsize'] = 8
@@ -84,7 +84,7 @@ def plot_surfaces(h, X, Z, n,
     ax.xaxis.set_major_formatter('{x:.0f}')
     ax.yaxis.set_major_formatter('{x:.1f}')
     ax.zaxis.set_major_formatter('{x:.2f}')
-    ax.set_title('Dimensionless liquid film height')
+    # ax.set_title('Dimensionless liquid film height')
     ax.set_xlabel('x', labelpad=20)
     ax.set_ylabel('z')
     ax.set_zlabel('h')
@@ -121,7 +121,10 @@ def plot_contourfs(h, X, Z, h0,
                    n,
                    directory,
                    filename):
-
+    font = {'family' : 'DejaVu Sans',
+            'weight' : 'normal',
+            'size'   : 14}
+    rc('font', **font)
     # set plot limits based on the initial height value
     # h0 from the main script:
     if h0 <= 0.2:
@@ -163,7 +166,6 @@ def plot_contourfs(h, X, Z, h0,
     plt.clf()
     plt.close(fig)
     gc.collect()
-
 
 
 #################################################
