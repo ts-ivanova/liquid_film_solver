@@ -112,25 +112,25 @@ def filt_X(H,ORD,boundaries = "extrap",s = 0.1):
         The input is extended via linear extrapolation.
     """
     # Filter along the raws
-    n_x = np.shape(H)[1] # Number of points to filter
+    n_x = np.shape(H)[0] # Number of points to filter
     H_F = np.zeros(np.shape(H)) # Initialize the filtered result
     kernel = firwin(ORD, s, window = 'hamming')
     # You could the transfer function like this if you want:
     #w, H_T  =  signal.freqz(kernel)
 
     # K_F = np.zeros(np.shape(K))
-    for k in range(0,n_x):
-        S = H[:,k]
-        S_Ext = Bound_EXT(S,ORD,boundaries)
-        S_Filt_1 = signal.fftconvolve(S_Ext, kernel, mode = 'valid')
-        S_Filt = np.flip(signal.fftconvolve(np.flip(S_Filt_1),
-                                           kernel, mode = 'valid'))
-        # Check
-        # plt.plot(S_Ext);plt.plot((S_Filt))
-        # Compute where to take the signal
-        Ex1 = int((len(S_Filt)-len(S))/2)
+    # for k in range(0,n_x):
+    S = H[:]
+    S_Ext = Bound_EXT(S,ORD,boundaries)
+    S_Filt_1 = signal.fftconvolve(S_Ext, kernel, mode = 'valid')
+    S_Filt = np.flip(signal.fftconvolve(np.flip(S_Filt_1),
+                                       kernel, mode = 'valid'))
+    # Check
+    # plt.plot(S_Ext);plt.plot((S_Filt))
+    # Compute where to take the signal
+    Ex1 = int((len(S_Filt)-len(S))/2)
 
-        H_F[:,k] = S_Filt[Ex1:(len(S_Filt)-Ex1)]
+    H_F[:] = S_Filt[Ex1:(len(S_Filt)-Ex1)]
 
     return H_F
 
@@ -139,14 +139,14 @@ def filt_X(H,ORD,boundaries = "extrap",s = 0.1):
 from scipy import interpolate
 
 
-def FFT_diff_X(h,Xg,Zg,P=400,Frac=4):
+def FFT_diff_X(h,Xg,P=400,Frac=4):
     # Usual smoothing: P 
     # Grid info
-    x=Xg[1,:];  dx=x[2]-x[1]; n_z,n_x=np.shape(Xg);
+    x=Xg[0][:];  dx=x[2]-x[1]; nzz,n_x=np.shape(Xg);
     # Odd number for the extension (a fraction Frac of the original signal)
     n_EXT=int(2*np.floor(n_x/(2*Frac))+1)
     # Initialize the partial_x:
-    partial_x=np.zeros((n_z,n_x))  
+    partial_x=np.zeros((n_x))  
     # Prepare the extension for the grid
     x_ext=Bound_EXT(x,n_EXT,boundaries = "extrap"); n_x_e=len(x_ext)
     # Prepare the information for the Frequency doain
@@ -154,21 +154,21 @@ def FFT_diff_X(h,Xg,Zg,P=400,Frac=4):
     # filter Transfer function (fourth order smoothing)
     H=1/(1+P*(k/k_M)**4)
     
-    for i in range(n_z):
-      f=h[i,:]  # assign the function
-      INTERP = interpolate.interp1d(x,f,kind='cubic',fill_value='extrapolate')
-      f_ext=INTERP(x_ext)   
-      
-      # Create the mask and the extended signal
-      STEP_L=smoothstep(x_ext,x_min=x_ext[0],x_max=x[0],N=4)
-      STEP_R=smoothstep(x_ext,x_min=x[-1],x_max=x_ext[-1],N=4)
-      MASK=STEP_L-STEP_R
-      # Masked Signal
-      f_M=f_ext*MASK
-      # FFT based derivatives with a smooth
-      F_p=1j*k*np.fft.fft(f_M)*H;
-      fp=np.fft.ifft(F_p).real 
-      partial_x[i,:]=fp[n_EXT:f_ext.size-n_EXT]
+    
+    f=h[:]  # assign the function
+    INTERP = interpolate.interp1d(x,f,kind='cubic',fill_value='extrapolate')
+    f_ext=INTERP(x_ext)   
+    
+    # Create the mask and the extended signal
+    STEP_L=smoothstep(x_ext,x_min=x_ext[0],x_max=x[0],N=4)
+    STEP_R=smoothstep(x_ext,x_min=x[-1],x_max=x_ext[-1],N=4)
+    MASK=STEP_L-STEP_R
+    # Masked Signal
+    f_M=f_ext*MASK
+    # FFT based derivatives with a smooth
+    F_p=1j*k*np.fft.fft(f_M)*H;
+    fp=np.fft.ifft(F_p).real 
+    partial_x[:]=fp[n_EXT:f_ext.size-n_EXT]
       
     return partial_x
 
@@ -211,13 +211,15 @@ def FFT_diff_Z(h,Xg,Zg,P=200,Frac=4):
 
 
 
-def FFT_LAP_X(h,Xg,Zg,P=200,Frac=4):
+def FFT_LAP_X(h,Xg,P=200,Frac=4):
     #%% Computing partial_xx
-    x=Xg[1,:];  dx=x[2]-x[1]; n_z,n_x=np.shape(Xg);
+    x=Xg[0][:];  
+    print(x)
+    dx=x[2]-x[1]; nzz,n_x=np.shape(Xg);
     # Odd number for the extension (a fraction Frac of the original signal)
     n_EXT=int(2*np.floor(n_x/(2*Frac))+1)
     # Initialize the partial_x:
-    partial_xx=np.zeros((n_z,n_x))  
+    partial_xx=np.zeros((n_x))  
     # Prepare the extension for the grid
     x_ext=Bound_EXT(x,n_EXT,boundaries = "extrap"); n_x_e=len(x_ext)
     # Prepare the information for the Frequency doain
@@ -225,21 +227,21 @@ def FFT_LAP_X(h,Xg,Zg,P=200,Frac=4):
     # filter Transfer function (fourth order smoothing)
     H=1/(1+P*(k/k_M)**4)
     
-    for i in range(n_z):
-      f=h[i,:]  # assign the function
-      # Extend the function and the grid
-      INTERP = interpolate.interp1d(x,f,kind='cubic',fill_value='extrapolate')
-      f_ext=INTERP(x_ext)     
-      # Create the mask and the extended signal
-      STEP_L=smoothstep(x_ext,x_min=x_ext[0],x_max=x[0],N=4)
-      STEP_R=smoothstep(x_ext,x_min=x[-1],x_max=x_ext[-1],N=4)
-      MASK=STEP_L-STEP_R
-      # Masked Signal
-      f_M=f_ext*MASK
-      # FFT based derivatives with a smooth
-      F_p=-k**2*np.fft.fft(f_M)*H;
-      fp=np.fft.ifft(F_p).real 
-      partial_xx[i,:]=fp[n_EXT:f_ext.size-n_EXT]       
+    # for i in range(n_z):
+    f=h[:]  # assign the function
+    # Extend the function and the grid
+    INTERP = interpolate.interp1d(x,f,kind='cubic',fill_value='extrapolate')
+    f_ext=INTERP(x_ext)     
+    # Create the mask and the extended signal
+    STEP_L=smoothstep(x_ext,x_min=x_ext[0],x_max=x[0],N=4)
+    STEP_R=smoothstep(x_ext,x_min=x[-1],x_max=x_ext[-1],N=4)
+    MASK=STEP_L-STEP_R
+    # Masked Signal
+    f_M=f_ext*MASK
+    # FFT based derivatives with a smooth
+    F_p=-k**2*np.fft.fft(f_M)*H;
+    fp=np.fft.ifft(F_p).real 
+    partial_xx[:]=fp[n_EXT:f_ext.size-n_EXT]       
       
     return partial_xx
 
@@ -282,20 +284,12 @@ def FFT_LAP_Z(h,Xg,Zg,P=200,Frac=4):
 #%% 3. Surface tension implementation
 
 
-def Surf_T(h,Xg,Zg,P=500,Frac=2):
+def Surf_T(h,Xg,P=500,Frac=2):
     # Compute the surface tension term from Tsveti's paper
-    h_xx=FFT_LAP_X(h,Xg,Zg,P=P,Frac=Frac)
-    #h_zz=FFT_LAP_Z(h,Xg,Zg,P=P,Frac=Frac)
+    h_xx=FFT_LAP_X(h,Xg,P=P,Frac=Frac)
     # First Terms
-    h_xxx=FFT_diff_X(h_xx,Xg,Zg,P=P,Frac=Frac)
-    #h_xzz=FFT_diff_X(h_zz,Xg,Zg,P=P,Frac=Frac)
-    # Second terms
-    # h_zxx=FFT_diff_Z(h_xx,Xg,Zg,P=P,Frac=Frac)
-    # h_zzz=FFT_diff_Z(h_zz,Xg,Zg,P=P,Frac=Frac)   
+    h_xxx=FFT_diff_X(h_xx,Xg,P=P,Frac=Frac)
     
-    h_xzz=0
-    h_zxx=0
-    h_zzz=0
     
-    return h_xxx,h_xzz, h_zxx,h_zzz
+    return h_xxx
 

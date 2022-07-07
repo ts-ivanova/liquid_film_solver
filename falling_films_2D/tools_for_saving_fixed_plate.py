@@ -26,7 +26,7 @@ def create_directories(surface_tension,
                        liquids_key, 
                        scheme_choice,
                        h0,
-                       dx, nx, dz, nz,
+                       dx, nx,
                        CFL, dt, final_time,
                        Epsilon, Re, freq):
     # DIRECTORIES
@@ -40,7 +40,7 @@ def create_directories(surface_tension,
     h0_amplitude_and_delta = "h{:.2f}".format(h0) \
                              + "_delta{}".format('%07.3F' % delta)
 
-    main_res = 'RESULTS_fixed_substrate_2D'
+    main_res = 'RESULTS_fixed_substrate_2D_final'
     
     if surface_tension:
         all_st = "_with_surf_ten_" + 'Re{0:03d}'.format(Re)
@@ -63,9 +63,7 @@ def create_directories(surface_tension,
     saving = scheme_choice \
              + '_CFL{:.2f}'.format(CFL) \
              + '_dx{:.4f}'.format(dx) \
-             + '_nx{0:04d}'.format(nx) \
-             + '_dz{:.3f}'.format(dz) \
-             + '_nz{0:04d}'.format(nz) \
+             + '_nx{0:05d}'.format(nx) \
              + '_Re{0:03d}'.format(Re) \
              + '_f{:.3f}'.format(freq)
 

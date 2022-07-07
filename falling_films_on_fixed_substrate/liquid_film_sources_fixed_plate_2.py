@@ -53,7 +53,7 @@ def liquid_film_sources(surface_tension,
                 - (3*qx[1:-1,1:-1])/ \
                 (delta1*h[1:-1,1:-1]**2) \
                 + (h[1:-1,1:-1]/(delta1)) \
-                *(h_xxx[1:-1,1:-1]+h_xzz[1:-1,1:-1])
+                *(h_xxx[1:-1,1:-1])#+h_xzz[1:-1,1:-1])
         # sources S3 for the qz-eqn:
         S3 = np.zeros((nx-2,nz-2))
                #  -3*qz[1:-1,1:-1]/ \
@@ -80,9 +80,9 @@ def liquid_film_sources(surface_tension,
                 (delta1*h[1:-1,1:-1]**2)
 
         # set the third derivatives to zero as they have to be returned
-        hzzz = 0
-        hxxx = 0
-        hzxx = 0
-        hxzz = 0
+        h_zzz = 0
+        h_xxx = 0
+        h_zxx = 0
+        h_xzz = 0
 
     return S1, S2, S3, h_zzz, h_xxx, h_zxx, h_xzz

@@ -10,7 +10,7 @@ RM2021
 """
 
 import liquid_film_fluxes_fixed_plate as fluxes
-import liquid_film_sources_fixed_plate as sources
+import liquid_film_sources_fixed_plate_2 as sources
 import liquid_film_flux_limiters as limiters
 
 def blended_lw_lf(surface_tension,
